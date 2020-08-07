@@ -1,0 +1,20 @@
+v 2.0
+d STATA Package: RDDENSITY
+d 
+d Authors: Matias D. Cattaneo, Department of Operations Research and Financial Engineering, Princeton University, cattaneo@princeton.edu
+d          Michael Jansson, Department of Economics, UC-Berkeley, mjansson@econ.berkeley.edu
+d          Xinwei Ma, Department of Economics, UCSD, x1ma@ucsd.edu
+d
+d Date: 05-AUG-2020
+d 
+f rdbwdensity.ado
+f rdbwdensity.sthlp
+f rddensity.ado
+f rddensity.sthlp
+f rddensity_fun.do
+f rddensity_fv.mo
+f rddensity_h.mo
+f rddensity_quantile.mo
+f rddensity_rep.mo
+f rddensity_senate.dta
+f rddensity_unique.mo
