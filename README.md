@@ -12,7 +12,24 @@ This package was first released in Spring 2017, and had one major upgrade in Sum
 
 ## Stata Implementation
 
+To install/update in Stata type:
+```
+net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensity/master/stata) replace
+```
+
+- Help: [rddensity](stata/rddensity.pdf), [rdbwdensity](stata/rdbwdensity.pdf).
+- Replication: [do-file](stata/rddensity_illustration.do), [do-file plot](stata/rddensity_plot_illustration.do), [data-senate](stata/rddensity_senate.dta).
+
 ## R Implementation
+
+To install/update in R type:
+```
+install.packages('rddensity')
+```
+
+- Help: [R Manual](https://cran.r-project.org/web/packages/rddensity/rddensity.pdf), [CRAN repository](https://cran.r-project.org/package=rddensity).
+
+- Replication: [R-script](R/rddensity_illustration.R), [rdplot illustration](R/rddensity_plot_illustration.R), [senate data](R/rddensity_senate.csv).
 
 ## References
 
@@ -26,7 +43,7 @@ For overviews and introductions, see [rdpackages website]().
 ### Technical and Methodological
 
 - Cattaneo, Jansson and Ma (2020): [Simple Local Polynomial Density Estimators](references/Cattaneo-Jansson-Ma_2020_JASA.pdf), Journal of the American Statistical Association, forthcoming. [Supplemental appendix](references/Cattaneo-Jansson-Ma_2020_JASA--Supplement.pdf).
-- Cattaneo, Jansson and Ma (2020): [Local Regression Distribution Estimators](references/Cattaneo-Jansson-Ma_2020_JoE.pdf). [Supplemental appendix](references/Cattaneo-Jansson-Ma_2020_JoE--Supplement.pdf).
+- Cattaneo, Jansson and Ma (2020): [Local Regression Distribution Estimators](references/Cattaneo-Jansson-Ma_2020_JoE.pdf), working paper. [Supplemental appendix](references/Cattaneo-Jansson-Ma_2020_JoE--Supplement.pdf).
 
 <br>
 <br>
