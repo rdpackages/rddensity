@@ -47,5 +47,4 @@ For overviews and introductions, see [rdpackages website](https://rdpackages.git
 
 - Cattaneo, Jansson and Ma (2020): [Local Regression Distribution Estimators](https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf), working paper. [Supplemental appendix](https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE--Supplement.pdf).
 
-<br>
-<br>
+<br><br>
