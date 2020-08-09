@@ -44,7 +44,7 @@ For overviews and introductions, see [rdpackages website](https://rdpackages.git
 - Cattaneo, Jansson and Ma (2018): [Manipulation Testing based on Density Discontinuity](https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf).<br>
 _Stata Journal_ 18(1): 234-261.
 
-- Cattaneo, Jansson and Ma (2020): [lpdensity: Local Polynomial Density Estimation and Inference.](https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JSS.pdf).<br>
+- Cattaneo, Jansson and Ma (2020): [lpdensity: Local Polynomial Density Estimation and Inference](https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JSS.pdf).<br>
 Working paper.
 
 ### Technical and Methodological
