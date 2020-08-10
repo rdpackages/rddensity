@@ -1,3 +1,10 @@
+*** RDDENSITY: Stata toc file
+
+d RDDENSITY: Manipulation testing using local polynomial density methods.
+
+l Website: https://rdpackages.github.io/rddensity
+
 v 2.0
+
 p rddensity
  
