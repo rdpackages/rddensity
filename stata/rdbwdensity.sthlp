@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 2.0 05-AUG-2020}{...}
+{* *! version 2.1 2020-08-22}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -32,19 +32,19 @@
 {title:Description}
 
 {p 4 8}{cmd:rdbwdensity} implements several data-driven bandwidth selection methods useful to construct manipulation testing procedures using the local polynomial density estimators proposed in
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020)}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020)}.{p_end}
 
-{p 4 8}A detailed introduction to this Stata command is given in {browse "https://sites.google.com/site/rdpackages/rddensity/Cattaneo-Jansson-Ma_2018_Stata.pdf":Cattaneo, Jansson and Ma (2018)}.{p_end}
-{p 8 8}Companion {browse "www.r-project.org":R} functions are also available {browse "https://sites.google.com/site/rdpackages/rddensity":here}.{p_end}
+{p 4 8}A detailed introduction to this Stata command is given in {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf":Cattaneo, Jansson and Ma (2018)}.{p_end}
+{p 8 8}Companion {browse "www.r-project.org":R} functions are also available {browse "https://rdpackages.github.io/rddensity":here}.{p_end}
 
 {p 4 8}Companion function is {help rddensity:rddensity}.
 See also the 
-{browse "https://sites.google.com/site/nppackages/lpdensity":lpdensity}
+{browse "https://nppackages.github.io/lpdensity":lpdensity}
 package for other related bandwidth selection methods.{p_end}
 
 {p 4 8}Related Stata and R packages useful for inference in regression discontinuity (RD) designs are described in the following website:{p_end}
 
-{p 8 8}{browse "https://sites.google.com/site/rdpackages/":https://sites.google.com/site/rdpackages/}{p_end}
+{p 8 8}{browse "https://rdpackages.github.io/":https://rdpackages.github.io/}{p_end}
 
 {marker options}{...}
 {title:Options}
@@ -122,15 +122,15 @@ The default value is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 {title:References}
 
 {p 4 8}Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015.
-{browse "https://sites.google.com/site/rdpackages/rdlocrand/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate}.{p_end}
 {p 8 8}{it:Journal of Causal Inference} 3(1): 1-24.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2018.
-{browse "https://sites.google.com/site/rdpackages/rddensity/Cattaneo-Jansson-Ma_2018_Stata.pdf": Manipulation Testing based on Density Discontinuity}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf": Manipulation Testing based on Density Discontinuity}.{p_end}
 {p 8 8}{it:Stata Journal} 18(1): 234-261.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020.
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
 {p 8 8}{it:Journal of the American Statistical Association}, forthcoming.{p_end}
 
 {title:Authors}

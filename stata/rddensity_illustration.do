@@ -3,8 +3,8 @@
 ** Do-file for Empirical Illustration
 ** Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma
 ********************************************************************************
-** net install rddensity, from(https://sites.google.com/site/rdpackages/rddensity/stata) replace
-** net install lpdensity, from(https://sites.google.com/site/nppackages/lpdensity/stata) replace
+** net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensity/master/stata) replace
+** net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace
 ********************************************************************************
 clear all
 set more off 

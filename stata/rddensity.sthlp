@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 2.0 05-AUG-2020}{...}
+{* *! version 2.1 2020-08-22}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -97,26 +97,26 @@
 {title:Description}
 
 {p 4 8}{cmd:rddensity} implements manipulation testing procedures using the local polynomial density estimators proposed in
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020a)},
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020a)},
 and implements graphical procedures with valid confidence bands using the results in
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JoE.pdf":Cattaneo, Jansson and Ma (2020b)}.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":Cattaneo, Jansson and Ma (2020b)}.
 In addition, the command provides complementary manipulation testing based on finite sample exact binomial testing following the results in
-{browse "https://sites.google.com/site/rdpackages/rdlocrand/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Cattaneo, Frandsen and Titiunik (2015)}
+{browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Cattaneo, Frandsen and Titiunik (2015)}
 and
-{browse "https://sites.google.com/site/rdpackages/rdlocrand/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Cattaneo, Frandsen and Vazquez-Bare (2017)}.
+{browse "https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Cattaneo, Frandsen and Vazquez-Bare (2017)}.
 For an introduction to manipulation testing see McCrary (2008).{p_end}
 
-{p 4 8}A detailed introduction to this Stata command is given in {browse "https://sites.google.com/site/rdpackages/rddensity/Cattaneo-Jansson-Ma_2018_Stata.pdf":Cattaneo, Jansson and Ma (2018)}.{p_end}
-{p 8 8}Companion {browse "www.r-project.org":R} functions are also available {browse "https://sites.google.com/site/rdpackages/rddensity":here}.{p_end}
+{p 4 8}A detailed introduction to this Stata command is given in {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf":Cattaneo, Jansson and Ma (2018)}.{p_end}
+{p 8 8}Companion {browse "www.r-project.org":R} functions are also available {browse "https://rdpackages.github.io/rddensity":here}.{p_end}
 
 {p 4 8}Companion function is {help rdbwdensity:rdbwdensity}.
 For graphical procedures, the 
-{browse "https://sites.google.com/site/nppackages/lpdensity":lpdensity}
+{browse "https://nppackages.github.io/lpdensity":lpdensity}
 package is required.{p_end}
 
 {p 4 8}Related Stata and R packages useful for inference in regression discontinuity (RD) designs are described in the following website:{p_end}
 
-{p 8 8}{browse "https://sites.google.com/site/rdpackages/":https://sites.google.com/site/rdpackages/}{p_end}
+{p 8 8}{browse "https://rdpackages.github.io/":https://rdpackages.github.io/}{p_end}
 
 {marker options}{...}
 {title:Options}
@@ -251,10 +251,10 @@ to be equal results on centered at the point estimate confidence intervals/bands
 Hence the bandwidth would need to be specified manually when
 {cmd:q(}{it:#}{cmd:)} = {cmd:p(}{it:#}{cmd:)},
 and the point estimates will not be (I)MSE optimal. See Cattaneo, Jansson and Ma
-({browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JoE.pdf":2020b}, {browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JSS.pdf":2020c})
+({browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":2020b}, {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JSS.pdf":2020c})
 for details, and also Calonico, Cattaneo, and Farrell
-({browse "https://sites.google.com/site/nppackages/nprobust/Calonico-Cattaneo-Farrell_2018_JASA.pdf":2018},
-{browse "http://sites.google.com/site/nppackages/nprobust/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":2020}) 
+({browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf":2018},
+{browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":2020}) 
 for robust bias correction methods.{p_end}
 
 {p 8 8} Sometimes the density point estimates may lie outside of the confidence intervals/bands, which can happen if the underlying distribution exhibits high curvature at some evaluation point(s). 
@@ -400,35 +400,35 @@ This is the default option.{p_end}
 {title:References}
 
 {p 4 8}Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2018.
-{browse "https://sites.google.com/site/nppackages/nprobust/Calonico-Cattaneo-Farrell_2018_JASA.pdf":On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference}.{p_end}
+{browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf":On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference}.{p_end}
 {p 8 8}{it:Journal of the American Statistical Association}, 113(522): 767-779.{p_end}
 
 {p 4 8}Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2020.
-{browse "http://sites.google.com/site/nppackages/nprobust/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}.{p_end}
+{browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}.{p_end}
 {p 8 8}Working paper.{p_end}
 
 {p 4 8}Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015.
-{browse "https://sites.google.com/site/rdpackages/rdlocrand/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate}.{p_end}
 {p 8 8}{it:Journal of Causal Inference} 3(1): 1-24.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2018.
-{browse "https://sites.google.com/site/rdpackages/rddensity/Cattaneo-Jansson-Ma_2018_Stata.pdf": Manipulation Testing based on Density Discontinuity}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf": Manipulation Testing based on Density Discontinuity}.{p_end}
 {p 8 8}{it:Stata Journal} 18(1): 234-261.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020a.
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
 {p 8 8}{it:Journal of the American Statistical Association}, forthcoming.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020b.
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
 {p 8 8}Working paper.{p_end}
 
 {p 4 8}Cattaneo, M. D., Michael Jansson, and Xinwei Ma. 2020c.
-{browse "https://sites.google.com/site/nppackages/lpdensity/Cattaneo-Jansson-Ma_2020_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
 {p 8 8}Working paper.{p_end}
 
 {p 4 8}Cattaneo, M. D., Titiunik, R. and G. Vazquez-Bare. 2017.
-{browse "https://sites.google.com/site/rdpackages/rdlocrand/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}.{p_end}
+{browse "https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}.{p_end}
 {p 8 8}{it:Journal of Policy Analysis and Management} 36(3): 643-681.{p_end}
 
 {p 4 8}McCrary, J. 2008. Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test.{p_end}
