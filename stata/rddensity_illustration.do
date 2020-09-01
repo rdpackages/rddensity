@@ -1,5 +1,5 @@
 ********************************************************************************
-** RDDENSITY Stata Package 
+** RDDENSITY Stata Package
 ** Do-file for Empirical Illustration
 ** Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma
 ********************************************************************************

@@ -2,6 +2,6 @@ v 3
 d RDDENSITY: Manipulation testing using local polynomial density methods.
 d            https://rdpackages.github.io/rddensity
 d
-
+ 
 p rddensity
  
