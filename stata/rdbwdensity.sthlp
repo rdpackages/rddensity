@@ -131,7 +131,7 @@ The default value is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020.
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
-{p 8 8}{it:Journal of the American Statistical Association}, forthcoming.{p_end}
+{p 8 8}{it:Journal of the American Statistical Association} 115(531): 1449-1455.{p_end}
 
 {title:Authors}
 

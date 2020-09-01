@@ -401,7 +401,7 @@ This is the default option.{p_end}
 
 {p 4 8}Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2018.
 {browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf":On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference}.{p_end}
-{p 8 8}{it:Journal of the American Statistical Association}, 113(522): 767-779.{p_end}
+{p 8 8}{it:Journal of the American Statistical Association} 113(522): 767-779.{p_end}
 
 {p 4 8}Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2020.
 {browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}.{p_end}
@@ -417,7 +417,7 @@ This is the default option.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020a.
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
-{p 8 8}{it:Journal of the American Statistical Association}, forthcoming.{p_end}
+{p 8 8}{it:Journal of the American Statistical Association} 115(531): 1449-1455.{p_end}
 
 {p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020b.
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
