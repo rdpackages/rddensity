@@ -1,14 +1,14 @@
 ###########################################################################
 ## RDDENSITY R Package
 ## Do-file for RDDENSITY Plot Illustration
-## Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma 
+## Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma  
 ###########################################################################
 ### Clear R environment
 rm(list=ls(all=TRUE))
 
 ### Install R library
 ### NOTE: depending on your system, you may need to do it as root
-#install.packages('rddensity')
+#install.packages('rddensity') 
 
 ### Load rddensity package
 library(rddensity)
