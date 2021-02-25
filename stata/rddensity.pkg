@@ -5,7 +5,7 @@ d Authors: Matias D. Cattaneo, Department of Operations Research and Financial E
 d          Michael Jansson, Department of Economics, UC-Berkeley, mjansson@econ.berkeley.edu
 d          Xinwei Ma, Department of Economics, UCSD, x1ma@ucsd.edu
 d
-d Distribution-Date: 20200901
+d Distribution-Date: 20210225
 d 
 f rdbwdensity.ado
 f rdbwdensity.sthlp
@@ -18,3 +18,28 @@ f rddensity_quantile.mo
 f rddensity_rep.mo
 f rddensity_senate.dta
 f rddensity_unique.mo
+**********************************
+* Dependency: LPDENSITY
+* https://nppackages.github.io/lpdensity/
+**********************************
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpbwdensity.ado
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpbwdensity.sthlp
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity.ado
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity.sthlp
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_bwIMSE.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_bwIROT.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_bwMSE.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_bwROT.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_Cgen.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_fn.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_fun.do
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_Ggen.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_illustration.do
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_normDgp.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_optFunc.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_quantile.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_rep.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_Sgen.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_Tgen.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_unique.mo
+f https://raw.githubusercontent.com/nppackages/lpdensity/master/stata/lpdensity_whichmin.mo
