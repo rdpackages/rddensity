@@ -22,7 +22,7 @@ f rddensity_unique.mo
 * Dependency: LPDENSITY
 * https://nppackages.github.io/lpdensity/
 **********************************
-f ../../../../../../nppackages/lpdensity/master/stata/lpbwdensity.ado
+*f ../../../../../../nppackages/lpdensity/master/stata/lpbwdensity.ado
 *f /nppackages/lpdensity/master/stata/lpbwdensity.sthlp
 *f /nppackages/lpdensity/master/stata/lpdensity.ado
 *f /nppackages/lpdensity/master/stata/lpdensity.sthlp
