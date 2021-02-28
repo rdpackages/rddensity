@@ -5,7 +5,7 @@ d Authors: Matias D. Cattaneo, Department of Operations Research and Financial E
 d          Michael Jansson, Department of Economics, UC-Berkeley, mjansson@econ.berkeley.edu
 d          Xinwei Ma, Department of Economics, UCSD, x1ma@ucsd.edu
 d
-d Distribution-Date: 20210225
+d Distribution-Date: 20210228
 d 
 f rdbwdensity.ado
 f rdbwdensity.sthlp
@@ -18,28 +18,3 @@ f rddensity_quantile.mo
 f rddensity_rep.mo
 f rddensity_senate.dta
 f rddensity_unique.mo
-**********************************
-* Dependency: LPDENSITY
-* https://nppackages.github.io/lpdensity/
-**********************************
-*f ../../../../../../nppackages/lpdensity/master/stata/lpbwdensity.ado
-*f /nppackages/lpdensity/master/stata/lpbwdensity.sthlp
-*f /nppackages/lpdensity/master/stata/lpdensity.ado
-*f /nppackages/lpdensity/master/stata/lpdensity.sthlp
-*f /nppackages/lpdensity/master/stata/lpdensity_bwIMSE.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_bwIROT.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_bwMSE.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_bwROT.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_Cgen.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_fn.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_fun.do
-*f /nppackages/lpdensity/master/stata/lpdensity_Ggen.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_illustration.do
-*f /nppackages/lpdensity/master/stata/lpdensity_normDgp.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_optFunc.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_quantile.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_rep.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_Sgen.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_Tgen.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_unique.mo
-*f /nppackages/lpdensity/master/stata/lpdensity_whichmin.mo

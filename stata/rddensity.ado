@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rddensity
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.2 2020-09-01
+*!version 2.3 2021-02-28
 
 capture program drop rddensityEST
 
@@ -810,7 +810,7 @@ program define rddensity, eclass
 		capture which lpdensity
 		if (_rc == 111) {
 			di as error  `"{err}plotting feature requires command {cmd:lpdensity}, install with"'
-			di as error  `"{err}net install lpdensity, from(https://sites.google.com/site/nppackages/lpdensity/stata) replace"'
+			di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
 			exit 111
 		}
 	}
@@ -895,11 +895,22 @@ program define rddensity, eclass
 	else {
 		local plot_ciuniform = ""
 	}
-	
-	qui lpdensity `x' if `touse' & `x' <= `c', /// 
+
+	capture lpdensity `x' if `touse' & `x' <= `c', /// 
 		grid(`temp_grid_l') `plot_bwselect_l' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_l') level(`level') ///
 		`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
 		`plot_ciuniform' 
+	if (_rc != 0) {
+		di as error  `"{err}{cmd:lpdensity} failed. Please try to install the latest version using"'
+		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
+		di as error  `"{err}If error persists, please contact the authors."'
+		di as error  `"{err}{cmd:lpdensity} error message:"'
+		lpdensity `x' if `touse' & `x' <= `c', /// 
+			grid(`temp_grid_l') `plot_bwselect_l' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_l') level(`level') ///
+			`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
+			`plot_ciuniform' 
+		exit 111
+	}
 	}
 		
 	mata{
@@ -925,11 +936,22 @@ program define rddensity, eclass
 	else {
 		local plot_bwselect_r = `"bwselect(`plot_bwselect')"'
 	}
-	
-	qui lpdensity `x' if `touse' & `x' >= `c', /// 
+
+	capture lpdensity `x' if `touse' & `x' >= `c', /// 
 		grid(`temp_grid_r') `plot_bwselect_r' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_r') level(`level') ///
 		`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
 		`plot_ciuniform'
+	if (_rc != 0) {
+		di as error  `"{err}{cmd:lpdensity} failed. Please try to install the latest version using"'
+		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
+		di as error  `"{err}If error persists, please contact the authors."'
+		di as error  `"{err}{cmd:lpdensity} error message:"'
+		lpdensity `x' if `touse' & `x' >= `c', /// 
+			grid(`temp_grid_r') `plot_bwselect_r' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_r') level(`level') ///
+			`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
+			`plot_ciuniform'
+		exit 111
+	}
 	}
 	
 	mata{

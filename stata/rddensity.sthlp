@@ -1,5 +1,5 @@
 {smcl}
-{* *! version 2.2 2020-09-01}{...}
+{* *!version 2.3 2021-02-28}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -97,9 +97,9 @@
 {title:Description}
 
 {p 4 8}{cmd:rddensity} implements manipulation testing procedures using the local polynomial density estimators proposed in
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020a)},
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020)},
 and implements graphical procedures with valid confidence bands using the results in
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":Cattaneo, Jansson and Ma (2020b)}.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2021_JoE.pdf":Cattaneo, Jansson and Ma (2021)}.
 In addition, the command provides complementary manipulation testing based on finite sample exact binomial testing following the results in
 {browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Cattaneo, Frandsen and Titiunik (2015)}
 and
@@ -415,17 +415,17 @@ This is the default option.{p_end}
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf": Manipulation Testing based on Density Discontinuity}.{p_end}
 {p 8 8}{it:Stata Journal} 18(1): 234-261.{p_end}
 
-{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020a.
+{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020.
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
 {p 8 8}{it:Journal of the American Statistical Association} 115(531): 1449-1455.{p_end}
 
-{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2020b.
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
-{p 8 8}Working paper.{p_end}
+{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2021a.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2021_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
+{p 8 8}{it:Journal of Econometrics}, forthcoming.{p_end}
 
-{p 4 8}Cattaneo, M. D., Michael Jansson, and Xinwei Ma. 2020c.
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
-{p 8 8}Working paper.{p_end}
+{p 4 8}Cattaneo, M. D., Michael Jansson, and Xinwei Ma. 2021b.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2021_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
+{p 8 8}{it:Journal of Statistical Software}, forthcoming.{p_end}
 
 {p 4 8}Cattaneo, M. D., Titiunik, R. and G. Vazquez-Bare. 2017.
 {browse "https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}.{p_end}
