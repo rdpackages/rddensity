@@ -8,11 +8,30 @@ This work was supported in part by the National Science Foundation through grant
 
 https://rdpackages.github.io/rddensity
 
+## Queries and Requests
+
+Please email: [rdpackages@googlegroups.com](mailto:rdpackages@googlegroups.com)
+
 ## Major Upgrades
 
 This package was first released in Spring 2017, and had one major upgrade in Summer 2020.
 
 - _Summer 2020 new features include_: (i) speed improvements; (ii) improved integration with [`lpdensity`](https://nppackages.github.io/lpdensity/); (iii) mass points in running variable adjustments; (iv) bandwidth selection adjustments for too few mass points in and/or overshooting of the support of the running variable; (v) density discontinuity plots with histogram and/or confidence bands; and (vi) binomial testing near cutoff as complementary discontinuity testing following results in [`rdlocrand`](https://rdpackages.github.io/rdlocrand/) methods (see references there for details).
+
+## Python Implementation
+
+Coming soon.
+
+## R Implementation
+
+To install/update in R type:
+```
+install.packages('rddensity')
+```
+
+- Help: [R Manual](https://cran.r-project.org/web/packages/rddensity/rddensity.pdf), [CRAN repository](https://cran.r-project.org/package=rddensity).
+
+- Replication: [R-script](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_illustration.R), [rdplot illustration](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_plot_illustration.R), [senate data](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_senate.csv).
 
 ## Stata Implementation
 
@@ -25,16 +44,6 @@ net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensi
 
 - Replication: [do-file](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity_illustration.do), [do-file plot](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity_plot_illustration.do), [data-senate](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity_senate.dta).
 
-## R Implementation
-
-To install/update in R type:
-```
-install.packages('rddensity')
-```
-
-- Help: [R Manual](https://cran.r-project.org/web/packages/rddensity/rddensity.pdf), [CRAN repository](https://cran.r-project.org/package=rddensity).
-
-- Replication: [R-script](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_illustration.R), [rdplot illustration](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_plot_illustration.R), [senate data](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_senate.csv).
 
 ## References
 
