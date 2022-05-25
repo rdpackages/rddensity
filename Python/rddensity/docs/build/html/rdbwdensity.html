@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>rdbwdensity &#8212; rddensity 2.2.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="rdplotdensity" href="rdplotdensity.html" />
+    <link rel="prev" title="rddensity" href="rddensity.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="rdbwdensity">
+<h1>rdbwdensity<a class="headerlink" href="#rdbwdensity" title="Permalink to this headline">¶</a></h1>
+<p>Bandwidth selection for manipulation testing</p>
+<section id="description">
+<h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">rdbwdensity</span></code> implements several data-driven bandwidth selection methods useful to construct manipulation testing procedures using the local polynomial density estimators proposed in Cattaneo, Jansson and Ma (2020).</p>
+<p>Related <code class="docutils literal notranslate"><span class="pre">Stata</span></code> and <code class="docutils literal notranslate"><span class="pre">R</span></code> useful for inference in regression discontinuity (RD) designs are available on the <a class="reference external" href="https://rdpackages.github.io">rdpackages website</a>.</p>
+<p>Companion commands: <code class="docutils literal notranslate"><span class="pre">rddensity</span></code> for estimation and <code class="docutils literal notranslate"><span class="pre">rdplotdensity</span></code> for plotting estimation results.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<p>Cattaneo M. D., M. Jansson, and X. Ma. 2018.
+<a class="reference external" href="https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf">Manipulation Testing based on Density Discontinuity.</a>.
+<em>Stata Journal</em> 18(1): 234-261.</p>
+<p>Cattaneo M. D., M. Jansson, and X. Ma. 2020.
+<a class="reference external" href="https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf">Simple Local Polynomial Density Estimators</a>.
+<em>Journal of the American Statistical Association</em>, 115(531): 1449-1455.</p>
+</section>
+<section id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
+<p>Matias D. Cattaneo, Princeton University. (<a class="reference external" href="mailto:cattaneo&#37;&#52;&#48;princeton&#46;edu">cattaneo<span>&#64;</span>princeton<span>&#46;</span>edu</a>).</p>
+<p>Rajita Chandak (maintainer), Princeton University. (<a class="reference external" href="mailto:rchandak&#37;&#52;&#48;princeton&#46;edu">rchandak<span>&#64;</span>princeton<span>&#46;</span>edu</a>).</p>
+<p>Michael Jansson, University of California Berkeley. (<a class="reference external" href="mailto:mjansson&#37;&#52;&#48;econ&#46;berkeley&#46;edu">mjansson<span>&#64;</span>econ<span>&#46;</span>berkeley<span>&#46;</span>edu</a>).</p>
+<p>Xinwei Ma (maintainer), University of California San Diego. (<a class="reference external" href="mailto:x1ma&#37;&#52;&#48;ucsd&#46;edu">x1ma<span>&#64;</span>ucsd<span>&#46;</span>edu</a>).</p>
+<span class="target" id="module-rddensity.rdbwdensity"></span><dl class="py class">
+<dt class="sig sig-object py" id="rddensity.rdbwdensity.bw_output">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">rddensity.rdbwdensity.</span></span><span class="sig-name descname"><span class="pre">bw_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitselect</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vce</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nLocalMin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nUniqueMin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massPoints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massPoints_flag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_max</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rddensity.rdbwdensity.bw_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class of rdbwdensity function outputs.
+Object type returned by <a class="reference internal" href="#rddensity.rdbwdensity.rdbwdensity" title="rddensity.rdbwdensity.rdbwdensity"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rdbwdensity()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rddensity.rdbwdensity.rdbwdensity">
+<span class="sig-prename descclassname"><span class="pre">rddensity.rdbwdensity.</span></span><span class="sig-name descname"><span class="pre">rdbwdensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fitselect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unrestricted'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'triangular'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vce</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'jackknife'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">massPoints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regularize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nLocalMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nUniqueMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rddensity.rdbwdensity.rdbwdensity" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>X: Numeric vector or one dimentional matrix/dataframe</strong></dt><dd><p>the running variable.</p>
+</dd>
+<dt><strong>c: Numeric</strong></dt><dd><p>specifies the threshold or cutoff value in the support of <em>X</em>. Default is <em>0</em>.</p>
+</dd>
+<dt><strong>p: Nonnegative integer,</strong></dt><dd><p>specifies the local polynomial order used to construct the density estimators. Default is <em>2</em> (local quadratic approximation).</p>
+</dd>
+<dt><strong>fitselect: String</strong></dt><dd><p>specifies the density estimation method. <em>unrestricted</em> (Default) for density estimation without any restrictions (two-sample, unrestricted inference). <em>restricted</em> for density estimation assuming equal distribution function and higher order dericatives.</p>
+</dd>
+<dt><strong>kernel: String</strong></dt><dd><p>specifies the kernel function used to construct the local polynomial estimators. Accepted kernels: <em>triangular</em> (Default), <em>epanechnikov</em> or <em>uniform</em>.</p>
+</dd>
+<dt><strong>vce: String</strong></dt><dd><p>specifies the procedure used to compute the variance-covariance matrix estimatior. <em>jackknife</em> (Default) for jackknife standard errors or <em>plugin</em> for asymptotic plug-in standard errors.</p>
+</dd>
+<dt><strong>massPoints: Boolean, Default *True*.</strong></dt><dd><p>Specifies wether to adjust for mass points in the data.</p>
+</dd>
+<dt><strong>regularize: Boolean, Default *True*.</strong></dt><dd><p>Specifies whether to conduct local sample size checking. When True, the bandwidth is chosen such that the local region includes at least <em>nLocalMin</em> observations and at least <em>nUniqueMin</em> unique observations.</p>
+</dd>
+<dt><strong>nLocalMin: Nonnegative integer</strong></dt><dd><p>specifies the minimum number of observations in each local neighbourhood. This option will be ignored if set to <em>0</em> or if <em>regularize=False</em>. Default is <em>20+p+1</em>.</p>
+</dd>
+<dt><strong>nUniqueMin: Nonnegative integer</strong></dt><dd><p>specifies the minimum number of unqieu observations in each local neighbourhood. This option will be ignored if set to <em>0</em> or if <em>regularize=False</em>. Default is <em>20+p+1</em>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>h</dt><dd><p>Bandwidths for density discontinuity test, left and right of the cutoff, asymptotic variance and bias.</p>
+</dd>
+<dt>n</dt><dd><p>full-full sample size, <em>left</em>/<em>right</em>: sample size to the left/right of the cutoff.</p>
+</dd>
+<dt>X_min</dt><dd><p>Smallest observations to the left and right of the cutoff.</p>
+</dd>
+<dt>X_max</dt><dd><p>Largest observations to the left and right of the cutoff.</p>
+</dd>
+<dt>options</dt><dd><p>other options passed to the function are also stored within the object.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="rddensity.html#module-rddensity.rddensity" title="rddensity.rddensity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rddensity.rddensity</span></code></a></dt><dd></dd>
+<dt><a class="reference internal" href="rdplotdensity.html#module-rddensity.rdplotdensity" title="rddensity.rdplotdensity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rddensity.rdplotdensity</span></code></a></dt><dd></dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">rddensity</span> <span class="kn">import</span> <span class="n">rdbwdensity</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">est</span> <span class="o">=</span> <span class="n">rdbwdensity</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">vce</span><span class="o">=</span><span class="s2">&quot;jackknife&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">est</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">rddensity</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">rddensity</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="rddensity.html">rddensity</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">rdbwdensity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rdplotdensity.html">rdplotdensity</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="modules.html">rddensity</a><ul>
+      <li>Previous: <a href="rddensity.html" title="previous chapter">rddensity</a></li>
+      <li>Next: <a href="rdplotdensity.html" title="next chapter">rdplotdensity</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Matias Cattaneo, Rajita Chandak, Michael Jansson, Xinwei Ma.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.5.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/rdbwdensity.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

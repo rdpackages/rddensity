@@ -1,0 +1,14 @@
+#+Title: rddensity python
+#+Author: Rajita Chandak
+
+
+** TODO rtd theme
+** TODO hosting html links
+
+** DONE effn
+** DONE bw selection
+*** DONE default bw method is comb-should be estimated
+*** DONE c=5 case is off
+**** DONE effn is wrong, conventional line missing
+**** DONE add c value to repr output
+** DONE t test, p val
