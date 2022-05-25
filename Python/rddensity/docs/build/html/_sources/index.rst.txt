@@ -15,6 +15,8 @@ the local polynomial density estimators:
 ``rdbwdensity()`` to perform data-driven bandwidth selection,
 and ``rdplotdensity()`` to construct density plots.
 
+Additional information regarding rddensity is available `here <https://rdpackages.github.io/rddensity_doc/>`_.
+
 Companion ``Stata`` aand ``R`` packages
 and additional regression discontinuity packages
 are available at `rdpackages.github.io <https://rdpackages.github.io/>`_.
