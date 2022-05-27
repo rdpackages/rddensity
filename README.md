@@ -24,7 +24,7 @@ To install/update in Python type:
 ```
 pip install rddensity
 ```
-- Help: [PyPI](https://pypi.org/project/rddensity/2.2.0/), [Documentation](https://rdpackages.github.io/rddensity)
+- Help: [PyPI](https://pypi.org/project/rddensity/2.2.0/), [Documentation](https://github.com/rdpackages/rddensity/tree/master/Python/rddensity/docs/build/latex/rddensity.pdf)
 - Replication: [Python script](https://github.com/rdpackages/rddensity/master/Python/rddensity_illustration.py)
 
 ## R Implementation

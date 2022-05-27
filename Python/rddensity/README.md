@@ -11,6 +11,17 @@ and rdplotdensity() to construct density plots.
 
 This work was supported in part by the National Science Foundation through grants [SES-1357561](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1357561), [SES-1459931](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1459931), [SES-1459967](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1459967), [SES-1947662](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1947662), [SES-1947805](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1947805), and [SES-2019432](https://www.nsf.gov/awardsearch/showAward?AWD_ID=2019432).
 
+## Authors
+
+Matias D. Cattaneo (<cattaneo@princeton.edu>)
+
+Xinwei Ma (<x1ma@ucsd.edu>)
+
+Michael Jansson (<mjansson@econ.berkeley.edu>)
+
+Rajita Chandak (maintainer) (<rchandak@princeton.edu>)
+
+
 ## Website
 
 https://rdpackages.github.io/rddensity
@@ -27,6 +38,17 @@ pip install rddensity
 ```
 - Help: [PyPI](https://pypi.org/project/rddensity/2.2.0/), [Documentation](https://rdpackages.github.io/)
 - Replication: [Python script](https://github.com/rdpackages/rddensity/master/Python/rddensity_illustration.py)
+
+# Usage
+```
+from lpdensity import lpdensity, lpbwdensity
+```
+## Dependencies
+- numpy
+- pandas
+- math
+- scipy
+- plotnine
 
 ## References
 
