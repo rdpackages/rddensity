@@ -1,0 +1,33 @@
+\begin{sphinxtheindex}
+\let\bigletter\sphinxstyleindexlettergroup
+\let\spxpagem \sphinxstyleindexpagemain
+\let\spxentry \sphinxstyleindexentry
+\let\spxextra \sphinxstyleindexextra
+
+  \bigletter B
+  \item \spxentry{bw\_output}\spxextra{class in rddensity.rdbwdensity}, \hyperpage{8}
+
+  \indexspace
+  \bigletter C
+  \item \spxentry{CJMrddensity}\spxextra{class in rddensity.rddensity}, \hyperpage{6}
+
+  \indexspace
+  \bigletter M
+  \item \spxentry{module}
+    \subitem \spxentry{rddensity.rdbwdensity}, \hyperpage{8}
+    \subitem \spxentry{rddensity.rddensity}, \hyperpage{6}
+    \subitem \spxentry{rddensity.rdplotdensity}, \hyperpage{11}
+
+  \indexspace
+  \bigletter R
+  \item \spxentry{rdbwdensity()}\spxextra{in module rddensity.rdbwdensity}, \hyperpage{8}
+  \item \spxentry{rddensity()}\spxextra{in module rddensity.rddensity}, \hyperpage{6}
+  \item \spxentry{rddensity.rdbwdensity}
+    \subitem \spxentry{module}, \hyperpage{8}
+  \item \spxentry{rddensity.rddensity}
+    \subitem \spxentry{module}, \hyperpage{6}
+  \item \spxentry{rddensity.rdplotdensity}
+    \subitem \spxentry{module}, \hyperpage{11}
+  \item \spxentry{rdplotdensity()}\spxextra{in module rddensity.rdplotdensity}, \hyperpage{11}
+
+\end{sphinxtheindex}

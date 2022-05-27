@@ -1,0 +1,22 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}References}{3}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Authors}{5}{chapter.2}%
+\contentsline {section}{\numberline {2.1}rddensity}{5}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}rddensity}{5}{subsection.2.1.1}%
+\contentsline {subsubsection}{Description}{5}{subsubsection*.3}%
+\contentsline {subsubsection}{References}{5}{subsubsection*.4}%
+\contentsline {subsubsection}{Authors}{6}{subsubsection*.5}%
+\contentsline {subsubsection}{Example}{8}{subsubsection*.9}%
+\contentsline {subsection}{\numberline {2.1.2}rdbwdensity}{8}{subsection.2.1.2}%
+\contentsline {subsubsection}{Description}{8}{subsubsection*.10}%
+\contentsline {subsubsection}{References}{8}{subsubsection*.11}%
+\contentsline {subsubsection}{Authors}{8}{subsubsection*.12}%
+\contentsline {subsubsection}{Example}{9}{subsubsection*.16}%
+\contentsline {subsection}{\numberline {2.1.3}rdplotdensity}{10}{subsection.2.1.3}%
+\contentsline {subsubsection}{Description}{10}{subsubsection*.17}%
+\contentsline {subsubsection}{Details}{10}{subsubsection*.18}%
+\contentsline {subsubsection}{References}{10}{subsubsection*.19}%
+\contentsline {subsubsection}{Authors}{11}{subsubsection*.20}%
+\contentsline {subsubsection}{Example}{12}{subsubsection*.23}%
+\contentsline {chapter}{Python Module Index}{13}{section*.24}%
+\contentsline {chapter}{Index}{15}{section*.25}%
