@@ -33,7 +33,8 @@ rdplotdensity(
   xlabel = "",
   ylabel = "",
   legendTitle = NULL,
-  legendGroups = NULL
+  legendGroups = NULL,
+  printPlot = TRUE
 )
 }
 \arguments{
@@ -134,6 +135,9 @@ If omitted, bandwidths returned by \code{rddensity} will be used.}
 \item{legendTitle}{String, title of legend.}
 
 \item{legendGroups}{String Vector, group names used in legend.}
+
+\item{printPlot}{\code{TRUE} (default) or \code{FALSE}, whether to print the ggplot as specified,
+or simply return the object without printing (for further customization).}
 }
 \value{
 \item{Estl, Estr}{Matrices containing estimation results:

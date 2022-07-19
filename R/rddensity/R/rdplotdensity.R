@@ -100,6 +100,8 @@
 #' @param title,xlabel,ylabel Strings, title of the plot and labels for x- and y-axis.
 #' @param legendTitle String, title of legend.
 #' @param legendGroups String Vector, group names used in legend.
+#' @param printPlot \code{TRUE} (default) or \code{FALSE}, whether to print the ggplot as specified,
+#'   or simply return the object without printing (for further customization).
 #'
 #' @return
 #' \item{Estl, Estr}{Matrices containing estimation results:
@@ -165,7 +167,8 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
                           CIuniform=FALSE, CIsimul=2000, CIshade = NULL, CIcol = NULL,
                           bwselect = NULL,
                           hist=TRUE, histBreaks=NULL, histFillCol=3, histFillShade=0.2, histLineCol="white",
-                          title = "", xlabel = "", ylabel = "", legendTitle = NULL, legendGroups = NULL){
+                          title = "", xlabel = "", ylabel = "", legendTitle = NULL, legendGroups = NULL,
+                          printPlot = TRUE){
 
   # obtain options from rddensity result
   c       <- rdd$opt$c
@@ -271,7 +274,7 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
                             title = title, xlabel = xlabel, ylabel = ylabel, legendTitle = legendTitle, legendGroups = legendGroups) +
     theme(legend.position = "none")
 
-  print(Estplot)
+  if (printPlot == TRUE) print(Estplot)
 
   return(list(Estl=Estl, Estr=Estr, Estplot=Estplot))
 }
