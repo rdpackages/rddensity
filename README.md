@@ -24,8 +24,8 @@ To install/update in Python type:
 ```
 pip install rddensity
 ```
-- Help: [PyPI](https://pypi.org/project/rddensity/2.2.0/), [Documentation](https://github.com/rdpackages/rddensity/tree/master/Python/rddensity/docs/build/latex/rddensity.pdf)
-- Replication: [Python script](https://github.com/rdpackages/rddensity/master/Python/rddensity_illustration.py)
+- Help: [PyPI](https://pypi.org/project/rddensity/2.2.0/), [Documentation](Python/rddensity/docs/build/latex/rddensity.pdf)
+- Replication: [Python script](Python/rddensity_illustration.py)
 
 ## R Implementation
 
@@ -36,7 +36,7 @@ install.packages('rddensity')
 
 - Help: [R Manual](https://cran.r-project.org/web/packages/rddensity/rddensity.pdf), [CRAN repository](https://cran.r-project.org/package=rddensity).
 
-- Replication: [R-script](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_illustration.R), [rdplot illustration](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_plot_illustration.R), [senate data](https://github.com/rdpackages/rddensity/raw/master/R/rddensity_senate.csv).
+- Replication: [R-script](R/rddensity_illustration.R), [rdplot illustration](R/rddensity_plot_illustration.R), [senate data](R/rddensity_senate.csv).
 
 ## Stata Implementation
 
@@ -45,9 +45,9 @@ To install/update in Stata type:
 net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensity/master/stata) replace
 ```
 
-- Help: [rddensity](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity.pdf), [rdbwdensity](https://github.com/rdpackages/rddensity/raw/master/stata/rdbwdensity.pdf).
+- Help: [rddensity](stata/rddensity.pdf), [rdbwdensity](stata/rdbwdensity.pdf).
 
-- Replication: [do-file](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity_illustration.do), [do-file plot](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity_plot_illustration.do), [data-senate](https://github.com/rdpackages/rddensity/raw/master/stata/rddensity_senate.dta).
+- Replication: [do-file](stata/rddensity_illustration.do), [do-file plot](stata/rddensity_plot_illustration.do), [data-senate](stata/rddensity_senate.dta).
 
 
 ## References
