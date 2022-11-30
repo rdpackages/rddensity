@@ -397,6 +397,7 @@ rddensity_fV <- function(Y, X, Nl, Nr, Nlh, Nrh, hl, hr, p, s,
     } else {
       v <- c(0, 1, 1)
     }
+    HpInv <- diag(1/(hl^v))
     Hp <- diag(hl^v)
   } else {
     Xp <- matrix(NA, ncol=2*p+2, nrow=Nh)
@@ -410,6 +411,7 @@ rddensity_fV <- function(Y, X, Nl, Nr, Nlh, Nrh, hl, hr, p, s,
         Hp[j] <- hr^((j-2)/2)
       }
     }
+    HpInv <- diag(1/Hp)
     Hp <- diag(Hp)
   }
 
@@ -424,17 +426,9 @@ rddensity_fV <- function(Y, X, Nl, Nr, Nlh, Nrh, hl, hr, p, s,
   if (typeof(Sinv) == "character") {
     return(data.frame(out))
   }
-
   # point estimates
-  b <- solve(Hp) %*% Sinv %*% crossprod(XpW, Y)
+  b <- HpInv %*% Sinv %*% crossprod(XpW, Y)
 
-#if (s > 1) {
-  #print(Hp)
-  #print(XpW)
-  #print(b)
-  #print(Sinv)
-  #print(solve(Hp) %*% Sinv)
-#}
   if (fitselect == "restricted") {
     out[1, 1] <- b[2]
     out[2, 1] <- b[3]
@@ -472,7 +466,7 @@ rddensity_fV <- function(Y, X, Nl, Nr, Nlh, Nrh, hl, hr, p, s,
       }
     }
 
-    V = solve(Hp) %*% Sinv %*% (t(L) %*% L) %*% Sinv %*% solve(Hp)
+    V = HpInv %*% Sinv %*% (t(L) %*% L) %*% Sinv %*% HpInv
     if (fitselect == "restricted") {
       out[1, 2] <- V[2, 2]
       out[2, 2] <- V[3, 3]

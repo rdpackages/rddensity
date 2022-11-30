@@ -1,15 +1,15 @@
 ###########################################################################
 ## RDDENSITY R Package
 ## Do-file for RDDENSITY Illustration
-## Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma 
+## Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma
 ###########################################################################
 ### Clear R environment
 rm(list=ls(all=TRUE))
-setwd("...")
+setwd("..")
 
 ### Install R library
 ### NOTE: depending on your system, you may need to do it as root
-#install.packages('rddensity') 
+#install.packages('rddensity')
 
 ### Load rddensity package
 library(rddensity)
@@ -30,7 +30,7 @@ summary(rddensity(X = margin, all=TRUE))
 summary(rddensity(X = margin, fitselect="restricted", vce="plugin"))
 
 ### rdplotdensity: default options
-rdd <- rddensity(X = margin) 
+rdd <- rddensity(X = margin)
 rdplotdensity(rdd, margin)
 
 ### rdplotdensity: change color and title, restrict to [-50, 50], and add more evaluation points

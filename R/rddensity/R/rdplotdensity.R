@@ -2,7 +2,7 @@
 #' @title Density Plotting for Manipulation Testing
 #'
 #' @description \code{rdplotdensity} constructs density plots. It is based on the
-#'   local polynomial density estimator proposed in Cattaneo, Jansson and Ma (2020, 2021a).
+#'   local polynomial density estimator proposed in Cattaneo, Jansson and Ma (2020, 2022a).
 #'   A companion \code{Stata} package is described in Cattaneo, Jansson and Ma (2018).
 #'
 #' Companion command: \code{\link{rddensity}} for manipulation (density discontinuity) testing.
@@ -22,7 +22,7 @@
 #' results on centered at the point estimate confidence intervals/bands, but requires undersmoothing for valid
 #' inference (i.e., (I)MSE-optimal bandwdith for the density point estimator cannot be used).  Hence the bandwidth
 #' would need to be specified manually when \code{q=p}, and the point estimates will not be (I)MSE optimal. See
-#' Cattaneo, Jansson and Ma (2021a,b) for details, and also Calonico, Cattaneo, and Farrell (2018, 2020) for
+#' Cattaneo, Jansson and Ma (2022a,b) for details, and also Calonico, Cattaneo, and Farrell (2018, 2020) for
 #' robust bias correction methods.
 #'
 #' Sometimes the density point estimates may lie outside of the confidence intervals/bands, which can happen if
@@ -100,6 +100,7 @@
 #' @param title,xlabel,ylabel Strings, title of the plot and labels for x- and y-axis.
 #' @param legendTitle String, title of legend.
 #' @param legendGroups String Vector, group names used in legend.
+#' @param noPlot No density plot will be generated if set to \code{TRUE}.
 #'
 #' @return
 #' \item{Estl, Estr}{Matrices containing estimation results:
@@ -124,17 +125,17 @@
 #' Xinwei Ma (maintainer), University of California San Diego. \email{x1ma@ucsd.edu}.
 #'
 #' @references
-#' Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2018. \href{https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf}{On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference}. \emph{Journal of the American Statistical Association} 113(522): 767-779.
+#' Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2018. \href{https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf}{On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference}. \emph{Journal of the American Statistical Association} 113(522): 767-779. \doi{10.1080/01621459.2017.1285776}
 #'
-#' Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2020. \href{https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2020_CEopt.pdf}{Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}. Working paper.
+#' Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2022. \href{https://cattaneo.princeton.edu/papers/Calonico-Cattaneo-Farrell_2022_Bernoulli.pdf}{Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}. \emph{Bernoulli}, 28(4): 2998-3022. \doi{10.3150/21-BEJ1445}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2018. \href{https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf}{Manipulation Testing based on Density Discontinuity}. \emph{Stata Journal} 18(1): 234-261.
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2018. \href{https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf}{Manipulation Testing based on Density Discontinuity}. \emph{Stata Journal} 18(1): 234-261. \doi{10.1177/1536867X1801800115}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2020. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf}{Simple Local Polynomial Density Estimators}. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455.
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2020. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf}{Simple Local Polynomial Density Estimators}. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2021a. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2021_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming.
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022a. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2021b. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2021_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, forthcoming.
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022b. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
 #'
 #' @seealso \code{\link{rddensity}}
 #'
@@ -165,7 +166,8 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
                           CIuniform=FALSE, CIsimul=2000, CIshade = NULL, CIcol = NULL,
                           bwselect = NULL,
                           hist=TRUE, histBreaks=NULL, histFillCol=3, histFillShade=0.2, histLineCol="white",
-                          title = "", xlabel = "", ylabel = "", legendTitle = NULL, legendGroups = NULL){
+                          title = "", xlabel = "", ylabel = "", legendTitle = NULL, legendGroups = NULL,
+                          noPlot = FALSE){
 
   # obtain options from rddensity result
   c       <- rdd$opt$c
@@ -271,7 +273,7 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
                             title = title, xlabel = xlabel, ylabel = ylabel, legendTitle = legendTitle, legendGroups = legendGroups) +
     theme(legend.position = "none")
 
-  print(Estplot)
+  if (!noPlot) { print(Estplot) }
 
   return(list(Estl=Estl, Estr=Estr, Estplot=Estplot))
 }
