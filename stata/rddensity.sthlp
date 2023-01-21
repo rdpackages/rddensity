@@ -1,5 +1,5 @@
 {smcl}
-{* *!version 2.3 2021-02-28}{...}
+{* *!version 2.4 2023-01-21}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -99,7 +99,7 @@
 {p 4 8}{cmd:rddensity} implements manipulation testing procedures using the local polynomial density estimators proposed in
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020)},
 and implements graphical procedures with valid confidence bands using the results in
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2021_JoE.pdf":Cattaneo, Jansson and Ma (2021)}.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf":Cattaneo, Jansson and Ma (2023)}.
 In addition, the command provides complementary manipulation testing based on finite sample exact binomial testing following the results in
 {browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Cattaneo, Frandsen and Titiunik (2015)}
 and
@@ -191,12 +191,12 @@ Default is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 {p 4 8}{opt bino_w:}{cmd:(}{it:# #}{cmd:)} specifies the half length(s) of the initial window.
 If two values are provided, they will be used for the data below and above the cutoff separately.{p_end}
 
-{p 4 8}{opt bino_n:}{cmd:(}{it:#}{cmd:)} specifies the sample size in the initial window.
+{p 4 8}{opt bino_n:}{cmd:(}{it:#}{cmd:)} specifies the minimum sample size on each side in the initial window.
 This option will be ignored if {opt bino_w:}{cmd:(}{it:# #}{cmd:)} is provided.{p_end}
 
 {p 4 8}{opt bino_wstep:}{cmd:(}{it:# #}{cmd:)} specifies the increment in half length(s).{p_end}
 
-{p 4 8}{opt bino_nstep:}{cmd:(}{it:#}{cmd:)} specifies the increment in sample size.
+{p 4 8}{opt bino_nstep:}{cmd:(}{it:#}{cmd:)} specifies the increment in minimum sample size on each side.
 This option will be ignored if {opt bino_wstep:}{cmd:(}{it:# #}{cmd:)} is provided.{p_end}
 
 {p 4 8}{opt bino_nw:}{cmd:(}{it:#}{cmd:)} specifies the total number of windows.
@@ -206,7 +206,7 @@ Default is {cmd:10}.{p_end}
 Default is 0.5.{p_end}
 
 {p 4 8}{opt nobino:mial} suppresses the binomial test.
-By default, the initial (smallest) window contains 20 observations, and its length is also used as the increment for subsequent windows.{p_end}
+By default, the initial (smallest) window contains at least 20 observations on each side, and its length is also used as the increment for subsequent windows.{p_end}
 
 
 {dlgtab:Plotting}
@@ -251,10 +251,10 @@ to be equal results on centered at the point estimate confidence intervals/bands
 Hence the bandwidth would need to be specified manually when
 {cmd:q(}{it:#}{cmd:)} = {cmd:p(}{it:#}{cmd:)},
 and the point estimates will not be (I)MSE optimal. See Cattaneo, Jansson and Ma
-({browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JoE.pdf":2020b}, {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JSS.pdf":2020c})
+({browse "https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf":2022}, {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf":2023})
 for details, and also Calonico, Cattaneo, and Farrell
 ({browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf":2018},
-{browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":2020}) 
+{browse "https://cattaneo.princeton.edu/papers/Calonico-Cattaneo-Farrell_2022_Bernoulli.pdf":2022}) 
 for robust bias correction methods.{p_end}
 
 {p 8 8} Sometimes the density point estimates may lie outside of the confidence intervals/bands, which can happen if the underlying distribution exhibits high curvature at some evaluation point(s). 
@@ -403,9 +403,9 @@ This is the default option.{p_end}
 {browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf":On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference}.{p_end}
 {p 8 8}{it:Journal of the American Statistical Association} 113(522): 767-779.{p_end}
 
-{p 4 8}Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2020.
-{browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2020_CEopt.pdf":Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}.{p_end}
-{p 8 8}Working paper.{p_end}
+{p 4 8}Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2022.
+{browse "https://cattaneo.princeton.edu/papers/Calonico-Cattaneo-Farrell_2022_Bernoulli.pdf":Coverage Error Optimal Confidence Intervals for Local Polynomial Regression}.{p_end}
+{p 8 8}{it:Bernoulli} 28(4): 2998-3022.{p_end}
 
 {p 4 8}Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015.
 {browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate}.{p_end}
@@ -419,19 +419,19 @@ This is the default option.{p_end}
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Simple Local Polynomial Density Estimators}.{p_end}
 {p 8 8}{it:Journal of the American Statistical Association} 115(531): 1449-1455.{p_end}
 
-{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2021a.
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2021_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
-{p 8 8}{it:Journal of Econometrics}, forthcoming.{p_end}
+{p 4 8}Cattaneo, M. D., Michael Jansson, and Xinwei Ma. 2022.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
+{p 8 8}{it:Journal of Statistical Software}, 101(2): 1–25..{p_end}
 
-{p 4 8}Cattaneo, M. D., Michael Jansson, and Xinwei Ma. 2021b.
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2021_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
-{p 8 8}{it:Journal of Statistical Software}, forthcoming.{p_end}
+{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2023.
+{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
+{p 8 8}{it:Journal of Econometrics}, forthcoming.{p_end}
 
 {p 4 8}Cattaneo, M. D., Titiunik, R. and G. Vazquez-Bare. 2017.
 {browse "https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}.{p_end}
 {p 8 8}{it:Journal of Policy Analysis and Management} 36(3): 643-681.{p_end}
 
-{p 4 8}McCrary, J. 2008. Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test.{p_end}
+{p 4 8}McCrary, J. 2008. {browse "https://doi.org/10.1016/j.jeconom.2007.05.005":Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test}.{p_end}
 {p 8 8}{it:Journal of Econometrics} 142(2): 698-714.{p_end}
 
 

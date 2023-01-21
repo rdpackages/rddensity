@@ -155,7 +155,7 @@ If omitted, bandwidths returned by \code{rddensity} will be used.}
 }
 \description{
 \code{rdplotdensity} constructs density plots. It is based on the
-  local polynomial density estimator proposed in Cattaneo, Jansson and Ma (2020, 2022a).
+  local polynomial density estimator proposed in Cattaneo, Jansson and Ma (2020, 2023).
   A companion \code{Stata} package is described in Cattaneo, Jansson and Ma (2018).
 
 Companion command: \code{\link{rddensity}} for manipulation (density discontinuity) testing.
@@ -175,7 +175,7 @@ centered at the point estimates because they have been bias-corrected. Setting \
 results on centered at the point estimate confidence intervals/bands, but requires undersmoothing for valid
 inference (i.e., (I)MSE-optimal bandwdith for the density point estimator cannot be used).  Hence the bandwidth
 would need to be specified manually when \code{q=p}, and the point estimates will not be (I)MSE optimal. See
-Cattaneo, Jansson and Ma (2022a,b) for details, and also Calonico, Cattaneo, and Farrell (2018, 2020) for
+Cattaneo, Jansson and Ma (2022, 2023) for details, and also Calonico, Cattaneo, and Farrell (2018, 2022) for
 robust bias correction methods.
 
 Sometimes the density point estimates may lie outside of the confidence intervals/bands, which can happen if
@@ -209,9 +209,9 @@ Cattaneo, M. D., M. Jansson, and X. Ma. 2018. \href{https://rdpackages.github.io
 
 Cattaneo, M. D., M. Jansson, and X. Ma. 2020. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf}{Simple Local Polynomial Density Estimators}. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2022a. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2022. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2022b. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2023. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
 }
 \seealso{
 \code{\link{rddensity}}

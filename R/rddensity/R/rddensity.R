@@ -4,7 +4,7 @@
 #' @description \code{rddensity} implements manipulation testing procedures using the
 #'   local polynomial density estimators proposed in Cattaneo, Jansson and Ma (2020),
 #'   and implements graphical procedures with valid confidence bands using the results
-#'   in Cattaneo, Jansson and Ma (2022a,b).  In addition, the command provides complementary
+#'   in Cattaneo, Jansson and Ma (2022, 2023).  In addition, the command provides complementary
 #'   manipulation testing based on finite sample exact binomial testing following the
 #'   esults in Cattaneo, Frandsen and Titiunik (2015) and Cattaneo, Frandsen and
 #'   Vazquez-Bare (2017). For an introduction to manipulation testing see McCrary (2008).
@@ -65,14 +65,14 @@
 #'   each local neighborhood. This option will be ignored if set to \code{0}, or if \code{regularize=FALSE} is used.
 #'   Default is \code{20+p+1}.
 #' @param bino \code{TRUE} (default) or \code{FALSE}, specifies whether to conduct binomial tests. By default,
-#'   the initial (smallest) window contains 20 observations, and its length is also used as the increment
+#'   the initial (smallest) window contains at least 20 observations on each side, and its length is also used as the increment
 #'   for subsequent windows. This feature is based on the \code{\link{binom.test}} function.
 #' @param binoW Numeric, specifies the half length(s) of the initial window. If two values are provided, they will
 #'   be used for the data below and above the cutoff separately.
-#' @param binoN Nonnegative integer, specifies the number of observations (closest to the cutoff) used for
+#' @param binoN Nonnegative integer, specifies the minimum number of observations on each side of the cutoff used for
 #'    the binomial test. This option will be ignored if \code{binoW} is provided.
 #' @param binoWStep Numeric, specifies the increment in half length(s).
-#' @param binoNStep Nonnegative integer, specifies the increment in sample size.
+#' @param binoNStep Nonnegative integer, specifies the minimum increment in sample size (on each side of the cutoff).
 #'   This option will be ignored if \code{binoWStep} is provided.
 #' @param binoNW Nonnegative integer, specifies the total number of windows. Default is \code{10}.
 #' @param binoP Numeric, specifies the null hypothesis of the binomial test. Default is \code{0.5}.
@@ -117,9 +117,9 @@
 #'
 #' Cattaneo, M. D., M. Jansson, and X. Ma. 2020. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf}{Simple Local Polynomial Density Estimators}. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022a. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022b. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2023. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
 #'
 #' Cattaneo, M. D., R. Titiunik and G. Vazquez-Bare. 2017. \href{https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf}{Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}. \emph{Journal of Policy Analysis and Management} 36(3): 643-681. \doi{10.1002/pam.21985}
 #'
@@ -351,13 +351,14 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
       # binoN check
       if (length(binoN) == 0) {
         binoN <- 20
-        binomTempLW[1] <- binomTempRW[1] <- XSort[min(binoN, N)]
+        # default, minimum 20 obs on each side
+        binomTempLW[1] <- binomTempRW[1] <- max(XL[min(binoN, Nl)], XR[min(binoN, Nr)])
       } else if (length(binoN) == 1) {
         if (binoN <= 0) {
           stop("Option binoN incorrectly specified.\n")
         }
         binoN <- ceiling(binoN)
-        binomTempLW[1] <- binomTempRW[1] <- XSort[min(binoN, N)]
+        binomTempLW[1] <- binomTempRW[1] <- max(XL[min(binoN, Nl)], XR[min(binoN, Nr)])
       } else {
         stop("Option binoN incorrectly specified.\n")
       }
@@ -366,14 +367,14 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
         stop("Option binoW incorrectly specified.\n")
       }
       binomTempLW[1] <- binomTempRW[1] <- binoW
-      binoN <- sum(XL <= binomTempLW[1]) + sum(XR <= binomTempRW[1])
+      binoN <- min(sum(XL <= binomTempLW[1]), sum(XR <= binomTempRW[1]))
     } else if (length(binoW) == 2) {
       if (binoW[1] <= 0 | binoW[2] <= 0) {
         stop("Option binoW incorrectly specified.\n")
       }
       binomTempLW[1] <- binoW[1]
       binomTempRW[1] <- binoW[2]
-      binoN <- sum(XL <= binomTempLW[1]) + sum(XR <= binomTempRW[1])
+      binoN <- min(sum(XL <= binomTempLW[1]), sum(XR <= binomTempRW[1]))
     } else {
       stop("Option binoW incorrectly specified.\n")
     }
@@ -407,7 +408,11 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
           }
           binoNStep <- ceiling(binoNStep)
           for (jj in 2:binoNW) {
-            binomTempLW[jj] <- binomTempRW[jj] <- XSort[min(binoN + (jj-1)*binoNStep, N)]
+            binomTempLW[jj] <- binomTempLW[jj-1] + max(XL[min(sum(XL<=binomTempLW[jj-1]) + binoNStep, Nl)] - binomTempLW[jj-1],
+                                                       XR[min(sum(XR<=binomTempRW[jj-1]) + binoNStep, Nr)] - binomTempRW[jj-1])
+
+            binomTempRW[jj] <- binomTempRW[jj-1] + max(XL[min(sum(XL<=binomTempLW[jj-1]) + binoNStep, Nl)] - binomTempLW[jj-1],
+                                                       XR[min(sum(XR<=binomTempRW[jj-1]) + binoNStep, Nr)] - binomTempRW[jj-1])
           }
         } else {
           stop("Option binoNStep incorrectly specified.\n")

@@ -6,7 +6,7 @@
 ** net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensity/master/stata) replace
 ** net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace
 ********************************************************************************
-clear all
+clear all 
 set more off
 
 ********************************************************************************

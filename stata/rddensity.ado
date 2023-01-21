@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rddensity
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.3 2021-02-28
+*!version 2.4 2023-01-21
 
 capture program drop rddensityEST
 
@@ -610,8 +610,14 @@ program define rddensity, eclass
 		binomTempRWindow[1] = `bino_w_r'
 	} 
 	else {
-		binomTempLWindow[1] = Y[min((`bino_n', `N_l'+`N_r'))]
+		// new version, controls the sample size on each side
+		binomTempLWindow[1] = XL[min((`bino_n', `N_l'))]
+		binomTempRWindow[1] = XR[min((`bino_n', `N_r'))]
+		binomTempLWindow[1] = max((binomTempLWindow[1], binomTempRWindow[1]))
 		binomTempRWindow[1] = binomTempLWindow[1]
+		// older version, controls the total sample size
+		// binomTempLWindow[1] = Y[min((`bino_n', `N_l'+`N_r'))]
+		// binomTempRWindow[1] = binomTempLWindow[1]
 	}
 	
 	// window increment
@@ -622,14 +628,19 @@ program define rddensity, eclass
 	}
 	else if ("`flag_step_window'" == "n_provided") {
 		for (jj=2; jj<=`bino_nw'; jj++) {
-			if ("`flag_ini_window'" == "w_provided") {
-				binomTempLWindow[jj] = Y[min((sum(XL :<= binomTempLWindow[1]) + sum(XR :<= binomTempRWindow[1]) + (jj-1) * `bino_nstep', `N_l'+`N_r'))]
-				binomTempRWindow[jj] = binomTempLWindow[jj]
-			}
-			else {
-				binomTempLWindow[jj] = Y[min((`bino_n' + (jj-1) * `bino_nstep', `N_l'+`N_r'))]
-				binomTempRWindow[jj] = binomTempLWindow[jj]
-			}
+			// find the smallest increment in window length, so that on both sides one has at least `bino_nstep' increment in sample size
+			binomTempLWindow[jj] = binomTempLWindow[jj-1] + max((XL[min((sum(XL :<= binomTempLWindow[jj-1]) + `bino_nstep', `N_l'))] - binomTempLWindow[jj-1], XR[min((sum(XR :<= binomTempRWindow[jj-1]) + `bino_nstep', `N_r'))] - binomTempRWindow[jj-1]))
+			binomTempRWindow[jj] = binomTempRWindow[jj-1] + max((XL[min((sum(XL :<= binomTempLWindow[jj-1]) + `bino_nstep', `N_l'))] - binomTempLWindow[jj-1], XR[min((sum(XR :<= binomTempRWindow[jj-1]) + `bino_nstep', `N_r'))] - binomTempRWindow[jj-1]))
+			
+			// older version
+			// if ("`flag_ini_window'" == "w_provided") {
+				// binomTempLWindow[jj] = Y[min((sum(XL :<= binomTempLWindow[1]) + sum(XR :<= binomTempRWindow[1]) + (jj-1) * `bino_nstep', `N_l'+`N_r'))]
+				// binomTempRWindow[jj] = binomTempLWindow[jj]
+			// }
+			// else {
+				// binomTempLWindow[jj] = Y[min((`bino_n' + (jj-1) * `bino_nstep', `N_l'+`N_r'))]
+				// binomTempRWindow[jj] = binomTempLWindow[jj]
+			// }
 		}
 	}
 	else {
@@ -680,11 +691,11 @@ program define rddensity, eclass
 
 	}
 	}
-
-	local binomTempNumber = binomTempNumber[1,1]
-	local binomTempEqualWindow = binomTempEqualWindow[1,1]
-
+	
 	if ("`binomial'" == "") {
+		local binomTempNumber = binomTempNumber[1,1]
+		local binomTempEqualWindow = binomTempEqualWindow[1,1]
+
 		disp in ye "P-values of binomial tests." in gr " (H0: prob = `bino_p')"
 		disp in smcl in gr "{hline 19}{c TT}{hline 22}{c TT}{hline 10}"
 		

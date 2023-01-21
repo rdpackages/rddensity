@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rdbwdensity
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.3 2021-02-28
+*!version 2.4 2023-01-21
 
 capture program drop rdbwdensity
 
