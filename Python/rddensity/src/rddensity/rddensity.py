@@ -55,15 +55,15 @@ def rddensity(X, c=0, p=2, q=0,
     nUniqueMin: Nonnegative integer
         Specifies the minimum number of unqieu observations in each local neighbourhood. This option will be ignored if set to *0* or if *regularize=False*. Default is *20+p+1*.
     bino: Boolean (Default True).
-        Specifies whether to conduct binomial tests. By default the initial (smallest) window contains 20 observations, and its length is also used as the increment for subsequent windows.
+        Specifies whether to conduct binomial tests. By default the initial (smallest) window contains at least 20 observations on each side, and its length is also used as the increment for subsequent windows.
     binoW: Numeric.
         Specifies the half length(s) of the initial window. If two values are provided, they will be used for the data below and above the cutoff separately.
     binoN: Nonnegative integer.
-        Specifies the number of observations (closest to the cutoff) used for the binomial test. This is ignored if *binoW* is provided.
+        Specifies the minimum number of observations on each side of the cutoff used for the binomial test. This is ignored if *binoW* is provided.
     binoWStep: Numeric.
         Specifies the increment in half lengths.
     binoNStep: Nonnegative integer.
-        Specifies the increment in sample size. This is ignored if *binoWStep* is provided.
+        Specifies the minimum increment in sample size (on each side of the cutoff). This is ignored if *binoWStep* is provided.
     binoNW: Nonnegative integer.
         Specifies the total number of windows. Default is *10*.
     binoP: Numeric.
@@ -71,7 +71,7 @@ def rddensity(X, c=0, p=2, q=0,
 
     Returns
     -------
-    hat: 
+    hat:
         left/right: density estimate to the left/right of the cutoff. diff: difference in estimated densities on the two sides of the cutoff.
     sd_asy:
         left/right: standard error for the estimated density to the left/right of the cutoff, diff: standard error for difference in estimated densities on the two sides of the cutoff. (based on asymptotic method)
@@ -289,8 +289,8 @@ def rddensity(X, c=0, p=2, q=0,
         if binoW is None:
             if binoN is None:
                 binoN = 20
-                binomTempLW[0] = XSort[XSort.columns[0]][min(binoN, n)-1]
-                binomTempRW[0] = XSort[XSort.columns[0]][min(binoN, n)-1]
+                binomTempLW[0] = max(XL[XL.columns[0]][min(binoN, nl)-1], XR[XR.columns[0]][min(binoN, nr)-1])
+                binomTempRW[0] = max(XL[XL.columns[0]][min(binoN, nl)-1], XR[XR.columns[0]][min(binoN, nr)-1])
             elif len(binoN) == 1:
                 if binoN <= 0 :
                     raise Exception("Option binoN incorrectly specified.")
@@ -304,13 +304,13 @@ def rddensity(X, c=0, p=2, q=0,
                 raise Exception("Option binoW incorrectly specified.")
             binomTempLW[0] = binoW
             binomTempRW[0] = binoW
-            binoN = sum(XL <= binomTemp[0]) + sum(XR <= binomTempRW[0])
+            binoN = min(sum(XL <= binomTempLW[0]), sum(XR <= binomTempRW[0]))
         elif len(binoW) == 2:
             if min(binoW) <= 0:
                 raise Exception("Option binoW incorrectly specified.")
             binomTempLW[0] = binoW[0]
             binomTempRW[0] = binoW[1]
-            binoN = sum(XL <= binomTemp[0]) + sum(XR <= binomTempRW[0])
+            binoN = min(sum(XL <= binomTempLW[0]), sum(XR <= binomTempRW[0]))
         else:
             raise Exception("Option binoW incorrectly specified.")
 
@@ -338,9 +338,11 @@ def rddensity(X, c=0, p=2, q=0,
                     if binoNStep[0] <= 0:
                         raise Exception("Option binoNStep incorrectly specified.")
                     binoNStep = math.ceil(binoNStep)
-                    for jj in range(binoNW):
-                        binomTempLW[jj] = XSort[XSort.columns[0]][min(binoN + jj*binoNStep, n)]
-                        binomTempRW[jj] = XSort[XSort.columns[0]][min(binoN + jj*binoNStep, n)]
+                    for jj in range(1, binoNW):
+                        binomTempLW[jj] = binomTempLW[jj-1] + max(XL[XL.columns[0]][min(sum(XL<=binomTempLW[jj-1]) + binoNStep, nl)-1] - binomTempLW[jj-1],
+                                                                  XR[XR.columns[0]][min(sum(XL<=binomTempRW[jj-1]) + binoNStep, nr)-1] - binomTempRW[jj-1])
+                        binomTempRW[jj] = binomTempRW[jj-1] + max(XL[XL.columns[0]][min(sum(XL<=binomTempLW[jj-1]) + binoNStep, nl)-1] - binomTempLW[jj-1],
+                                                                  XR[XR.columns[0]][min(sum(XL<=binomTempRW[jj-1]) + binoNStep, nr)-1] - binomTempRW[jj-1])
                 else:
                     raise Exception("Option binoNStep incorrectly specified.")
             elif len(binoWStep) == 1:
