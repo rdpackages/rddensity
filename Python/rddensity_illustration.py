@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 # Load data base
-data = pd.read_csv('rddensity_senate.csv')
+data = pd.read_csv('../R/rddensity_senate.csv')
 
 # rddensity: default options
 print(repr(rddensity.rddensity(X=data)))
