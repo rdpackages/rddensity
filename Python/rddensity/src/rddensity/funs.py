@@ -249,11 +249,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
     ncol = len(Xp.columns)
     nrow = len(Xp)
     XpW = pd.DataFrame(np.zeros((nrow, ncol)))
-    print(np.multiply(Xp[[1]], W))
-    print(np.multiply(Xp[[2]], W))
-    for j in range(ncol):
-        print(j)
-        XpW[[j]] = np.multiply(Xp[[j]], W)
+    XpW = Xp.mul(np.array(W), axis=0)
 
     try:
         Sinv = inv(np.matmul(XpW.T, Xp))
@@ -261,7 +257,8 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         return(out)
 
     # point estimates
-    b = np.matmul(inv(Hp), np.matmul(Sinv, np.matmul(XpW.T, Y)))
+
+    b = np.matmul(np.matmul(XpW.mul(np.array(Y), axis=0),Sinv), inv(Hp))
 
     if fitselect=='restricted':
         out[0, 0] = b[0][1]
@@ -290,7 +287,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
             frequnique = Xunique['freq']
             indexunique = Xunique['indexFirst']
             for jj in range(Xp.shape[1]):
-                L[:, jj] = np.repeat(((np.cumsum(XpW[jj].append(pd.Series(0), ignore_index=True)[::-1].reset_index(drop=True))/(n-1)))[indexunique], frequnique)[::-1]
+                L[:, jj] = np.repeat(((np.cumsum(XpW[jj]._append(pd.Series(0), ignore_index=True)[::-1].reset_index(drop=True))/(n-1)))[indexunique], frequnique)[::-1]
         else:
             L[0, :] = np.sum(XpW, axis=1)/(n-1)
             for i in range(1, nh):
