@@ -127,3 +127,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#PDFs
+*.pdf
+.Rproj.user
+.Rhistory
+.Rbuildignore
+*.Rproj

@@ -205,6 +205,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         W[0:(nlh)] = 0.75*((1 + X[0:(nlh)]/hl)**2)/hl
         W[nlh:(nh)] = 0.75*((1 + X[nlh:(nh)]/hr)**2)/hr
 
+
     # Construct the design matrix and the bandwidth matrix
     if fitselect=='restricted':
         if nh ==0:
@@ -231,7 +232,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         else:
             Xp = np.zeros((nh, 2*p+2))
             Hp = np.repeat(0.0, 2*p+2)
-            for j in range(1, (2*p+2)+1):
+            for j in range((2*p+2)+1):
                 if j%2==1:
                     Xp[0:(nlh), j-1] = np.power(X[0:(nlh)]/hl, (j-1)/2)[X.columns[0]]
                     Xp[nlh:(nh), j-1] = 0
@@ -241,6 +242,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
                     Xp[nlh:(nh), j-1] = np.power(X[nlh:(nh)]/hr, (j-2)/2)[X.columns[0]]
                     Hp[j-1] = np.power(hr, (j-2)/2)
             Hp = np.diag(Hp)
+
 
     out = np.full((4,4), np.nan)
 
@@ -257,8 +259,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         return(out)
 
     # point estimates
-
-    b = np.matmul(np.matmul(XpW.mul(np.array(Y), axis=0),Sinv), inv(Hp))
+    b = np.matmul(np.matmul(np.matmul(np.array(XpW).transpose(),np.array(Y)).transpose(),Sinv), inv(Hp))
 
     if fitselect=='restricted':
         out[0, 0] = b[0][1]
