@@ -366,10 +366,11 @@ def rddensity(X, c=0, p=2, q=0,
                 binomTempRN[jj] = len(XR[XR[XR.columns[0]] <= binomTempRW[jj]])
                 binomTempPVal[jj] = binomtest(k=binomTempLN[jj], n =(binomTempLN[jj]+binomTempRN[jj]), p = binoP[0]).pvalue
 
-        else:
-            binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
+    else:
+        binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
 
 
+    print(binomTempLN)
     if useall == True:
         fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
         T_asy_p = fV_p['hat'][2]/np.sqrt(fV_p['plugin'][2])
