@@ -23,7 +23,7 @@ def rddensity(X, c=0, p=2, q=0,
               fitselect='unrestricted', kernel='triangular', vce='jackknife',
               h=[], bwselect='comb', useall=False,
               massPoints=True, regularize=True, nLocalMin=None, nUniqueMin=None,
-              bino_flag=True, binoW=None, binoN=None, binoWStep=None, binoNStep=None, binoNW=[10], binoP=[0.5]):
+              bino_flag=True, binoW=None, binoN=None, binoWStep=None, binoNStep=None, binoNW=10, binoP=[0.5]):
     r"""
 
 	Parameters
@@ -267,7 +267,6 @@ def rddensity(X, c=0, p=2, q=0,
 
 
         if isinstance(binoNW, (int, float)):
-            binoNW
             if binoNW<=0:
                 raise Exception("Option binoNW incorrectly specified.")
         else:
@@ -370,7 +369,6 @@ def rddensity(X, c=0, p=2, q=0,
         binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
 
 
-    print(binomTempLN)
     if useall == True:
         fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
         T_asy_p = fV_p['hat'][2]/np.sqrt(fV_p['plugin'][2])
