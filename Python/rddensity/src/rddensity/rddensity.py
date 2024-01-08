@@ -259,7 +259,6 @@ def rddensity(X, c=0, p=2, q=0,
     p_asy = 2*(1-norm.cdf(abs(T_asy)))
     p_jk = 2*(1-norm.cdf(abs(T_jk)))
 
-
     #binomial testing
     if bino_flag==True:
         XSort = abs(X).sort_values(X.columns[0]).reset_index(drop=True)
@@ -267,12 +266,13 @@ def rddensity(X, c=0, p=2, q=0,
         XR = X[X[X.columns[0]]>=0].reset_index(drop=True)
 
 
-        if len(binoNW) > 1:
-            raise Exception("Option binoNW incorrectly specified.")
-        elif binoNW[0] <= 0:
-            raise Exception("Option binoNW incorrectly specified.")
+        if isinstance(binoNW, (int, float)):
+            binoNW
+            if binoNW<=0:
+                raise Exception("Option binoNW incorrectly specified.")
         else:
-            binoNW = math.ceil(binoNW[0])
+            binoNW = math.ceil(binoNW)
+
 
         binomTempLW = np.repeat(None, binoNW)
         binomTempRW = np.repeat(None, binoNW)
@@ -291,7 +291,7 @@ def rddensity(X, c=0, p=2, q=0,
                 binoN = 20
                 binomTempLW[0] = max(XL[XL.columns[0]][min(binoN, nl)-1], XR[XR.columns[0]][min(binoN, nr)-1])
                 binomTempRW[0] = max(XL[XL.columns[0]][min(binoN, nl)-1], XR[XR.columns[0]][min(binoN, nr)-1])
-            elif len(binoN) == 1:
+            elif isinstance(binoN, (int, float)):
                 if binoN <= 0 :
                     raise Exception("Option binoN incorrectly specified.")
                 binoN = math.ceil(binoN)
@@ -299,18 +299,18 @@ def rddensity(X, c=0, p=2, q=0,
                 binomTempRW[0] = XSort[XSort.columns[0]][min(binoN, n)-1]
             else:
                 raise Exception("Option binoN incorrectly specified.")
-        elif len(binoW) == 1:
+        elif isinstance(binoW, (int, float)):
             if binoW <= 0:
                 raise Exception("Option binoW incorrectly specified.")
             binomTempLW[0] = binoW
             binomTempRW[0] = binoW
-            binoN = min(sum(XL <= binomTempLW[0]), sum(XR <= binomTempRW[0]))
+            binoN = min(sum(XL[XL.columns[0]] <= binomTempLW[0]), sum(XR[XR.columns[0]] <= binomTempRW[0]))
         elif len(binoW) == 2:
             if min(binoW) <= 0:
                 raise Exception("Option binoW incorrectly specified.")
             binomTempLW[0] = binoW[0]
             binomTempRW[0] = binoW[1]
-            binoN = min(sum(XL <= binomTempLW[0]), sum(XR <= binomTempRW[0]))
+            binoN = min(sum(XL[XL.columns[0]] <= binomTempLW[0]), sum(XR[XR.columns[0]] <= binomTempRW[0]))
         else:
             raise Exception("Option binoW incorrectly specified.")
 
