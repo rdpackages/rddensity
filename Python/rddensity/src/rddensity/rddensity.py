@@ -365,6 +365,8 @@ def rddensity(X, c=0, p=2, q=0,
                 binomTempRN[jj] = len(XR[XR[XR.columns[0]] <= binomTempRW[jj]])
                 binomTempPVal[jj] = binomtest(k=binomTempLN[jj], n =(binomTempLN[jj]+binomTempRN[jj]), p = binoP[0]).pvalue
 
+        else:
+            binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
     else:
         binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
 
