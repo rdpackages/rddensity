@@ -574,11 +574,9 @@ h_opt_density <- function(x, p, N, dgp_F1, dgp_Fp1, f_low, f_up, kernel="triangu
 #'
 #' This is an internal function, and should not be called by users.
 #'
-#' @param x Numeric vector or data matrix, the running variable.
 #' @param p Integer, polynomial order.
 #' @param N Integer, sample size.
-#' @param dgp_F1,dgp_Fp1 Numeric, theoretical d.g.p.
-#' @param f_low,f_up Numeric, lower and upper boundaries.
+#' @param dgp_F1_l,dgp_F1_r,dgp_Fp1_l,dgp_Fp1_r Numeric, theoretical d.g.p.
 #' @param kernel String, the kernel function, can be \code{triangular} (default),
 #'   \code{uniform} or \code{epanechnikov}.
 #'

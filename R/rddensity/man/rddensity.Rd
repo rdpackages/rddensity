@@ -179,17 +179,17 @@ plot3 <- rdplotdensity(rdd2, x, plotRange = c(-2, 2), plotN = 25)
 
 }
 \references{
-Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015. \href{https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf}{Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate.} \emph{Journal of Causal Inference} 3(1): 1-24. \doi{10.1515/jci-2013-0010}
+Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015. Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate. \emph{Journal of Causal Inference} 3(1): 1-24. \doi{10.1515/jci-2013-0010}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2018. \href{https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2018_Stata.pdf}{Manipulation Testing based on Density Discontinuity}. \emph{Stata Journal} 18(1): 234-261. \doi{10.1177/1536867X1801800115}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2018. Manipulation Testing based on Density Discontinuity. \emph{Stata Journal} 18(1): 234-261. \doi{10.1177/1536867X1801800115}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2020. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf}{Simple Local Polynomial Density Estimators}. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2020. Simple Local Polynomial Density Estimators. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2022. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf}{lpdensity: Local Polynomial Density Estimation and Inference}. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2022. lpdensity: Local Polynomial Density Estimation and Inference. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2023. \href{https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf}{Local Regression Distribution Estimators}. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2023. Local Regression Distribution Estimators. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
 
-Cattaneo, M. D., R. Titiunik and G. Vazquez-Bare. 2017. \href{https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf}{Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}. \emph{Journal of Policy Analysis and Management} 36(3): 643-681. \doi{10.1002/pam.21985}
+Cattaneo, M. D., R. Titiunik and G. Vazquez-Bare. 2017. Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality. \emph{Journal of Policy Analysis and Management} 36(3): 643-681. \doi{10.1002/pam.21985}
 
 McCrary, J. 2008. Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test. \emph{Journal of Econometrics} 142(2): 698-714. \doi{10.1016/j.jeconom.2007.05.005}
 }

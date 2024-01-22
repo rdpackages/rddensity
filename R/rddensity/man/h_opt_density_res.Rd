@@ -19,14 +19,10 @@ h_opt_density_res(
 
 \item{N}{Integer, sample size.}
 
+\item{dgp_F1_l, dgp_F1_r, dgp_Fp1_l, dgp_Fp1_r}{Numeric, theoretical d.g.p.}
+
 \item{kernel}{String, the kernel function, can be \code{triangular} (default),
 \code{uniform} or \code{epanechnikov}.}
-
-\item{x}{Numeric vector or data matrix, the running variable.}
-
-\item{dgp_F1, dgp_Fp1}{Numeric, theoretical d.g.p.}
-
-\item{f_low, f_up}{Numeric, lower and upper boundaries.}
 }
 \value{
 Returns MSE optimal bandwidth.

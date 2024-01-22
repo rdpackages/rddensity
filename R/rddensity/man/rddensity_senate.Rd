@@ -12,7 +12,7 @@ Numeric vector containing 1390 observations:
 }
 }
 \source{
-Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015. \href{https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf}{Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate.} \emph{Journal of Causal Inference} 3(1): 1-24. \doi{10.1515/jci-2013-0010}
+Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015. Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate. \emph{Journal of Causal Inference} 3(1): 1-24. \doi{10.1515/jci-2013-0010}
 }
 \description{
 Extract of the dataset constructed by Cattaneo, Frandsen, and Titiunik (2015),
