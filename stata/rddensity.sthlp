@@ -1,5 +1,5 @@
 {smcl}
-{* *!version 2.4 2023-01-21}{...}
+{* *!version 2.5 2024-10-06}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -99,7 +99,7 @@
 {p 4 8}{cmd:rddensity} implements manipulation testing procedures using the local polynomial density estimators proposed in
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2020_JASA.pdf":Cattaneo, Jansson and Ma (2020)},
 and implements graphical procedures with valid confidence bands using the results in
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf":Cattaneo, Jansson and Ma (2023)}.
+{browse "https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2024_JoE.pdf":Cattaneo, Jansson and Ma (2024)}.
 In addition, the command provides complementary manipulation testing based on finite sample exact binomial testing following the results in
 {browse "https://rdpackages.github.io/references/Cattaneo-Frandsen-Titiunik_2015_JCI.pdf":Cattaneo, Frandsen and Titiunik (2015)}
 and
@@ -251,7 +251,7 @@ to be equal results on centered at the point estimate confidence intervals/bands
 Hence the bandwidth would need to be specified manually when
 {cmd:q(}{it:#}{cmd:)} = {cmd:p(}{it:#}{cmd:)},
 and the point estimates will not be (I)MSE optimal. See Cattaneo, Jansson and Ma
-({browse "https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf":2022}, {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf":2023})
+({browse "https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf":2022}, {browse "https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2024_JoE.pdf":2024})
 for details, and also Calonico, Cattaneo, and Farrell
 ({browse "https://rdpackages.github.io/references/Calonico-Cattaneo-Farrell_2018_JASA.pdf":2018},
 {browse "https://cattaneo.princeton.edu/papers/Calonico-Cattaneo-Farrell_2022_Bernoulli.pdf":2022}) 
@@ -421,11 +421,11 @@ This is the default option.{p_end}
 
 {p 4 8}Cattaneo, M. D., Michael Jansson, and Xinwei Ma. 2022.
 {browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2022_JSS.pdf":lpdensity: Local Polynomial Density Estimation and Inference}.{p_end}
-{p 8 8}{it:Journal of Statistical Software}, 101(2): 1–25..{p_end}
+{p 8 8}{it:Journal of Statistical Software} 101(2): 1–25..{p_end}
 
-{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2023.
-{browse "https://rdpackages.github.io/references/Cattaneo-Jansson-Ma_2023_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
-{p 8 8}{it:Journal of Econometrics}, forthcoming.{p_end}
+{p 4 8}Cattaneo, M. D., M. Jansson, and X. Ma. 2024.
+{browse "https://nppackages.github.io/references/Cattaneo-Jansson-Ma_2024_JoE.pdf":Local Regression Distribution Estimators}.{p_end}
+{p 8 8}{it:Journal of Econometrics} 240(2): 105074 .{p_end}
 
 {p 4 8}Cattaneo, M. D., Titiunik, R. and G. Vazquez-Bare. 2017.
 {browse "https://rdpackages.github.io/references/Cattaneo-Titiunik-VazquezBare_2017_JPAM.pdf":Comparing Inference Approaches for RD Designs: A Reexamination of the Effect of Head Start on Child Mortality}.{p_end}

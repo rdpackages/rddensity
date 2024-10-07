@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rddensity -- Mata functions
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.4 2023-01-21
+*!version 2.5 2024-10-06
 
 ** NOTE: DATA IS ASSUMED TO BE IN ASCENDING ORDER
 

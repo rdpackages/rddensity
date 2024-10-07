@@ -7,7 +7,7 @@
 ** net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace
 ********************************************************************************
 clear all 
-set more off
+set more off 
 
 ********************************************************************************
 ** Load data 

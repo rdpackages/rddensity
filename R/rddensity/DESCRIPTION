@@ -2,8 +2,18 @@ Package: rddensity
 Type: Package
 Title: Manipulation Testing Based on Density Discontinuity
 Description: Density discontinuity testing (a.k.a. manipulation testing) is commonly employed in regression discontinuity designs and other program evaluation settings to detect perfect self-selection (manipulation) around a cutoff where treatment/policy assignment changes. This package implements manipulation testing procedures using the local polynomial density estimators: rddensity() to construct test statistics and p-values given a prespecified cutoff, rdbwdensity() to perform data-driven bandwidth selection, and rdplotdensity() to construct density plots.
-Version: 2.5
-Author: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
+Version: 2.6
+Author: Matias D. Cattaneo [aut], Michael Jansson [aut], Xinwei Ma [aut, cre]
+Authors@R: c(person(given = c("Matias", "D."),
+                      family = "Cattaneo",
+                      role = "aut"),
+               person(given = "Michael",
+                      family = "Jansson",
+                      role = "aut"),
+               person(given = "Xinwei",
+                      family = "Ma",
+                      role = c("aut", "cre"),
+                      email = "x1ma@ucsd.edu"))
 Maintainer: Xinwei Ma <x1ma@ucsd.edu>
 Imports: ggplot2, lpdensity (>= 2.2)
 Depends: R (>= 3.1.0)

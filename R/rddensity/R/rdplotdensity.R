@@ -45,19 +45,19 @@
 #'   accordingly.
 #' @param lty Line type for point estimates, only effective if \code{type} is \code{"line"} or
 #'   \code{"both"}. \code{1} for solid line, \code{2} for dashed line, \code{3} for dotted line.
-#'   For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+#'   For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 #'   more than one is provided, they will be applied to the two sides accordingly.
 #' @param lwd Line width for point estimates, only effective if \code{type} is \code{"line"} or
 #'   \code{"both"}. Should be strictly positive. For other options, see the instructions for
-#'   \code{\link{ggplot2}} or \code{\link{par}}. If more than one is provided, they will be applied
+#'   \code{ggplot2} or \code{\link{par}}. If more than one is provided, they will be applied
 #'   to the two sides accordingly.
 #' @param lcol Line color for point estimates, only effective if \code{type} is \code{"line"} or
 #'   \code{"both"}. \code{1} for black, \code{2} for red, \code{3} for green, \code{4} for blue.
-#'   For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+#'   For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 #'   more than one is provided, they will be applied to the two sides
 #'   accordingly.
 #' @param pty Scatter plot type for point estimates, only effective if \code{type} is \code{"points"} or
-#'   \code{"both"}. For options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+#'   \code{"both"}. For options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 #'   more than one is provided, they will be applied to the two sides
 #'   accordingly.
 #' @param pwd Scatter plot size for point estimates, only effective if \code{type} is \code{"points"} or
@@ -66,7 +66,7 @@
 #' @param pcol Scatter plot color for point estimates, only effective if \code{type} is \code{"points"} or
 #'   \code{"both"}. \code{1} for black, \code{2} for red, \code{3}
 #'   for green, \code{4} for blue.
-#'   For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+#'   For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 #'   more than one is provided, they will be applied to the two sides
 #'   accordingly.
 #' @param CItype String, one of \code{"region"} (shaded region, default), \code{"line"} (dashed lines),
@@ -82,7 +82,7 @@
 #'   accordingly.
 #' @param CIcol Color of the confidence region. \code{1} for black, \code{2} for red, \code{3}
 #'   for green, \code{4} for blue.
-#'   For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+#'   For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 #'   more than one is provided, they will be applied to the two sides
 #'   accordingly.
 #' @param bwselect String, the method for data-driven bandwidth selection. Available options
@@ -133,9 +133,9 @@
 #'
 #' Cattaneo, M. D., M. Jansson, and X. Ma. 2020. Simple Local Polynomial Density Estimators. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022. lpdensity: Local Polynomial Density Estimation and Inference. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2022. lpdensity: Local Polynomial Density Estimation and Inference. \emph{Journal of Statistical Software}, 101(2): 1–25. \doi{10.18637/jss.v101.i02}
 #'
-#' Cattaneo, M. D., M. Jansson, and X. Ma. 2023. Local Regression Distribution Estimators. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
+#' Cattaneo, M. D., M. Jansson, and X. Ma. 2023. Local Regression Distribution Estimators. \emph{Journal of Econometrics}, 240(2): 105074. \doi{10.1016/j.jeconom.2021.01.006}
 #'
 #' @seealso \code{\link{rddensity}}
 #'
@@ -224,12 +224,19 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
     temp_hist_n_l <- ceiling(min(sqrt(temp_hist_n_l), 10 * log(temp_hist_n_l)/log(10)))
     temp_hist_n_r <- sum(X <= plotRange[2] & X >= c)
     temp_hist_n_r <- ceiling(min(sqrt(temp_hist_n_r), 10 * log(temp_hist_n_r)/log(10)))
-    histBreaks <- c(seq(plotRange[1], c, length.out = temp_hist_n_l+1), seq(c, plotRange[2], length.out = temp_hist_n_r+1)[2:(temp_hist_n_r+1)])
+
+    # implemented in version 2.6, so that obs  (mass point) on the cutoff are included in the bin right of c
+    histBreaks <- (plotRange[1] - plotRange[2]) / (1e8) +
+      c(seq(plotRange[1], c, length.out = temp_hist_n_l+1), seq(c, plotRange[2], length.out = temp_hist_n_r+1)[2:(temp_hist_n_r+1)])
   }
 
   # some preparation
-  scalel <- (sum(X <= c) - 1) / (length(X) - 1)
-  scaler <- (sum(X >= c) - 1) / (length(X) - 1)
+  #scalel <- (sum(X <= c) - 1) / (length(X) - 1)
+  #scaler <- (sum(X >= c) - 1) / (length(X) - 1)
+
+  # implemented in version 2.6
+  scalel <- (sum(X <  c) ) / (length(X) - 1 )
+  scaler <- (sum(X >= c) ) / (length(X) - 1 )
 
   if (plotGrid == "es") {
     gridl <- seq(plotRange[1], c, length.out=plotN[1])
@@ -237,9 +244,9 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
     gridr <- seq(c, plotRange[2], length.out=plotN[2])
     gridr[1] <- c
   } else {
-    gridl <- seq(mean(X <= plotRange[1]), mean(X <= c), length.out=plotN[1])
+    gridl <- seq(mean(X <= plotRange[1]), mean(X < c), length.out=plotN[1])
     gridl <- quantile(X, gridl)
-    gridr <- seq(mean(X <= c), mean(X <= plotRange[2]), length.out=plotN[2])
+    gridr <- seq(mean(X < c), mean(X <= plotRange[2]), length.out=plotN[2])
     gridr <- quantile(X, gridr)
     gridl[plotN[1]] <- c
     gridr[1] <- c
@@ -248,7 +255,7 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
   # call lpdensity
   if (!is.null(bwselect)) {
     if (bwselect%in%c("mse-dpi", "imse-dpi", "mse-rot", "imse-rot")) {
-      Estl <- lpdensity(data=X[X<=c], grid=gridl, bwselect=bwselect, p=p, q=q, v=1, kernel=kernel, scale=scalel,
+      Estl <- lpdensity(data=X[X< c], grid=gridl, bwselect=bwselect, p=p, q=q, v=1, kernel=kernel, scale=scalel,
                         regularize=regularize, nLocalMin=nLocalMin, nUniqueMin=nUniqueMin, massPoints=massPoints)
       Estr <- lpdensity(data=X[X>=c], grid=gridr, bwselect=bwselect, p=p, q=q, v=1, kernel=kernel, scale=scaler,
                         regularize=regularize, nLocalMin=nLocalMin, nUniqueMin=nUniqueMin, massPoints=massPoints)
@@ -256,7 +263,7 @@ rdplotdensity <- function(rdd, X, plotRange = NULL, plotN = 10, plotGrid = c("es
       stop("Option bwselect incorrectly specified.\n")
     }
   } else {
-    Estl <- lpdensity(data=X[X<=c], grid=gridl, bw=hl, p=p, q=q, v=1, kernel=kernel, scale=scalel,
+    Estl <- lpdensity(data=X[X< c], grid=gridl, bw=hl, p=p, q=q, v=1, kernel=kernel, scale=scalel,
                       regularize=regularize, nLocalMin=nLocalMin, nUniqueMin=nUniqueMin, massPoints=massPoints)
     Estr <- lpdensity(data=X[X>=c], grid=gridr, bw=hr, p=p, q=q, v=1, kernel=kernel, scale=scaler,
                       regularize=regularize, nLocalMin=nLocalMin, nUniqueMin=nUniqueMin, massPoints=massPoints)

@@ -61,22 +61,22 @@ accordingly.}
 
 \item{lty}{Line type for point estimates, only effective if \code{type} is \code{"line"} or
 \code{"both"}. \code{1} for solid line, \code{2} for dashed line, \code{3} for dotted line.
-For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 more than one is provided, they will be applied to the two sides accordingly.}
 
 \item{lwd}{Line width for point estimates, only effective if \code{type} is \code{"line"} or
 \code{"both"}. Should be strictly positive. For other options, see the instructions for
-\code{\link{ggplot2}} or \code{\link{par}}. If more than one is provided, they will be applied
+\code{ggplot2} or \code{\link{par}}. If more than one is provided, they will be applied
 to the two sides accordingly.}
 
 \item{lcol}{Line color for point estimates, only effective if \code{type} is \code{"line"} or
 \code{"both"}. \code{1} for black, \code{2} for red, \code{3} for green, \code{4} for blue.
-For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 more than one is provided, they will be applied to the two sides
 accordingly.}
 
 \item{pty}{Scatter plot type for point estimates, only effective if \code{type} is \code{"points"} or
-\code{"both"}. For options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+\code{"both"}. For options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 more than one is provided, they will be applied to the two sides
 accordingly.}
 
@@ -87,7 +87,7 @@ accordingly.}
 \item{pcol}{Scatter plot color for point estimates, only effective if \code{type} is \code{"points"} or
 \code{"both"}. \code{1} for black, \code{2} for red, \code{3}
 for green, \code{4} for blue.
-For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 more than one is provided, they will be applied to the two sides
 accordingly.}
 
@@ -108,7 +108,7 @@ accordingly.}
 
 \item{CIcol}{Color of the confidence region. \code{1} for black, \code{2} for red, \code{3}
 for green, \code{4} for blue.
-For other options, see the instructions for \code{\link{ggplot2}} or \code{\link{par}}. If
+For other options, see the instructions for \code{ggplot2} or \code{\link{par}}. If
 more than one is provided, they will be applied to the two sides
 accordingly.}
 
@@ -209,9 +209,9 @@ Cattaneo, M. D., M. Jansson, and X. Ma. 2018. Manipulation Testing based on Dens
 
 Cattaneo, M. D., M. Jansson, and X. Ma. 2020. Simple Local Polynomial Density Estimators. \emph{Journal of the American Statistical Association}, 115(531): 1449-1455. \doi{10.1080/01621459.2019.1635480}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2022. lpdensity: Local Polynomial Density Estimation and Inference. \emph{Journal of Statistical Software}, 101(2), 1–25. \doi{10.18637/jss.v101.i02}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2022. lpdensity: Local Polynomial Density Estimation and Inference. \emph{Journal of Statistical Software}, 101(2): 1–25. \doi{10.18637/jss.v101.i02}
 
-Cattaneo, M. D., M. Jansson, and X. Ma. 2023. Local Regression Distribution Estimators. \emph{Journal of Econometrics}, forthcoming. \doi{10.1016/j.jeconom.2021.01.006}
+Cattaneo, M. D., M. Jansson, and X. Ma. 2023. Local Regression Distribution Estimators. \emph{Journal of Econometrics}, 240(2): 105074. \doi{10.1016/j.jeconom.2021.01.006}
 }
 \seealso{
 \code{\link{rddensity}}

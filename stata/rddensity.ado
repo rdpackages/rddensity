@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rddensity
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.4 2023-01-21
+*!version 2.5 2024-10-06
 
 capture program drop rddensityEST
 
@@ -882,8 +882,10 @@ program define rddensity, eclass
 	}
 	
 	if (`plot' == 1) {
-	local scale_l = (`N_l' - 1) / (`N_l' + `N_r' - 1)
-	local scale_r = (`N_r' - 1) / (`N_l' + `N_r' - 1)
+	local scale_l = (`N_l') / (`N_l' + `N_r' - 1)
+	local scale_r = (`N_r') / (`N_l' + `N_r' - 1)
+	// local scale_l = (`N_l' - 1) / (`N_l' + `N_r' - 1)
+	// local scale_r = (`N_r' - 1) / (`N_l' + `N_r' - 1)
 	
 	// left estimation
 	tempvar temp_grid_l
@@ -907,7 +909,7 @@ program define rddensity, eclass
 		local plot_ciuniform = ""
 	}
 
-	capture lpdensity `x' if `touse' & `x' <= `c', /// 
+	capture lpdensity `x' if `touse' & `x' < `c', /// 
 		grid(`temp_grid_l') `plot_bwselect_l' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_l') level(`level') ///
 		`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
 		`plot_ciuniform' 
@@ -916,7 +918,7 @@ program define rddensity, eclass
 		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
 		di as error  `"{err}If error persists, please contact the authors."'
 		di as error  `"{err}{cmd:lpdensity} error message:"'
-		lpdensity `x' if `touse' & `x' <= `c', /// 
+		lpdensity `x' if `touse' & `x' < `c', /// 
 			grid(`temp_grid_l') `plot_bwselect_l' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_l') level(`level') ///
 			`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
 			`plot_ciuniform' 
