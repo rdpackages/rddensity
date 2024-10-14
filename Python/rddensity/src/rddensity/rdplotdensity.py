@@ -151,14 +151,14 @@ def rdplotdensity(rdd, X, plotRange=None, plotN=[10], plotGrid=['es', 'qs'],
         gridl = np.linspace(len(X[(X[X.columns[0]]<= plotRange[0])])/len(X), len(X[X[X.columns[0]]<c])/len(X), plotN[0]+1)
         gridl = np.quantile(X, gridl)
         gridl[plotN[0]] = c
-        gridr = np.linspace(len(X[(X[X.columns[0]]<= c)])/len(X), len(X[X[X.columns[0]]<=plotRange[1]])/len(X), plotN[1]+1)
+        gridr = np.linspace(len(X[(X[X.columns[0]]< c)])/len(X), len(X[X[X.columns[0]]<=plotRange[1]])/len(X), plotN[1]+1)
         gridr = np.quantile(X, gridr)
         gridr[0] = c
 
     #calling lpdensity
     if bwselect is not None:
         if bwselect in ["mse-dpi", "imse-dpi", "mse-rot", "imse-rot"]:
-            Estl = lpdensity(data = X[(X[X.columns[0]]<= c)], grid=gridl, bwselect=bwselect,
+            Estl = lpdensity(data = X[(X[X.columns[0]]< c)], grid=gridl, bwselect=bwselect,
                              p=p, q=q, v=1, kernel=kernel, scale=scalel, regularize=regularize,
                              nLocalMin=nLocalMin, nUniqueMin=nUniqueMin, massPoints=massPoints)
             Estr = lpdensity(data = X[(X[X.columns[0]]>= c)], grid=gridr, bwselect=bwselect,
@@ -167,7 +167,7 @@ def rdplotdensity(rdd, X, plotRange=None, plotN=[10], plotGrid=['es', 'qs'],
         else:
             raise Exception("Option bwselect incorrectly specified.")
     else:
-        Estl = lpdensity(data = X[(X[X.columns[0]]<= c)], grid=gridl, bw=[hl],
+        Estl = lpdensity(data = X[(X[X.columns[0]]< c)], grid=gridl, bw=[hl],
                              p=p, q=q, v=1, kernel=kernel, scale=[scalel], regularize=regularize,
                              nLocalMin=nLocalMin, nUniqueMin=nUniqueMin, massPoints=massPoints)
         Estr = lpdensity(data = X[(X[X.columns[0]]>= c)], grid=gridr, bw=[hr],
