@@ -70,7 +70,7 @@ def rdbwdensity(X, c=0, p=2,
     # missing values
     X = pd.DataFrame(X)
     if X.isnull().values.any():
-        warnings.warn(X.isnull().sum() + 'missing observation(s) are ignored.\n')
+        warnings.warn(f'{X.isnull().sum()} missing observation(s) are ignored.\n')
 
     X = X.dropna(axis=0)
     # sample sizes
