@@ -110,5 +110,12 @@ def test_estimated_bandwidth_path_works_with_current_pandas():
     assert np.isfinite(fit.h["right"])
 
 
+def test_scalar_bino_wstep_fills_requested_windows():
+    fit = rddensity(baseline_data(), h=[0.6, 0.6], binoW=0.2, binoWStep=0.1, binoNW=4)
+
+    np.testing.assert_allclose(fit.bino["leftWindow"], [0.2, 0.3, 0.4, 0.5])
+    np.testing.assert_allclose(fit.bino["rightWindow"], [0.2, 0.3, 0.4, 0.5])
+
+
 if __name__ == "__main__":
     compute_baseline().to_csv(FIXTURES / "numerical-baseline.csv", index=False, na_rep="NaN")

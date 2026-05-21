@@ -1,8 +1,8 @@
 ********************************************************************************
 * RDDENSITY STATA PACKAGE -- rddensity
-* Authors: Matias D. Cattaneo, Rocio Titiunik, Gonzalo Vazquez-Bare
+* Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.6 2026-05-21
+*!version 3.0 2026-05-21
 
 capture program drop rddensityEST
 

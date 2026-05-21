@@ -1,5 +1,5 @@
 {smcl}
-{* *!version 2.6 2026-05-21}{...}
+{* *!version 3.0 2026-05-21}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -446,9 +446,8 @@ This is the default option.{p_end}
 {p 4 8}Matias D. Cattaneo, Princeton University, Princeton, NJ.
 {browse "mailto:matias.d.cattaneo@gmail.com":matias.d.cattaneo@gmail.com}.{p_end}
 
-{p 4 8}Rocio Titiunik, Princeton University, Princeton, NJ.
-{browse "mailto:rocio.titiunik@gmail.com":rocio.titiunik@gmail.com}.{p_end}
+{p 4 8}Michael Jansson, University of California Berkeley, Berkeley, CA.
+{browse "mailto:michael.jansson.berkeley@gmail.com":michael.jansson.berkeley@gmail.com}.{p_end}
 
-{p 4 8}Gonzalo Vazquez-Bare, UC Santa Barbara, Santa Barbara, CA.
-{browse "mailto:gvazquezbare@gmail.com":gvazquezbare@gmail.com}.{p_end}
-
+{p 4 8}Xinwei Ma, University of California San Diego, La Jolla, CA.
+{browse "mailto:xinweima.pku@gmail.com":xinweima.pku@gmail.com}.{p_end}

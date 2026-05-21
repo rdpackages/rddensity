@@ -150,7 +150,11 @@ def main() -> int:
         writer = csv.DictWriter(file, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(all_comparisons)
-    print(f"Wrote {args.output.relative_to(ROOT)}")
+    try:
+        output_label = args.output.resolve().relative_to(ROOT)
+    except ValueError:
+        output_label = args.output
+    print(f"Wrote {output_label}")
 
     return 1 if any_failures else 0
 

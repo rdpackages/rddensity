@@ -351,14 +351,14 @@ def rddensity(X, c=0, p=2, q=0,
                 binoWStep = float(np.asarray(binoWStep).reshape(-1)[0])
                 if binoWStep <= 0:
                     raise Exception("Option binoWStep incorrectly specified.")
-                binomTempLW[1:(binoNW-1)] = binomTempLW[0] + np.array(range(binoNW))*binoWStep
-                binomTempRW[1:(binoNW-1)] = binomTempRW[0] + np.array(range(binoNW))*binoWStep
+                binomTempLW[1:binoNW] = binomTempLW[0] + np.arange(1, binoNW)*binoWStep
+                binomTempRW[1:binoNW] = binomTempRW[0] + np.arange(1, binoNW)*binoWStep
             elif len(np.asarray(binoWStep).reshape(-1)) == 2:
                 binoWStep = np.asarray(binoWStep, dtype=float).reshape(-1)
                 if min(binoWStep) <= 0:
                     raise Exception("Option binoWStep incorrectly specified.")
-                binomTempLW[1:(binoNW-1)] = binomTempLW[0] + np.array(range(binoNW))*binoWStep[0]
-                binomTempRW[1:(binoNW-1)] = binomTempRW[0] + np.array(range(binoNW))*binoWStep[1]
+                binomTempLW[1:binoNW] = binomTempLW[0] + np.arange(1, binoNW)*binoWStep[0]
+                binomTempRW[1:binoNW] = binomTempRW[0] + np.arange(1, binoNW)*binoWStep[1]
             else:
                 raise Exception("Option binoWStep incorrectly specified.")
 

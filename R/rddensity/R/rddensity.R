@@ -106,9 +106,9 @@
 #' @author
 #' Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 #'
-#' Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
+#' Michael Jansson, University of California Berkeley. \email{michael.jansson.berkeley@gmail.com}.
 #'
-#' Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
+#' Xinwei Ma, University of California San Diego. \email{xinweima.pku@gmail.com}.
 #'
 #' @references
 #' Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015. Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate. \emph{Journal of Causal Inference} 3(1): 1-24. \doi{10.1515/jci-2013-0010}

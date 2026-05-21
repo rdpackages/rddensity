@@ -50,7 +50,7 @@ McCrary, J. 2008. Manipulation of the Running Variable in the Regression Discont
 \author{
 Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 
-Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
+Michael Jansson, University of California Berkeley. \email{michael.jansson.berkeley@gmail.com}.
 
-Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
+Xinwei Ma, University of California San Diego. \email{xinweima.pku@gmail.com}.
 }
