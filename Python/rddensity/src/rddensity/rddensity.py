@@ -131,8 +131,8 @@ def rddensity(X, c=0, p=2, q=0,
     n = len(X)
     nl = sum(X[X.columns[0]]<c)
     nr = sum(X[X.columns[0]]>=c)
-    Xmin = X.min()[0]
-    Xmax = X.max()[0]
+    Xmin = X.min().iloc[0]
+    Xmax = X.max().iloc[0]
     XUnique = funs.__rddensityUnique(X)
     freqUnique = XUnique["freq"]
     indexUnique = XUnique["indexLast"]
@@ -202,40 +202,40 @@ def rddensity(X, c=0, p=2, q=0,
         if (fitselect=='unrestricted'):
             if bwselect=='each':
                 if hl==0:
-                    hl = out['bw'][0]
+                    hl = out['bw'].iloc[0]
                 if hr==0:
-                    hr = out['bw'][1]
+                    hr = out['bw'].iloc[1]
             elif bwselect=='diff':
                 if hl==0:
-                    hl = out['bw'][2]
+                    hl = out['bw'].iloc[2]
                 if hr==0:
-                    hr = out['bw'][2]
+                    hr = out['bw'].iloc[2]
             elif bwselect=='sum':
                 if hl==0:
-                    hl = out['bw'][3]
+                    hl = out['bw'].iloc[3]
                 if hr==0:
-                    hr = out['bw'][3]
+                    hr = out['bw'].iloc[3]
             elif bwselect=='comb':
                 if hl==0:
-                    hl = stat.median([out['bw'][0], out['bw'][2], out['bw'][3]])
+                    hl = stat.median([out['bw'].iloc[0], out['bw'].iloc[2], out['bw'].iloc[3]])
                 if hr==0:
-                    hr = stat.median([out['bw'][1], out['bw'][2], out['bw'][3]])
+                    hr = stat.median([out['bw'].iloc[1], out['bw'].iloc[2], out['bw'].iloc[3]])
         elif fitselect=='restricted':
             if bwselect=='diff':
                 if hl==0:
-                    hl = out['bw'][2]
+                    hl = out['bw'].iloc[2]
                 if hr==0:
-                    hr = out['bw'][2]
+                    hr = out['bw'].iloc[2]
             elif bwselect=='sum':
                 if hl==0:
-                    hl = out['bw'][3]
+                    hl = out['bw'].iloc[3]
                 if hr==0:
-                    hr = out['bw'][3]
+                    hr = out['bw'].iloc[3]
             elif bwselect=='comb':
                 if hl==0:
-                    hl = min([out['bw'][2], out['bw'][3]])
+                    hl = min([out['bw'].iloc[2], out['bw'].iloc[3]])
                 if hr==0:
-                    hr = min([out['bw'][2], out['bw'][3]])
+                    hr = min([out['bw'].iloc[2], out['bw'].iloc[3]])
 
 
     #data trimming

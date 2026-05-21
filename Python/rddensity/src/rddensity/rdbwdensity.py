@@ -78,8 +78,8 @@ def rdbwdensity(X, c=0, p=2,
     n = len(X)
     nl = sum(X[X.columns[0]]<c)
     nr = sum(X[X.columns[0]]>=c)
-    Xmin = X.min()[0]
-    Xmax = X.max()[0]
+    Xmin = X.min().iloc[0]
+    Xmax = X.max().iloc[0]
     XUnique = funs.__rddensityUnique(X)
     freqUnique = XUnique["freq"]
     indexUnique = XUnique["indexLast"]
@@ -91,8 +91,8 @@ def rdbwdensity(X, c=0, p=2,
     X = X-c
     XUnique = XUnique - c
     XUnique = pd.DataFrame(XUnique)
-    Xmu = X.mean()[0]
-    Xsd = X.std()[0]
+    Xmu = X.mean().iloc[0]
+    Xsd = X.std().iloc[0]
 
     if (nUnique!=n & massPoints)==True:
         massPoints_flag = True

@@ -2,6 +2,21 @@
 
 Notable project changes are listed from newest to oldest.
 
+## 2026-05-21 - Python and R Modernization
+
+- Added cached kernel moment matrices in Python and R, matching the new `lpdensity` implementation style and avoiding repeated numerical integration.
+- Reworked Python's core `rddensity` estimator to use NumPy arrays in the inner linear algebra routine.
+- Fixed Python estimated-bandwidth indexing for current Pandas releases and added a regression test for that path.
+- Removed Stata `preserve`/`restore` from `rddensityEST` and `rdbwdensity`; both now operate on typed temporary variables and sort inside Mata.
+
+## 2026-05-21 - Stata Precision Baselines
+
+- Added Stata option `precision(single|double)` to `rddensity` and `rdbwdensity`; `double` is now the default, while `single` preserves a legacy float-storage path.
+- Routed Stata bandwidth selection, binomial testing, plotting helper variables, and generated variables through the selected precision mode.
+- Extended the Stata numerical baseline to record both single- and double-precision results.
+- Added a cross-language numerical comparison script for Python, R, Stata single precision, and Stata double precision.
+- Regenerated Stata help PDFs documenting the new precision option.
+
 ## 2026-05-21 - Repository Setup
 
 - Modernized repository infrastructure following the RDROBUST and LPDENSITY setup, including GitHub Actions CI, Dependabot configuration, issue templates, pull request template, security policy, and Python PyPI publishing through GitHub trusted publishing.

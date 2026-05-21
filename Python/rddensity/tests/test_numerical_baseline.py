@@ -72,3 +72,10 @@ def test_numerical_baseline_matches_current_contract():
         atol=1e-10,
         equal_nan=True,
     )
+
+
+def test_estimated_bandwidth_path_works_with_current_pandas():
+    fit = rddensity(baseline_data(), bino_flag=False)
+
+    assert np.isfinite(fit.h["left"])
+    assert np.isfinite(fit.h["right"])

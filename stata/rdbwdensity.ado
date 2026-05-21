@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rdbwdensity
 * Authors: Matias D. Cattaneo, Rocio Titiunik, Gonzalo Vazquez-Bare
 ********************************************************************************
-*!version 2.5 2024-10-06
+*!version 2.6 2026-05-21
 
 capture program drop rdbwdensity
 
@@ -13,6 +13,7 @@ syntax varlist(max=1) [if] [in] [, 	///
   KERnel(string) 					///
   FITselect(string) 				///
   VCE(string)						///
+  PRECision(string)					///
   noREGularize 			    		///
   NLOCalmin (integer -1)			///
   NUNIquemin (integer -1)			///
@@ -20,6 +21,7 @@ syntax varlist(max=1) [if] [in] [, 	///
   ]
 	
 	marksample touse
+	markout `touse' `varlist'
 
 	if ("`kernel'"=="") local kernel = "triangular"
 	local kernel = lower("`kernel'")
@@ -27,25 +29,33 @@ syntax varlist(max=1) [if] [in] [, 	///
 	local fitselect = lower("`fitselect'")
 	if ("`vce'"=="") local vce = "jackknife"
 	local vce = lower("`vce'")
+	if ("`precision'"=="") local precision = "double"
+	else {
+		local precision = lower("`precision'")
+		if ("`precision'"!="double" & "`precision'"!="single") {
+			di as err `"precision(): incorrectly specified: options(single, double)"'
+			exit 198
+		}
+	}
+	local storage_type = "double"
+	if ("`precision'"=="single") local storage_type = "float"
 
-	preserve
-	qui keep if `touse'
+	local x_name "`varlist'"
 
-	local x "`varlist'"
-
-	qui drop if `x'==.
+	tempvar x
+	qui gen `storage_type' `x' = `x_name' if `touse'
 	
-	qui su `x'
+	qui su `x' if `touse'
 	local x_min = r(min)
 	local x_max = r(max)
 	local N = r(N)
 
-	qui su `x' if `x'<`c'
+	qui su `x' if `touse' & `x'<`c'
 	local xl_min = r(min)
 	local xl_max = r(max)
 	local Nl = r(N)
 
-	qui su `x' if `x'>=`c'
+	qui su `x' if `touse' & `x'>=`c'
 	local xr_min = r(min)
 	local xr_max = r(max)
 	local Nr = r(N)
@@ -53,7 +63,7 @@ syntax varlist(max=1) [if] [in] [, 	///
 	****************************************************************************
 	*** BEGIN ERROR HANDLING *************************************************** 
 	if (`c'<=`x_min' | `c'>=`x_max'){
-		di "{err}{cmd:c()} should be set within the range of `x'."  
+		di "{err}{cmd:c()} should be set within the range of `x_name'."
 		exit 125
 	}
 	
@@ -106,14 +116,13 @@ syntax varlist(max=1) [if] [in] [, 	///
 	*** END ERROR HANDLING ***************************************************** 
 	****************************************************************************
 
-	qui replace `x' = `x'-`c'
-	qui sort `x'
+	qui replace `x' = `x'-`c' if `touse'
 
 	****************************************************************************
 	*** BEGIN MATA ESTIMATION ************************************************** 
 	mata{
 	*display("got here!")
-	X = st_data(.,("`x'"), 0);
+	X = sort(st_data(.,("`x'"), "`touse'"), 1);
 	
 	XUnique   	= rddensity_unique(X)
 	freqUnique  = XUnique[., 2]
@@ -305,7 +314,7 @@ syntax varlist(max=1) [if] [in] [, 	///
 	disp in smcl in gr "{ralign 21:Order loc. poly. (p)}" _col(22) " {c |} " _col(23) as result %9.0f `p'        _col(37) as result %9.0f  `p'
 
 	disp ""
-	disp "Running variable: `x'."
+	disp "Running variable: `x_name'."
 	disp in smcl in gr "{hline 22}{c TT}{hline 34}"
 	disp in smcl in gr "{ralign 21:Target}"              _col(22) " {c |} " _col(23) in gr "Bandwidth"          _col(37) " Variance"                 _col(49) "   Bias^2" 
 	disp in smcl in gr "{hline 22}{c +}{hline 34}"
@@ -318,8 +327,6 @@ syntax varlist(max=1) [if] [in] [, 	///
 	*** END OUTPUT TABLE ******************************************************* 
 	****************************************************************************
 
-	restore
-
 	ereturn clear
 	ereturn scalar c = `c'
 	ereturn scalar p = `p'
@@ -331,10 +338,11 @@ syntax varlist(max=1) [if] [in] [, 	///
 	ereturn scalar BW_b = BW_b
 	ereturn scalar BW_c = BW_c
 	
-	ereturn local runningvar "`x'"
+	ereturn local runningvar "`x_name'"
 	ereturn local kernel = "`kernel'"
 	ereturn local fitmethod = "`fitselect'"
 	ereturn local vce = "`vce'"
+	ereturn local precision = "`precision'"
 
 	mata: mata clear
 	

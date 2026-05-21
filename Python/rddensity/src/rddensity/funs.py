@@ -6,6 +6,7 @@ import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+from functools import lru_cache
 import numpy as np
 from scipy.stats import norm
 import sympy
@@ -37,6 +38,11 @@ def __rddensityUnique(x):
 # Generate S matrix
 # Output matches R
 def __Sgenerate(p, low=-1, up=1, kernel='triangular'):
+    return _Sgenerate_cached(p, float(low), float(up), kernel).copy()
+
+
+@lru_cache(maxsize=None)
+def _Sgenerate_cached(p, low, up, kernel):
     S = np.zeros((p+1, p+1))
     for i in range(1,p+2):
         for j in range(1,p+2):
@@ -73,6 +79,11 @@ def __Splusgenerate(p, kernel='triangular'):
 
 # Generate C matrix
 def __Cgenerate(k, p, low=-1, up=1, kernel='triangular'):
+    return _Cgenerate_cached(k, p, float(low), float(up), kernel).copy()
+
+
+@lru_cache(maxsize=None)
+def _Cgenerate_cached(k, p, low, up, kernel):
     C = np.zeros((p+1, 1))
     for i in range(1, p+2):
         if kernel=='uniform':
@@ -106,6 +117,11 @@ def __Cplusgenerate(k, p, kernel='triangular'):
 
 # Generate G matrix
 def __Ggenerate(p, low=-1, up=1, kernel='triangular'):
+    return _Ggenerate_cached(p, float(low), float(up), kernel).copy()
+
+
+@lru_cache(maxsize=None)
+def _Ggenerate_cached(p, low, up, kernel):
     G = np.zeros((p+1, p+1))
     for i in range(1, p+2):
         for j in range(1, p+2):
@@ -190,20 +206,21 @@ def __Psigenerate(p):
 def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce, massPoints):
     n = nl + nr
     nh = nlh +nrh
+    Y = np.asarray(Y, dtype=float).reshape(-1)
+    X = np.asarray(X, dtype=float).reshape(-1)
 
 
     # Construct kernel weights
     W = np.repeat(np.nan, nh)
-    W = pd.DataFrame(W)
     if kernel=='uniform':
-        W[0:(nlh)] = 1/(2*hl)
-        W[nlh:(nh)] = 1/(2*hr)
+        W[0:nlh] = 1/(2*hl)
+        W[nlh:nh] = 1/(2*hr)
     elif kernel=='triangular':
-        W[0:(nlh)] = (1 + X[0:(nlh)]/hl)/hl
-        W[nlh:(nh)] = (1-X[nlh:(nh)]/hr)/hr
+        W[0:nlh] = (1 + X[0:nlh]/hl)/hl
+        W[nlh:nh] = (1-X[nlh:nh]/hr)/hr
     else:
-        W[0:(nlh)] = 0.75*((1 + X[0:(nlh)]/hl)**2)/hl
-        W[nlh:(nh)] = 0.75*((1 + X[nlh:(nh)]/hr)**2)/hr
+        W[0:nlh] = 0.75*((1 + X[0:nlh]/hl)**2)/hl
+        W[nlh:nh] = 0.75*((1 + X[nlh:nh]/hr)**2)/hr
 
 
     # Construct the design matrix and the bandwidth matrix
@@ -213,89 +230,84 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         else:
             Xp = np.zeros((nh, p+2))
             Xp[:, 0] = 1
-            Xp[0:(nlh), 1] = (X[0:(nlh)]/hl)[X.columns[0]]
+            Xp[0:nlh, 1] = X[0:nlh]/hl
             Xp[nlh:nh, 1] = 0
-            Xp[0:(nlh), 2] = 0
-            Xp[nlh:nh, 2] = (X[nlh:nh]/hr)[X.columns[0]]
+            Xp[0:nlh, 2] = 0
+            Xp[nlh:nh, 2] = X[nlh:nh]/hr
 
             if p>1:
                 for j in range(3, p+2):
-                    Xp[0:(nlh), j] = np.power(X[0:(nlh)]/hl, j-1)[X.columns[0]]
-                    Xp[nlh:nh, j] = np.power(X[nlh:nh]/hr, j-1)[X.columns[0]]
+                    Xp[0:nlh, j] = np.power(X[0:nlh]/hl, j-1)
+                    Xp[nlh:nh, j] = np.power(X[nlh:nh]/hr, j-1)
                     v = np.append(np.array([0, 1, 1]), range(2, p+1))
             else:
                 v = np.array([0, 1, 1])
-            Hp = np.diag(np.power(hl, v))
+            HpInv = np.diag(1 / np.power(hl, v))
     else:
         if nh ==0:
             Xp=None
         else:
             Xp = np.zeros((nh, 2*p+2))
             Hp = np.repeat(0.0, 2*p+2)
-            for j in range((2*p+2)+1):
-                if j%2==1:
-                    Xp[0:(nlh), j-1] = np.power(X[0:(nlh)]/hl, (j-1)/2)[X.columns[0]]
-                    Xp[nlh:(nh), j-1] = 0
-                    Hp[j-1] = np.power(hl, (j-1)/2)
-                else:
-                    Xp[0:(nlh), j-1] = 0
-                    Xp[nlh:(nh), j-1] = np.power(X[nlh:(nh)]/hr, (j-2)/2)[X.columns[0]]
-                    Hp[j-1] = np.power(hr, (j-2)/2)
-            Hp = np.diag(Hp)
+            for power in range(p+1):
+                Xp[0:nlh, 2*power] = np.power(X[0:nlh]/hl, power)
+                Xp[nlh:nh, 2*power] = 0
+                Xp[0:nlh, 2*power+1] = 0
+                Xp[nlh:nh, 2*power+1] = np.power(X[nlh:nh]/hr, power)
+                Hp[2*power] = np.power(hl, power)
+                Hp[2*power+1] = np.power(hr, power)
+            HpInv = np.diag(1 / Hp)
 
 
     out = np.full((4,4), np.nan)
+    out_index = ('l', 'r', 'diff', 'sum')
+    out_columns = ('hat', 'jackknife', 'plugin', 's')
 
     #X'WX inverse matrix
-    Xp = pd.DataFrame(Xp)
-    ncol = len(Xp.columns)
-    nrow = len(Xp)
-    XpW = pd.DataFrame(np.zeros((nrow, ncol)))
-    XpW = Xp.mul(np.array(W), axis=0)
+    nrow, ncol = Xp.shape
+    XpW = Xp * W[:, None]
 
     try:
-        Sinv = inv(np.matmul(XpW.T, Xp))
+        Sinv = inv(XpW.T @ Xp)
     except:
-        return(out)
+        return pd.DataFrame(out, columns=out_columns, index=out_index)
 
     # point estimates
-    b = np.matmul(np.matmul(np.matmul(np.array(XpW).transpose(),np.array(Y)).transpose(),Sinv), inv(Hp))
+    b = (XpW.T @ Y) @ Sinv @ HpInv
 
     if fitselect=='restricted':
-        out[0, 0] = b[0][1]
-        out[1, 0] = b[0][2]
-        out[2, 0] = b[0][2] - b[0][1]
-        out[3, 0] = b[0][2] + b[0][1]
-        out[0, 3] = b[0][s+1]
-        out[1, 3] = b[0][s+1]
+        out[0, 0] = b[1]
+        out[1, 0] = b[2]
+        out[2, 0] = b[2] - b[1]
+        out[3, 0] = b[2] + b[1]
+        out[0, 3] = b[s+1]
+        out[1, 3] = b[s+1]
         out[2, 3] = 0
         out[3, 3] = 2 * out[0,3]
     else:
-        out[0, 0] = b[0][2]
-        out[1, 0] = b[0][3]
-        out[2, 0] = b[0][3] - b[0][2]
-        out[3, 0] = b[0][3] + b[0][2]
-        out[0, 3] = b[0][2*s]
-        out[1, 3] = b[0][2*s+1]
+        out[0, 0] = b[2]
+        out[1, 0] = b[3]
+        out[2, 0] = b[3] - b[2]
+        out[3, 0] = b[3] + b[2]
+        out[0, 3] = b[2*s]
+        out[1, 3] = b[2*s+1]
         out[2, 3] = out[1, 3] - out[0, 3]
         out[3, 3] = out[1, 3] + out[0, 3]
 
     # Jackknife
     if vce=='jackknife':
-        L = np.full((nrow, ncol), None)
+        L = np.zeros((nrow, ncol))
         if massPoints==True:
-            Xunique = __rddensityUnique(X)
-            frequnique = Xunique['freq']
-            indexunique = Xunique['indexFirst']
-            for jj in range(Xp.shape[1]):
-                xpw_col = pd.concat([XpW[jj], pd.Series([0])], ignore_index=True)
-                L[:, jj] = np.repeat(((np.cumsum(xpw_col[::-1].reset_index(drop=True))/(n-1)))[indexunique], frequnique)[::-1]
+            _, indexunique, frequnique = np.unique(X, return_index=True, return_counts=True)
+            for jj in range(ncol):
+                xpw_col = np.r_[XpW[:, jj], 0.0]
+                L[:, jj] = np.repeat((np.cumsum(xpw_col[::-1])/(n-1))[indexunique], frequnique)[::-1]
         else:
-            L[0, :] = np.sum(XpW, axis=1)/(n-1)
+            L[0, :] = np.sum(XpW[1:, :], axis=0)/(n-1)
             for i in range(1, nh):
                 L[i, :] = L[i-1, :] - XpW[i, :]/(n-1)
 
-        V = np.matmul(inv(Hp), np.matmul(Sinv, np.matmul(np.matmul(np.transpose(L), L), np.matmul(Sinv, inv(Hp)))))
+        V = HpInv @ Sinv @ (L.T @ L) @ Sinv @ HpInv
 
         if fitselect=='restricted':
             out[0, 1] = V[1, 1]
@@ -313,7 +325,8 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         if fitselect=='unrestricted':
             S = __Sgenerate(p, low=0, up=1, kernel=kernel)
             G = __Ggenerate(p, low=0, up=1, kernel=kernel)
-            V = np.matmul(inv(S), np.matmul(G, inv(S)))
+            Sinv_kernel = inv(S)
+            V = Sinv_kernel @ G @ Sinv_kernel
             out[0, 2] = out[0, 0] * V[1, 1]/(n*hl)
             out[1, 2] = out[1, 0] * V[1, 1]/(n*hr)
             out[2, 2] = out[0, 2] + out[1, 2]
@@ -325,7 +338,8 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
             Sm = np.matmul(Psi, np.matmul(S, Psi))
             Gm = np.matmul(Psi, np.matmul(G, Psi))
 
-            V = np.matmul(np.matmul(inv(out[0, 0] * Sm + out[1, 0]*S), np.power(out[0, 0], 3)*Gm + np.power(out[1, 0], 3)*G), inv(out[0, 0]*Sm + out[1, 0]*S))
+            Ainv = inv(out[0, 0] * Sm + out[1, 0]*S)
+            V = Ainv @ (np.power(out[0, 0], 3)*Gm + np.power(out[1, 0], 3)*G) @ Ainv
             out[0, 2] = V[1, 1]/(n*hl)
             out[1, 2] = V[2, 2]/(n*hl)
             out[2, 2] = (V[1, 1] + V[2, 2] - 2*V[1, 2])/(n*hl)
@@ -337,7 +351,7 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
                 if out[i, j]<0:
                     out[i, j] = np.nan
 
-    out = pd.DataFrame(out, columns=('hat', 'jackknife', 'plugin', 's'), index=('l', 'r', 'diff', 'sum'))
+    out = pd.DataFrame(out, columns=out_columns, index=out_index)
     return(out)
 
 
