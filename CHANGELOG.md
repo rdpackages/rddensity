@@ -5,6 +5,7 @@ Notable project changes are listed from newest to oldest.
 ## 2026-05-21 - Python and R Modernization
 
 - Added `scripts/benchmark-runtime.py` for repeatable Python, R, and optional Stata runtime benchmarks.
+- Aligned Python package metadata and documentation version with the R/Stata `2.6` release line.
 - Added cached kernel moment matrices in Python and R, matching the new `lpdensity` implementation style and avoiding repeated numerical integration.
 - Reworked Python's core `rddensity` estimator to use NumPy arrays in the inner linear algebra routine.
 - Fixed Python estimated-bandwidth indexing for current Pandas releases and added a regression test for that path.

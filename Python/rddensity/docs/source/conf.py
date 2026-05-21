@@ -22,7 +22,7 @@ copyright = '2026, Matias D. Cattaneo, Ricardo Masini, Rocio Titiunik, Gonzalo V
 author = 'Matias D. Cattaneo, Ricardo Masini, Rocio Titiunik, Gonzalo Vazquez-Bare'
 
 # The full version, including alpha/beta/rc tags
-release = '2.2.0'
+release = '2.6'
 
 
 # -- General configuration ---------------------------------------------------
