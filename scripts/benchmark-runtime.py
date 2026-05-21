@@ -19,10 +19,18 @@ FIELDNAMES = ["language", "case", "n", "repeat", "seconds"]
 
 
 PYTHON_CASES = {
-    "rddensity_fixed": lambda rddensity, rdbwdensity, x: rddensity(x, h=[0.6, 0.6], bino_flag=False),
-    "rddensity_estimated": lambda rddensity, rdbwdensity, x: rddensity(x, bino_flag=False),
-    "rdbwdensity_default": lambda rddensity, rdbwdensity, x: rdbwdensity(x),
-    "rdbwdensity_plugin": lambda rddensity, rdbwdensity, x: rdbwdensity(x, vce="plugin"),
+    "rddensity_fixed": lambda rddensity, rdbwdensity, data: rddensity(data["continuous"], h=[0.6, 0.6], bino_flag=False),
+    "rddensity_estimated": lambda rddensity, rdbwdensity, data: rddensity(data["continuous"], bino_flag=False),
+    "rddensity_epanechnikov_plugin": lambda rddensity, rdbwdensity, data: rddensity(data["continuous"], h=[0.75, 0.65], kernel="epanechnikov", vce="plugin", bino_flag=False),
+    "rddensity_nonzero_cutoff": lambda rddensity, rdbwdensity, data: rddensity(data["continuous"], c=0.15, h=[0.5, 0.7], bino_flag=False),
+    "rddensity_masspoints_adjusted": lambda rddensity, rdbwdensity, data: rddensity(data["masspoints"], h=[0.8, 0.8], bino_flag=False),
+    "rddensity_masspoints_unadjusted": lambda rddensity, rdbwdensity, data: rddensity(data["masspoints"], h=[0.8, 0.8], massPoints=False, bino_flag=False),
+    "rdbwdensity_default": lambda rddensity, rdbwdensity, data: rdbwdensity(data["continuous"]),
+    "rdbwdensity_plugin": lambda rddensity, rdbwdensity, data: rdbwdensity(data["continuous"], vce="plugin"),
+    "rdbwdensity_uniform_plugin": lambda rddensity, rdbwdensity, data: rdbwdensity(data["continuous"], kernel="uniform", vce="plugin"),
+    "rdbwdensity_nonzero_cutoff": lambda rddensity, rdbwdensity, data: rdbwdensity(data["continuous"], c=0.15, p=3, kernel="epanechnikov"),
+    "rdbwdensity_masspoints_adjusted": lambda rddensity, rdbwdensity, data: rdbwdensity(data["masspoints"]),
+    "rdbwdensity_masspoints_unadjusted": lambda rddensity, rdbwdensity, data: rdbwdensity(data["masspoints"], massPoints=False),
 }
 
 
@@ -31,6 +39,13 @@ def benchmark_data(n: int):
 
     index = np.arange(n, dtype=float)
     return np.linspace(-1.5, 1.5, n) + 0.05 * np.sin(index)
+
+
+def benchmark_masspoint_data(n: int):
+    import numpy as np
+
+    index = np.arange(n, dtype=float)
+    return np.round(np.linspace(-1.4, 1.6, n) + 0.08 * np.sin(index / 2), 1)
 
 
 def time_call(func, repeats: int, warmups: int, calls_per_repeat: int) -> list[float]:
@@ -51,9 +66,12 @@ def benchmark_python(sizes: list[int], repeats: int, warmups: int, calls_per_rep
 
     rows: list[dict[str, object]] = []
     for n in sizes:
-        x = benchmark_data(n)
+        data = {
+            "continuous": benchmark_data(n),
+            "masspoints": benchmark_masspoint_data(n),
+        }
         for case, func in PYTHON_CASES.items():
-            timings = time_call(lambda: func(rddensity, rdbwdensity, x), repeats, warmups, calls_per_repeat)
+            timings = time_call(lambda func=func: func(rddensity, rdbwdensity, data), repeats, warmups, calls_per_repeat)
             rows.extend(
                 {"language": "python", "case": case, "n": n, "repeat": i + 1, "seconds": seconds}
                 for i, seconds in enumerate(timings)
@@ -80,26 +98,53 @@ benchmark_data <- function(n) {{
   seq(-1.5, 1.5, length.out = n) + 0.05 * sin(index)
 }}
 
-run_case <- function(case, x) {{
+benchmark_masspoint_data <- function(n) {{
+  index <- seq(0, n - 1)
+  round(seq(-1.4, 1.6, length.out = n) + 0.08 * sin(index / 2), 1)
+}}
+
+run_case <- function(case, x, x_masspoints) {{
   if (case == "rddensity_fixed") {{
     rddensity(x, h = c(0.6, 0.6), bino = FALSE)
   }} else if (case == "rddensity_estimated") {{
     rddensity(x, bino = FALSE)
+  }} else if (case == "rddensity_epanechnikov_plugin") {{
+    rddensity(x, h = c(0.75, 0.65), kernel = "epanechnikov", vce = "plugin", bino = FALSE)
+  }} else if (case == "rddensity_nonzero_cutoff") {{
+    rddensity(x, c = 0.15, h = c(0.5, 0.7), bino = FALSE)
+  }} else if (case == "rddensity_masspoints_adjusted") {{
+    rddensity(x_masspoints, h = c(0.8, 0.8), bino = FALSE)
+  }} else if (case == "rddensity_masspoints_unadjusted") {{
+    rddensity(x_masspoints, h = c(0.8, 0.8), massPoints = FALSE, bino = FALSE)
   }} else if (case == "rdbwdensity_default") {{
     rdbwdensity(x)
   }} else if (case == "rdbwdensity_plugin") {{
     rdbwdensity(x, vce = "plugin")
+  }} else if (case == "rdbwdensity_uniform_plugin") {{
+    rdbwdensity(x, kernel = "uniform", vce = "plugin")
+  }} else if (case == "rdbwdensity_nonzero_cutoff") {{
+    rdbwdensity(x, c = 0.15, p = 3, kernel = "epanechnikov")
+  }} else if (case == "rdbwdensity_masspoints_adjusted") {{
+    rdbwdensity(x_masspoints)
+  }} else if (case == "rdbwdensity_masspoints_unadjusted") {{
+    rdbwdensity(x_masspoints, massPoints = FALSE)
   }}
 }}
 
-cases <- c("rddensity_fixed", "rddensity_estimated", "rdbwdensity_default", "rdbwdensity_plugin")
+cases <- c("rddensity_fixed", "rddensity_estimated", "rddensity_epanechnikov_plugin",
+           "rddensity_nonzero_cutoff", "rddensity_masspoints_adjusted",
+           "rddensity_masspoints_unadjusted", "rdbwdensity_default",
+           "rdbwdensity_plugin", "rdbwdensity_uniform_plugin",
+           "rdbwdensity_nonzero_cutoff", "rdbwdensity_masspoints_adjusted",
+           "rdbwdensity_masspoints_unadjusted")
 rows <- data.frame(language=character(), case=character(), n=integer(), repeat_id=integer(), seconds=double())
 for (n in sizes) {{
   x <- benchmark_data(n)
+  x_masspoints <- benchmark_masspoint_data(n)
   for (case in cases) {{
-    for (i in seq_len(warmups)) run_case(case, x)
+    for (i in seq_len(warmups)) run_case(case, x, x_masspoints)
     for (i in seq_len(repeats)) {{
-      elapsed <- system.time(for (k in seq_len(calls_per_repeat)) run_case(case, x))[["elapsed"]]
+      elapsed <- system.time(for (k in seq_len(calls_per_repeat)) run_case(case, x, x_masspoints))[["elapsed"]]
       rows <- rbind(rows, data.frame(language="r", case=case, n=n, repeat_id=i, seconds=elapsed / calls_per_repeat))
     }}
   }}
@@ -147,10 +192,23 @@ program define _bench_make_data
     gen double x = -1.5 + 3 * (_n - 1) / (`n' - 1) + 0.05 * sin(_n - 1)
 end
 
+capture program drop _bench_make_masspoint_data
+program define _bench_make_masspoint_data
+    syntax, N(integer)
+    clear
+    set obs `n'
+    gen double x = round(-1.4 + 3 * (_n - 1) / (`n' - 1) + 0.08 * sin((_n - 1) / 2), .1)
+end
+
 capture program drop _bench_time
 program define _bench_time, rclass
     syntax, CASE(string) N(integer) REPEAT(integer) CALLS(integer)
-    _bench_make_data, n(`n')
+    if inlist("`case'", "rddensity_masspoints_adjusted", "rddensity_masspoints_unadjusted", "rdbwdensity_masspoints_adjusted", "rdbwdensity_masspoints_unadjusted") {
+        _bench_make_masspoint_data, n(`n')
+    }
+    else {
+        _bench_make_data, n(`n')
+    }
     timer clear 1
     timer on 1
     forvalues call = 1/`calls' {
@@ -160,11 +218,35 @@ program define _bench_time, rclass
         else if "`case'" == "rddensity_estimated" {
             quietly rddensity x, nobinomial
         }
+        else if "`case'" == "rddensity_epanechnikov_plugin" {
+            quietly rddensity x, h(0.75 0.65) kernel(epanechnikov) vce(plugin) nobinomial
+        }
+        else if "`case'" == "rddensity_nonzero_cutoff" {
+            quietly rddensity x, c(0.15) h(0.5 0.7) nobinomial
+        }
+        else if "`case'" == "rddensity_masspoints_adjusted" {
+            quietly rddensity x, h(0.8 0.8) nobinomial
+        }
+        else if "`case'" == "rddensity_masspoints_unadjusted" {
+            quietly rddensity x, h(0.8 0.8) nomasspoints nobinomial
+        }
         else if "`case'" == "rdbwdensity_default" {
             quietly rdbwdensity x
         }
         else if "`case'" == "rdbwdensity_plugin" {
             quietly rdbwdensity x, vce(plugin)
+        }
+        else if "`case'" == "rdbwdensity_uniform_plugin" {
+            quietly rdbwdensity x, kernel(uniform) vce(plugin)
+        }
+        else if "`case'" == "rdbwdensity_nonzero_cutoff" {
+            quietly rdbwdensity x, c(0.15) p(3) kernel(epanechnikov)
+        }
+        else if "`case'" == "rdbwdensity_masspoints_adjusted" {
+            quietly rdbwdensity x
+        }
+        else if "`case'" == "rdbwdensity_masspoints_unadjusted" {
+            quietly rdbwdensity x, nomasspoints
         }
     }
     timer off 1
@@ -174,10 +256,16 @@ end
 
 tempfile results
 tempname handle
-postfile `handle' str16 language str32 case long n int repeat double seconds using "`results'", replace
+postfile `handle' str16 language str64 case long n int repeat double seconds using "`results'", replace
+
+local cases rddensity_fixed rddensity_estimated rddensity_epanechnikov_plugin ///
+    rddensity_nonzero_cutoff rddensity_masspoints_adjusted ///
+    rddensity_masspoints_unadjusted rdbwdensity_default rdbwdensity_plugin ///
+    rdbwdensity_uniform_plugin rdbwdensity_nonzero_cutoff ///
+    rdbwdensity_masspoints_adjusted rdbwdensity_masspoints_unadjusted
 
 foreach n of local sizes {
-    foreach case in rddensity_fixed rddensity_estimated rdbwdensity_default rdbwdensity_plugin {
+    foreach case of local cases {
         forvalues i = 1/`warmups' {
             quietly _bench_time, case("`case'") n(`n') repeat(`i') calls(`calls_per_repeat')
         }
