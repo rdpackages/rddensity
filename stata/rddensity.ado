@@ -202,21 +202,7 @@ NUNIquemin (integer -1)				///
 	*** END BANDWIDTH SELECTION ************************************************ 
 	****************************************************************************
 	qui replace `x' = `x'-`c' if `touse'
-	
-	qui count if `touse' & `x'<0 & `x'>= -`hl'
-	if (`r(N)'<5){
-	 display("{err}Not enough observations on the left to perform calculations.")
-	 exit(1)
-	}
-	local Nlh = r(N)
-
-	qui count if `touse' & `x'>=0 & `x'<=`hr'
-	if (`r(N)'<5){
-	 display("{err}Not enough observations on the right to perform calculations.")
-	 exit(1)
-	}
-	local Nrh = r(N)
-	local Nh = `Nlh' + `Nrh'
+	tempname Nlh_s Nrh_s
 
 	****************************************************************************
 	*** BEGIN MATA ESTIMATION ************************************************** 
@@ -224,52 +210,57 @@ NUNIquemin (integer -1)				///
 	X = sort(st_data(.,("`x'"), "`touse'"), 1)
 	
 	has_repeated = (rows(X) > 1 ? any(X[2..rows(X)] :== X[1..(rows(X)-1)]) : 0)
-	if (has_repeated) {
+	masspoints_flag = has_repeated & `masspoints'
+	Y = (0..(`N'-1))' :/ (`N'-1)
+	if (masspoints_flag) {
 		XUnique   	= rddensity_unique(X)
 		freqUnique  = XUnique[., 2]
 		indexUnique = XUnique[., 4]
-		XUnique     = XUnique[., 1]
-		NUnique     = length(XUnique)
-		NlUnique    = sum(XUnique :<  0)
-		NrUnique    = sum(XUnique :>= 0)
-	}
-	else {
-		XUnique     = X
-		freqUnique  = J(rows(X), 1, 1)
-		indexUnique = (1..rows(X))'
-		NUnique     = rows(X)
-		NlUnique    = `Nl'
-		NrUnique    = `Nr'
-	}
-	
-	Y = (0..(`N'-1))' :/ (`N'-1)
-	masspoints_flag = has_repeated & `masspoints'
-	if (masspoints_flag) {
 		Y = rddensity_rep(Y[indexUnique], freqUnique)
 	}
 
-	Y = select(Y, X :>= -`hl' :& X :<= `hr')
-	X = select(X, X :>= -`hl' :& X :<= `hr')
-	fV_q = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `q', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
-	T_q  = fV_q[3,1] / sqrt(fV_q[3,2])
-	st_numscalar("f_ql", fV_q[1,1]); st_numscalar("f_qr", fV_q[2,1])
-	st_numscalar("se_ql", sqrt(fV_q[1,2])); st_numscalar("se_qr", sqrt(fV_q[2,2]))
-	st_numscalar("se_q", sqrt(fV_q[3,2]))
-	st_numscalar("T_q", T_q); st_numscalar("pval_q", 2*normal(-abs(T_q)))
+	h_mask = (X :>= -`hl') :& (X :<= `hr')
+	left_mask = h_mask :& (X :< 0)
+	Nlh = sum(left_mask)
+	Nrh = sum(h_mask) - Nlh
+	st_numscalar("`Nlh_s'", Nlh)
+	st_numscalar("`Nrh_s'", Nrh)
 
-	if ("`all'"!=""){
-		fV_p = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `p', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
-		T_p  = fV_p[3,1] / sqrt(fV_p[3,2])
-		st_numscalar("f_pl", fV_p[1,1]); st_numscalar("f_pr", fV_p[2,1])
-		st_numscalar("se_pl", sqrt(fV_p[1,2])); st_numscalar("se_pr", sqrt(fV_p[2,2]))
-		st_numscalar("se_p", sqrt(fV_p[3,2]))
-		st_numscalar("T_p", T_p); st_numscalar("pval_p", 2*normal(-abs(T_p)))
+	if (Nlh >= 5 & Nrh >= 5) {
+		Y = select(Y, h_mask)
+		X = select(X, h_mask)
+		fV_q = rddensity_fv(Y, X, `Nl', `Nr', Nlh, Nrh, `hl', `hr', `q', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
+		T_q  = fV_q[3,1] / sqrt(fV_q[3,2])
+		st_numscalar("f_ql", fV_q[1,1]); st_numscalar("f_qr", fV_q[2,1])
+		st_numscalar("se_ql", sqrt(fV_q[1,2])); st_numscalar("se_qr", sqrt(fV_q[2,2]))
+		st_numscalar("se_q", sqrt(fV_q[3,2]))
+		st_numscalar("T_q", T_q); st_numscalar("pval_q", 2*normal(-abs(T_q)))
+
+		if ("`all'"!=""){
+			fV_p = rddensity_fv(Y, X, `Nl', `Nr', Nlh, Nrh, `hl', `hr', `p', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
+			T_p  = fV_p[3,1] / sqrt(fV_p[3,2])
+			st_numscalar("f_pl", fV_p[1,1]); st_numscalar("f_pr", fV_p[2,1])
+			st_numscalar("se_pl", sqrt(fV_p[1,2])); st_numscalar("se_pr", sqrt(fV_p[2,2]))
+			st_numscalar("se_p", sqrt(fV_p[3,2]))
+			st_numscalar("T_p", T_p); st_numscalar("pval_p", 2*normal(-abs(T_p)))
+		}
 	}
 	st_numscalar("masspoints_flag", masspoints_flag)
 	*display("Estimation completed.") 
 	}
 	*** END MATA ESTIMATION **************************************************** 
 	****************************************************************************
+	local Nlh = `Nlh_s'
+	local Nrh = `Nrh_s'
+	if (`Nlh'<5){
+	 display("{err}Not enough observations on the left to perform calculations.")
+	 exit(1)
+	}
+	if (`Nrh'<5){
+	 display("{err}Not enough observations on the right to perform calculations.")
+	 exit(1)
+	}
+	local Nh = `Nlh' + `Nrh'
 
 	****************************************************************************
 	*** BEGIN OUTPUT TABLE ***************************************************** 
