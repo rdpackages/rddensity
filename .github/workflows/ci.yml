@@ -28,7 +28,7 @@ jobs:
           test -f Python/rddensity/setup.cfg
           test -f stata/stata.toc
           test -f stata/rddensity.pkg
-          grep -qx 'p rddensity' stata/stata.toc
+          awk '{$1=$1};1' stata/stata.toc | grep -qx 'p rddensity'
           awk '$1 == "f" {print $2}' stata/rddensity.pkg | while read -r file; do
             test -f "stata/${file}"
           done
