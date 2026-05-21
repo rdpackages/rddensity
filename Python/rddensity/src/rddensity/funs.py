@@ -19,20 +19,44 @@ import statistics as stat
 import pandas as pd
 
 
+def _as_numeric_vector(value, name="X"):
+    try:
+        array = np.asarray(value, dtype=float)
+    except (TypeError, ValueError):
+        raise Exception(f"{name} should be numeric.") from None
+
+    if array.ndim == 0:
+        array = array.reshape(1)
+    elif array.ndim == 1:
+        array = array.reshape(-1)
+    elif array.ndim == 2 and 1 in array.shape:
+        array = array.reshape(-1)
+    else:
+        raise Exception(f"{name} should be one-dimensional.")
+
+    if len(array) == 0:
+        raise Exception(f"{name} cannot be empty.")
+    return array
+
+
 def __rddensityUnique(x):
 # Find unique elements and their frequencies in a numeric vector. This function
 #  has a similar performance as the built-in R function \code{unique}.
-    n = len(x)
+    values = _as_numeric_vector(x)
+    n = len(values)
     #if x has no elements
     if n==0:
-        return({'unique':None, 'freq':[], 'indexFirst':[], 'indexLast':[]})
+        return({'unique':np.array([], dtype=float), 'freq':np.array([], dtype=int), 'indexFirst':np.array([], dtype=int), 'indexLast':np.array([], dtype=int)})
     if n==1:
-        return({'unique':x, 'freq': 1, 'indexFirst':0, 'indexLast':0})
+        return({'unique':values.copy(), 'freq': np.array([1]), 'indexFirst':np.array([0]), 'indexLast':np.array([0])})
 
-    unique, uniqueIndex, nUniquelist = np.unique(x, return_index=True, return_counts=True, axis=0)
-    nUnique = sum(unique)
+    unique_mask = np.r_[values[1:] != values[:-1], True]
+    unique = values[unique_mask]
+    index_last = np.flatnonzero(unique_mask)
+    freq = np.diff(np.r_[-1, index_last])
+    index_first = index_last - freq + 1
 
-    return({'unique':unique, 'freq' : nUniquelist, 'indexFirst':uniqueIndex, 'indexLast': uniqueIndex+nUniquelist-1})
+    return({'unique':unique, 'freq' : freq, 'indexFirst':index_first, 'indexLast': index_last})
 
 
 # Generate S matrix
