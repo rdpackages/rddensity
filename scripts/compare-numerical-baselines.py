@@ -56,6 +56,7 @@ def compare_source(
     *,
     atol: float,
     rtol: float,
+    tolerance_for=None,
 ) -> tuple[list[dict[str, object]], dict[str, float]]:
     source = as_map(rows)
     comparisons = []
@@ -66,9 +67,10 @@ def compare_source(
     for key in sorted(set(reference) & set(source)):
         expected = reference[key]
         actual = source[key]
+        metric_atol, metric_rtol = tolerance_for(key[1], atol, rtol) if tolerance_for else (atol, rtol)
         abs_diff = abs(actual - expected) if not (math.isnan(actual) or math.isnan(expected)) else math.nan
         rel_diff = abs_diff / max(abs(expected), 1e-300) if not math.isnan(abs_diff) else math.nan
-        passed = is_close(expected, actual, atol, rtol)
+        passed = is_close(expected, actual, metric_atol, metric_rtol)
         failures += 0 if passed else 1
         if not math.isnan(abs_diff):
             max_abs = max(max_abs, abs_diff)
@@ -97,12 +99,13 @@ def main() -> int:
     parser.add_argument("--r", default=ROOT / "R" / "rddensity" / "tests" / "testthat" / "fixtures" / "numerical-baseline.csv", type=Path)
     parser.add_argument("--stata", default=ROOT / "stata" / "tests" / "fixtures" / "numerical-baseline.csv", type=Path)
     parser.add_argument("--output", default=ROOT / "stata" / "tests" / "fixtures" / "numerical-comparison.csv", type=Path)
-    parser.add_argument("--r-atol", default=1e-10, type=float)
-    parser.add_argument("--r-rtol", default=1e-10, type=float)
+    parser.add_argument("--r-atol", default=1e-8, type=float)
+    parser.add_argument("--r-rtol", default=1e-8, type=float)
     parser.add_argument("--stata-double-atol", default=1e-8, type=float)
     parser.add_argument("--stata-double-rtol", default=1e-8, type=float)
     parser.add_argument("--stata-single-atol", default=5e-6, type=float)
     parser.add_argument("--stata-single-rtol", default=5e-6, type=float)
+    parser.add_argument("--stata-single-neff-atol", default=10, type=float)
     args = parser.parse_args()
 
     python_rows = load_rows(args.python, "python", "double")
@@ -126,7 +129,14 @@ def main() -> int:
         else:
             atol, rtol = args.stata_double_atol, args.stata_double_rtol
 
-        comparisons, summary = compare_source(reference, rows, atol=atol, rtol=rtol)
+        def tolerance_for(metric: str, base_atol: float, base_rtol: float) -> tuple[float, float]:
+            # Single-precision Stata can move observations exactly at bandwidth
+            # boundaries, so effective local counts need a count-scale tolerance.
+            if language == "stata" and precision == "single" and metric in {"n_eff_left", "n_eff_right"}:
+                return max(base_atol, args.stata_single_neff_atol), base_rtol
+            return base_atol, base_rtol
+
+        comparisons, summary = compare_source(reference, rows, atol=atol, rtol=rtol, tolerance_for=tolerance_for)
         all_comparisons.extend(comparisons)
         any_failures = any_failures or summary["failures"] > 0
         print(

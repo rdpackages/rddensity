@@ -145,10 +145,6 @@ def rddensity(X, c=0, p=2, q=0,
     nlUnique = int(np.searchsorted(XUnique, c, side="left"))
     nrUnique = nUnique - nlUnique
 
-    if nUnique != n and massPoints:
-        massPoints_flag = True
-    else:
-        massPoints_flag = False
     #Error Handling
     if c<Xmin or c>Xmax:
         raise Exception("The cutoff should be set within the range of the data.")
@@ -194,6 +190,7 @@ def rddensity(X, c=0, p=2, q=0,
         massPoints = True
     elif type(massPoints) != bool:
         raise Exception("Option massPoints incorrectly specified.")
+    massPoints_flag = nUnique != n and massPoints
 
     # bandwidth selection
     if (int(hl)>0 & int(hr>0)):
@@ -245,7 +242,7 @@ def rddensity(X, c=0, p=2, q=0,
     #data trimming
     X = X - c
     Y = np.array(range(n))/(n-1)
-    if massPoints==True:
+    if massPoints_flag:
         Y = np.repeat(Y[indexUnique], freqUnique)
 
     h_mask = (X>=-1*hl) & (X<=hr)
@@ -258,7 +255,7 @@ def rddensity(X, c=0, p=2, q=0,
 
 
     #estimation
-    fV_q = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
+    fV_q = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints_flag)
     T_asy = fV_q.loc['diff', 'hat']/np.sqrt(fV_q.loc['diff', 'plugin'])
     T_jk = fV_q.loc['diff', 'hat']/np.sqrt(fV_q.loc['diff', 'jackknife'])
     p_asy = 2*(1-norm.cdf(abs(T_asy)))
@@ -382,7 +379,7 @@ def rddensity(X, c=0, p=2, q=0,
     X_right = X[X >= 0] + c
 
     if useall == True:
-        fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
+        fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints_flag)
         T_asy_p = fV_p.loc['diff', 'hat']/np.sqrt(fV_p.loc['diff', 'plugin'])
         T_jk_p = fV_p.loc['diff', 'hat']/np.sqrt(fV_p.loc['diff', 'jackknife'])
         p_asy_p = 2*(1-norm.cdf(abs(T_asy_p)))

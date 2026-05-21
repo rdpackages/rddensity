@@ -97,10 +97,6 @@ def rdbwdensity(X, c=0, p=2,
     Xmu = float(np.mean(X))
     Xsd = float(np.std(X, ddof=1))
 
-    if nUnique != n and massPoints:
-        massPoints_flag = True
-    else:
-        massPoints_flag = False
     #Error Handling
     if c<Xmin or c>Xmax:
         raise Exception("The cutoff should be set within the range of the data.")
@@ -144,6 +140,7 @@ def rdbwdensity(X, c=0, p=2,
         massPoints = True
     elif type(massPoints) != bool:
         raise Exception("Option massPoints incorrectly specified.")
+    massPoints_flag = nUnique != n and massPoints
 
     # selecting preliminary bandwidth
     fhatb = 1/(np.power(funs.__rddensity_H(Xmu/Xsd, p+2), 2) *norm.pdf(Xmu/Xsd))
@@ -164,26 +161,25 @@ def rdbwdensity(X, c=0, p=2,
         cn = min(cn, np.max(np.abs(XUnique)))
 
         #nLocalMin check
-        if nLocalMin is not None:
+        if nLocalMin > 0:
             bn = max(bn,
-                     np.sort(np.abs(X[X<0]))[min(20+p+2, nl)-1],
-                     X[X>= 0][min(20 + p+2, nr)-1])
+                     np.sort(np.abs(X[X<0]))[min(20+p+2+1, nl)-1],
+                     X[X>= 0][min(20 + p+2+1, nr)-1])
             cn = max(cn,
-                     np.sort(np.abs(X[X<0]))[min(20+p, nl)-1],
-                     X[X>= 0][min(20 + p, nr)-1])
+                     np.sort(np.abs(X[X<0]))[min(20+p+1, nl)-1],
+                     X[X>= 0][min(20 + p+1, nr)-1])
 
-        if nUniqueMin is not None:
+        if nUniqueMin > 0:
             bn = max(bn,
-                     np.sort(np.abs(XUnique[XUnique<0]))[min(20+p+2, nlUnique)-1],
-                     XUnique[XUnique >= 0][min(20 + p+2, nrUnique)-1])
+                     np.sort(np.abs(XUnique[XUnique<0]))[min(20+p+2+1, nlUnique)-1],
+                     XUnique[XUnique >= 0][min(20 + p+2+1, nrUnique)-1])
             cn = max(cn,
-                     np.sort(np.abs(XUnique[XUnique<0]))[min(20+p, nlUnique)-1],
-                     XUnique[XUnique >= 0][min(20 + p, nrUnique)-1])
+                     np.sort(np.abs(XUnique[XUnique<0]))[min(20+p+1, nlUnique)-1],
+                     XUnique[XUnique >= 0][min(20 + p+1, nrUnique)-1])
 
     #estimate bandwidth
     Y = np.array(range(n))/(n-1)
-    Y0 = Y
-    if massPoints==True:
+    if massPoints_flag:
         Y = np.repeat(Y[indexUnique], freqUnique)
 
     mask_b = np.abs(X) <= bn
@@ -197,8 +193,8 @@ def rdbwdensity(X, c=0, p=2,
     nlc = int(np.sum(Xc < 0))
     nrc = len(Xc) - nlc
 
-    fV_b = funs.__rddensity_fv(Y=Yb, X=Xb, nl=nl, nr=nr, nlh=nlb, nrh=nrb, hl=bn, hr=bn, p=p+2, s=p+1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
-    fV_c = funs.__rddensity_fv(Y=Yc, X=Xc, nl=nl, nr=nr, nlh=nlc, nrh=nrc, hl=cn, hr=cn, p=p,   s=1,   kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
+    fV_b = funs.__rddensity_fv(Y=Yb, X=Xb, nl=nl, nr=nr, nlh=nlb, nrh=nrb, hl=bn, hr=bn, p=p+2, s=p+1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints_flag)
+    fV_c = funs.__rddensity_fv(Y=Yc, X=Xc, nl=nl, nr=nr, nlh=nlc, nrh=nrc, hl=cn, hr=cn, p=p,   s=1,   kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints_flag)
     fV_b_values = fV_b.to_numpy(dtype=float)
     fV_c_values = fV_c.to_numpy(dtype=float)
 
@@ -249,18 +245,18 @@ def rdbwdensity(X, c=0, p=2,
         hn[3,0] = min(hn[3,0], unique_max_range)
 
         if nLocalMin > 0:
-            hlmin = np.sort(np.abs(X[X<0]))[::-1][min(nl, nLocalMin)-1]
+            hlmin = np.sort(np.abs(X[X<0]))[min(nl, nLocalMin)-1]
             hrmin = X[X>= 0][min(nr, nLocalMin)-1]
             hn[0,0] = max(hn[0,0], hlmin)
-            hn[1,0] = max(hn[1,0], hlmin)
+            hn[1,0] = max(hn[1,0], hrmin)
             hn[2,0] = max(hn[2,0], hlmin, hrmin)
             hn[3,0] = max(hn[3,0], hlmin, hrmin)
 
         if nUniqueMin>0:
-            hlmin = np.sort(np.abs(XUnique[XUnique<0]))[::-1][min(nlUnique, nUniqueMin)-1]
+            hlmin = np.sort(np.abs(XUnique[XUnique<0]))[min(nlUnique, nUniqueMin)-1]
             hrmin = XUnique[XUnique >= 0][min(nrUnique, nUniqueMin)-1]
             hn[0,0] = max(hn[0,0], hlmin)
-            hn[1,0] = max(hn[1,0], hlmin)
+            hn[1,0] = max(hn[1,0], hrmin)
             hn[2,0] = max(hn[2,0], hlmin, hrmin)
             hn[3,0] = max(hn[3,0], hlmin, hrmin)
 

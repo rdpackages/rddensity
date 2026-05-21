@@ -5,6 +5,8 @@ Notable project changes are listed from newest to oldest.
 ## 2026-05-21 - Python and R Modernization
 
 - Reworked Python `rddensity`/`rdbwdensity` data preparation to use NumPy arrays internally while preserving the public Pandas result objects and numerical baseline.
+- Expanded Python, R, and Stata numerical baselines to cover estimated bandwidths, nonzero cutoffs, plugin VCE, epanechnikov kernels, and adjusted/unadjusted mass-point data.
+- Aligned Python epanechnikov weights, bandwidth regularization, and mass-point jackknife indexing with the R/Stata implementations.
 - Sped up R continuous-data paths by skipping duplicate bookkeeping when the sorted running variable has no repeated values and by vectorizing the ordinary jackknife accumulation.
 - Sped up Stata no-repeat and no-plot paths by skipping unnecessary mass-point jackknife work, running the ordinary jackknife without row-wise accumulation, and avoiding plot/histogram setup when plotting is not requested.
 - Added `scripts/benchmark-runtime.py` for repeatable Python, R, and optional Stata runtime benchmarks.

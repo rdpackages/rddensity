@@ -243,8 +243,8 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
         W[0:nlh] = (1 + X[0:nlh]/hl)/hl
         W[nlh:nh] = (1-X[nlh:nh]/hr)/hr
     else:
-        W[0:nlh] = 0.75*((1 + X[0:nlh]/hl)**2)/hl
-        W[nlh:nh] = 0.75*((1 + X[nlh:nh]/hr)**2)/hr
+        W[0:nlh] = 0.75*(1 - (X[0:nlh]/hl)**2)/hl
+        W[nlh:nh] = 0.75*(1 - (X[nlh:nh]/hr)**2)/hr
 
 
     # Construct the design matrix and the bandwidth matrix
@@ -322,14 +322,16 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
     if vce=='jackknife':
         L = np.zeros((nrow, ncol))
         if massPoints==True:
-            _, indexunique, frequnique = np.unique(X, return_index=True, return_counts=True)
+            XUnique = __rddensityUnique(X)
+            indexUnique = XUnique["indexFirst"]
+            freqUnique = XUnique["freq"]
             for jj in range(ncol):
-                xpw_col = np.r_[XpW[:, jj], 0.0]
-                L[:, jj] = np.repeat((np.cumsum(xpw_col[::-1])/(n-1))[indexunique], frequnique)[::-1]
+                tail_sums = np.cumsum(np.r_[0.0, XpW[::-1, jj]]) / (n - 1)
+                L[:, jj] = np.repeat(tail_sums[nh-1::-1][indexUnique], freqUnique)
         else:
-            L[0, :] = np.sum(XpW[1:, :], axis=0)/(n-1)
-            for i in range(1, nh):
-                L[i, :] = L[i-1, :] - XpW[i, :]/(n-1)
+            for jj in range(ncol):
+                tail_sums = np.cumsum(np.r_[0.0, XpW[::-1, jj]]) / (n - 1)
+                L[:, jj] = tail_sums[nh-1::-1]
 
         V = HpInv @ Sinv @ (L.T @ L) @ Sinv @ HpInv
 
