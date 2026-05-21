@@ -5,6 +5,7 @@ Notable project changes are listed from newest to oldest.
 ## 2026-05-21 - Python and R Modernization
 
 - Reworked Python `rddensity`/`rdbwdensity` data preparation to use NumPy arrays internally while preserving the public Pandas result objects and numerical baseline.
+- Sped up Stata no-repeat and no-plot paths by skipping unnecessary mass-point jackknife work, running the ordinary jackknife without row-wise accumulation, and avoiding plot/histogram setup when plotting is not requested.
 - Added `scripts/benchmark-runtime.py` for repeatable Python, R, and optional Stata runtime benchmarks.
 - Hardened the Stata benchmark runner for multi-size runs and missing-output diagnostics.
 - Aligned Python package metadata and documentation version with the R/Stata `2.6` release line.

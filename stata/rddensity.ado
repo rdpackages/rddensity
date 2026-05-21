@@ -223,23 +223,34 @@ NUNIquemin (integer -1)				///
 	mata{
 	X = sort(st_data(.,("`x'"), "`touse'"), 1)
 	
-	XUnique   	= rddensity_unique(X)
-	freqUnique  = XUnique[., 2]
-	indexUnique = XUnique[., 4]
-	XUnique     = XUnique[., 1]
-	NUnique     = length(XUnique)
-	NlUnique    = sum(XUnique :<  0)
-	NrUnique    = sum(XUnique :>= 0)
+	has_repeated = (rows(X) > 1 ? any(X[2..rows(X)] :== X[1..(rows(X)-1)]) : 0)
+	if (has_repeated) {
+		XUnique   	= rddensity_unique(X)
+		freqUnique  = XUnique[., 2]
+		indexUnique = XUnique[., 4]
+		XUnique     = XUnique[., 1]
+		NUnique     = length(XUnique)
+		NlUnique    = sum(XUnique :<  0)
+		NrUnique    = sum(XUnique :>= 0)
+	}
+	else {
+		XUnique     = X
+		freqUnique  = J(rows(X), 1, 1)
+		indexUnique = (1..rows(X))'
+		NUnique     = rows(X)
+		NlUnique    = `Nl'
+		NrUnique    = `Nr'
+	}
 	
 	Y = (0..(`N'-1))' :/ (`N'-1)
-	if (`masspoints') {
+	masspoints_flag = has_repeated & `masspoints'
+	if (masspoints_flag) {
 		Y = rddensity_rep(Y[indexUnique], freqUnique)
 	}
-	masspoints_flag = sum(freqUnique :!= 1) > 0 & `masspoints'
 
 	Y = select(Y, X :>= -`hl' :& X :<= `hr')
 	X = select(X, X :>= -`hl' :& X :<= `hr')
-	fV_q = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `q', 1, "`kernel'", "`fitselect'", "`vce'", `masspoints')
+	fV_q = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `q', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
 	T_q  = fV_q[3,1] / sqrt(fV_q[3,2])
 	st_numscalar("f_ql", fV_q[1,1]); st_numscalar("f_qr", fV_q[2,1])
 	st_numscalar("se_ql", sqrt(fV_q[1,2])); st_numscalar("se_qr", sqrt(fV_q[2,2]))
@@ -247,7 +258,7 @@ NUNIquemin (integer -1)				///
 	st_numscalar("T_q", T_q); st_numscalar("pval_q", 2*normal(-abs(T_q)))
 
 	if ("`all'"!=""){
-		fV_p = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `p', 1, "`kernel'", "`fitselect'", "`vce'", `masspoints')
+		fV_p = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `p', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
 		T_p  = fV_p[3,1] / sqrt(fV_p[3,2])
 		st_numscalar("f_pl", fV_p[1,1]); st_numscalar("f_pr", fV_p[2,1])
 		st_numscalar("se_pl", sqrt(fV_p[1,2])); st_numscalar("se_pr", sqrt(fV_p[2,2]))
@@ -496,9 +507,41 @@ program define rddensity, eclass
     local runningvar 	= e(runningvar)
 	local precision 	= e(precision)
 
-	tempvar x_precision
-	qui gen `storage_type' `x_precision' = `x'
-	local x "`x_precision'"
+	local plot_work 0
+	if ("`plot'" != "") local plot_work 1
+	if ("`plot_range'" != "") local plot_work 1
+	if ("`plot_n'" != "") local plot_work 1
+	if ("`plot_grid'" != "") local plot_work 1
+	if ("`plot_bwselect'" != "") local plot_work 1
+	if ("`plot_ciuniform'" != "") local plot_work 1
+	if ("`plotl_estype'" != "") local plot_work 1
+	if ("`plotr_estype'" != "") local plot_work 1
+	if ("`plotl_citype'" != "") local plot_work 1
+	if ("`plotr_citype'" != "") local plot_work 1
+	if ("`histogram'" != "") local plot_work 1
+	if ("`hist_range'" != "") local plot_work 1
+	if ("`hist_n'" != "") local plot_work 1
+	if ("`hist_width'" != "") local plot_work 1
+	if ("`genvars'" != "") local plot_work 1
+	if (`"`esll_opt'"' != "") local plot_work 1
+	if (`"`espl_opt'"' != "") local plot_work 1
+	if (`"`eslr_opt'"' != "") local plot_work 1
+	if (`"`espr_opt'"' != "") local plot_work 1
+	if (`"`cirl_opt'"' != "") local plot_work 1
+	if (`"`cill_opt'"' != "") local plot_work 1
+	if (`"`cibl_opt'"' != "") local plot_work 1
+	if (`"`cirr_opt'"' != "") local plot_work 1
+	if (`"`cilr_opt'"' != "") local plot_work 1
+	if (`"`cibr_opt'"' != "") local plot_work 1
+	if (`"`histl_opt'"' != "") local plot_work 1
+	if (`"`histr_opt'"' != "") local plot_work 1
+	if (`"`graph_opt'"' != "") local plot_work 1
+
+	if ("`binomial'" == "" | `plot_work') {
+		tempvar x_precision
+		qui gen `storage_type' `x_precision' = `x'
+		local x "`x_precision'"
+	}
 	
 	****************************************************************************
 	*** BINOMIAL TEST **********************************************************
@@ -763,6 +806,45 @@ program define rddensity, eclass
 	****************************************************************************
 	*** LPDENSITY **************************************************************
 	
+	if (!`plot_work') {
+		ereturn clear
+		ereturn scalar c = `c'
+		ereturn scalar p = `p'
+		ereturn scalar q = `q'
+		ereturn scalar N_l = `N_l'
+		ereturn scalar N_r = `N_r'
+		ereturn scalar N_h_l = `N_h_l'
+		ereturn scalar N_h_r = `N_h_r'
+		ereturn scalar h_l = `h_l'
+		ereturn scalar h_r = `h_r'
+		ereturn scalar f_ql = `f_ql'
+		ereturn scalar f_qr = `f_qr'
+		ereturn scalar se_ql = `se_ql'
+		ereturn scalar se_qr = `se_qr'
+		ereturn scalar se_q = `se_q'
+		ereturn scalar pv_q = `pv_q'
+		ereturn scalar T_q = `T_q'
+
+		if ("`all'"!=""){
+		ereturn scalar f_pl = `f_pl'
+		ereturn scalar f_pr = `f_pr'
+		ereturn scalar se_pl = `se_pl'
+		ereturn scalar se_pr = `se_pr'
+		ereturn scalar se_p = `se_p'
+		ereturn scalar pv_p = `pv_p'
+		ereturn scalar T_p = `T_p'
+		}
+
+		ereturn local runningvar  "`runningvar'"
+		ereturn local kernel  "`kernel'"
+		ereturn local bwmethod  "`bwmethod'"
+		ereturn local vce  "`vce'"
+		ereturn local precision "`precision'"
+
+		mata: mata clear
+		exit
+	}
+
 	// plot_range
 	tokenize `plot_range'	
 	local w : word count `plot_range'
@@ -1403,7 +1485,7 @@ program define rddensity, eclass
 				,					///
 				`graph_opt'
 	}
-	
+
 	ereturn clear 
 	ereturn scalar c = `c' 
 	ereturn scalar p = `p' 

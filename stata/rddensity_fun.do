@@ -152,11 +152,8 @@ real matrix rddensity_fv(real colvector Y, real colvector X,
 			}
 		}
 		else {
-			for (i=1; i<=Nh; i++) { 
-				L[1,.] = L[1,.]   + XpW[i,.]   / (N-1) 
-			}
-			for (i=2; i<=Nh; i++) { 
-				L[i,.] = L[i-1,.] - XpW[i-1,.] / (N-1) 
+			for (jj=1; jj<=cols(L); jj++) {
+				L[., jj] = (runningsum((0\ XpW[Nh..1, jj])) :/ (N-1))[Nh..1]
 			}
 		}
 

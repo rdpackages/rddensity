@@ -124,15 +124,26 @@ syntax varlist(max=1) [if] [in] [, 	///
 	*display("got here!")
 	X = sort(st_data(.,("`x'"), "`touse'"), 1);
 	
-	XUnique   	= rddensity_unique(X)
-	freqUnique  = XUnique[., 2]
-	indexUnique = XUnique[., 4]
-	XUnique     = XUnique[., 1]
-	NUnique     = length(XUnique)
-	NlUnique    = sum(XUnique :<  0)
-	NrUnique    = sum(XUnique :>= 0)
+	has_repeated = (rows(X) > 1 ? any(X[2..rows(X)] :== X[1..(rows(X)-1)]) : 0)
+	if (has_repeated) {
+		XUnique   	= rddensity_unique(X)
+		freqUnique  = XUnique[., 2]
+		indexUnique = XUnique[., 4]
+		XUnique     = XUnique[., 1]
+		NUnique     = length(XUnique)
+		NlUnique    = sum(XUnique :<  0)
+		NrUnique    = sum(XUnique :>= 0)
+	}
+	else {
+		XUnique     = X
+		freqUnique  = J(rows(X), 1, 1)
+		indexUnique = (1..rows(X))'
+		NUnique     = rows(X)
+		NlUnique    = `Nl'
+		NrUnique    = `Nr'
+	}
 	
-	masspoints_flag = sum(freqUnique :!= 1) > 0 & `masspoints'
+	masspoints_flag = has_repeated & `masspoints'
 	st_numscalar("masspoints_flag", masspoints_flag)
 
 	****************************************************************************
@@ -216,7 +227,7 @@ syntax varlist(max=1) [if] [in] [, 	///
 	Nrc = rows(Xc) - Nlc
 	
 	Ytemp = (0..(`N'-1))' :/ (`N'-1)
-	if (`masspoints') {
+	if (masspoints_flag) {
 		Ytemp = rddensity_rep(Ytemp[indexUnique], freqUnique)
 	}
 	Yb = select(Ytemp, -b:<=X :& X:<=b)
@@ -224,8 +235,8 @@ syntax varlist(max=1) [if] [in] [, 	///
 
 	h = J(4,3,0)
 
-	fV_b = rddensity_fv(Yb, Xb, `Nl', `Nr', Nlb, Nrb, b, b, `p'+2 , `p'+1, "`kernel'", "`fitselect'", "`vce'", `masspoints')
-	fV_c = rddensity_fv(Yc, Xc, `Nl', `Nr', Nlc, Nrc, c, c, `p'   , 1    , "`kernel'", "`fitselect'", "`vce'", `masspoints')
+	fV_b = rddensity_fv(Yb, Xb, `Nl', `Nr', Nlb, Nrb, b, b, `p'+2 , `p'+1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
+	fV_c = rddensity_fv(Yc, Xc, `Nl', `Nr', Nlc, Nrc, c, c, `p'   , 1    , "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
 	
 
 	h[.,2] = `N'*c*fV_c[.,2]
