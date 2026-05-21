@@ -137,7 +137,7 @@ set graphics off
 
 args repo output sizes repeats warmups calls_per_repeat
 adopath ++ "`repo'/stata"
-local sizes : subinstr local sizes "," " ", all
+local sizes : subinstr local sizes "|" " ", all
 
 capture program drop _bench_make_data
 program define _bench_make_data
@@ -194,6 +194,7 @@ export delimited using "`output'", replace
 """
     with tempfile.TemporaryDirectory() as tmp:
         script = Path(tmp) / "benchmark-runtime.do"
+        batch_log = Path(tmp) / "benchmark-runtime.log"
         output = Path(tmp) / "benchmark-stata.csv"
         script.write_text(code, encoding="utf-8")
         subprocess.run(
@@ -204,13 +205,23 @@ export delimited using "`output'", replace
                 str(script),
                 str(ROOT),
                 str(output),
-                ",".join(map(str, sizes)),
+                "|".join(map(str, sizes)),
                 str(repeats),
                 str(warmups),
                 str(calls_per_repeat),
             ],
             check=True,
+            cwd=tmp,
         )
+        deadline = time.monotonic() + 30
+        while not output.exists() and time.monotonic() < deadline:
+            time.sleep(0.25)
+        if not output.exists():
+            log_tail = ""
+            if batch_log.exists():
+                lines = batch_log.read_text(encoding="utf-8", errors="replace").splitlines()
+                log_tail = "\n".join(lines[-80:])
+            raise RuntimeError(f"Stata benchmark did not create {output}.\n{log_tail}")
         return read_rows(output)
 
 
