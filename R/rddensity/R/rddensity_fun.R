@@ -38,6 +38,11 @@ rddensityUnique <- function(x) {
 #rddensityUnique(1:10)
 #rddensityUnique(c(1,1,2,3,3,3, 4,4,5,5,5,5,5,5))
 
+rddensityHasRepeated <- function(x) {
+  n <- length(x)
+  n > 1 && any(x[2:n] == x[1:(n-1)])
+}
+
 rddensityMomentCache <- new.env(parent=emptyenv())
 
 rddensityCacheKey <- function(name, ...) {
@@ -484,9 +489,8 @@ rddensity_fV <- function(Y, X, Nl, Nr, Nlh, Nrh, hl, hr, p, s,
         L[, jj] <- rep(((cumsum(c(0, XpW[Nh:1, jj])) / (N - 1))[Nh:1])[indexUnique], times=freqUnique)
       }
     } else {
-      L[1, ] <- colSums(XpW[2:Nh, ]) / (N - 1)
-      for (i in 2:Nh) {
-        L[i, ] <- L[i-1, ] - XpW[i, ] / (N - 1)
+      for (jj in 1:ncol(L)) {
+        L[, jj] <- (cumsum(c(0, XpW[Nh:1, jj])) / (N - 1))[Nh:1]
       }
     }
 

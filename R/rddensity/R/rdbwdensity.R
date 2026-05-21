@@ -101,22 +101,24 @@ rdbwdensity <- function(X, c=0, p=2, fitselect="", kernel="", vce="", massPoints
   ################################################################################
   X <- sort(X, decreasing=FALSE)
   N <- length(X); Nl <- sum(X<c); Nr <- sum(X>=c); Xmin <- min(X); Xmax <- max(X)
-  XUnique     <- rddensityUnique(X)
-  freqUnique  <- XUnique$freq
-  indexUnique <- XUnique$indexLast
-  XUnique     <- XUnique$unique
-  NUnique     <- length(XUnique)
-  NlUnique    <- sum(XUnique <  c)
-  NrUnique    <- sum(XUnique >= c)
+  hasRepeated <- rddensityHasRepeated(X)
+  if (hasRepeated) {
+    XUnique     <- rddensityUnique(X)
+    freqUnique  <- XUnique$freq
+    indexUnique <- XUnique$indexLast
+    XUnique     <- XUnique$unique
+    NUnique     <- length(XUnique)
+    NlUnique    <- sum(XUnique <  c)
+    NrUnique    <- sum(XUnique >= c)
+  } else {
+    XUnique     <- X
+    NUnique     <- N
+    NlUnique    <- Nl
+    NrUnique    <- Nr
+  }
 
   X <- X - c; Xmu <- mean(X); Xsd <- sd(X)
   XUnique <- XUnique - c
-
-  if (sum(freqUnique != 1) > 0 & massPoints) {
-    masspoints_flag <- 1
-  } else {
-    masspoints_flag <- 0
-  }
   # end of sample sizes
 
   ################################################################################
@@ -162,6 +164,8 @@ rdbwdensity <- function(X, c=0, p=2, fitselect="", kernel="", vce="", massPoints
   } else if (length(massPoints) > 1 | !massPoints[1]%in%c(TRUE, FALSE)) {
     stop("Option massPoints incorrectly specified.\n")
   }
+  massPoints <- massPoints[1]
+  masspoints_flag <- as.integer(hasRepeated && massPoints)
   # end of error handling
 
   ################################################################################
@@ -204,8 +208,7 @@ rdbwdensity <- function(X, c=0, p=2, fitselect="", kernel="", vce="", massPoints
   ################################################################################
   # mass points correction for the empirical distribution function
   Y <- (0:(N-1)) / (N-1)
-Y0 <- Y
-  if (massPoints) {
+  if (masspoints_flag) {
     Y <- rep(Y[indexUnique], times=freqUnique)
   }
 
@@ -214,8 +217,8 @@ Y0 <- Y
 
   hn <- matrix(NA, ncol=3, nrow=4)
   colnames(hn) <- c("bw", "variance", "biassq"); rownames(hn) <- c("l", "r", "diff", "sum")
-  fV_b <- rddensity_fV(Y=Yb, X=Xb, Nl=Nl, Nr=Nr, Nlh=Nlb, Nrh=Nrb, hl=bn, hr=bn, p=p+2, s=p+1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints)
-  fV_c <- rddensity_fV(Y=Yc, X=Xc, Nl=Nl, Nr=Nr, Nlh=Nlc, Nrh=Nrc, hl=cn, hr=cn, p=p,   s=1,   kernel=kernel, fitselect=fitselect, vce=vce, massPoints)
+  fV_b <- rddensity_fV(Y=Yb, X=Xb, Nl=Nl, Nr=Nr, Nlh=Nlb, Nrh=Nrb, hl=bn, hr=bn, p=p+2, s=p+1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=masspoints_flag)
+  fV_c <- rddensity_fV(Y=Yc, X=Xc, Nl=Nl, Nr=Nr, Nlh=Nlc, Nrh=Nrc, hl=cn, hr=cn, p=p,   s=1,   kernel=kernel, fitselect=fitselect, vce=vce, massPoints=masspoints_flag)
 
   if (vce == "plugin") { hn[, 2] <- N * cn * fV_c[, 3]  } else { hn[, 2] <- N * cn * fV_c[, 2] }
   if (fitselect == "unrestricted") {

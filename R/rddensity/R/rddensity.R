@@ -209,18 +209,20 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
   ################################################################################
   X <- sort(X)
   N <- length(X); Nl <- sum(X<c); Nr <- sum(X>=c); Xmin <- min(X); Xmax <- max(X)
-  XUnique     <- rddensityUnique(X)
-  freqUnique  <- XUnique$freq
-  indexUnique <- XUnique$indexLast
-  XUnique     <- XUnique$unique
-  NUnique     <- length(XUnique)
-  NlUnique    <- sum(XUnique <  c)
-  NrUnique    <- sum(XUnique >= c)
-
-  if (sum(freqUnique != 1) > 0 & massPoints) {
-    masspoints_flag <- 1
+  hasRepeated <- rddensityHasRepeated(X)
+  if (hasRepeated) {
+    XUnique     <- rddensityUnique(X)
+    freqUnique  <- XUnique$freq
+    indexUnique <- XUnique$indexLast
+    XUnique     <- XUnique$unique
+    NUnique     <- length(XUnique)
+    NlUnique    <- sum(XUnique <  c)
+    NrUnique    <- sum(XUnique >= c)
   } else {
-    masspoints_flag <- 0
+    XUnique     <- X
+    NUnique     <- N
+    NlUnique    <- Nl
+    NrUnique    <- Nr
   }
   # end of sample sizes
 
@@ -271,6 +273,8 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
   } else if (length(massPoints) > 1 | !massPoints[1]%in%c(TRUE, FALSE)) {
     stop("Option massPoints incorrectly specified.\n")
   }
+  massPoints <- massPoints[1]
+  masspoints_flag <- as.integer(hasRepeated && massPoints)
   # end of error handling
 
   ################################################################################
@@ -301,7 +305,7 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
   ################################################################################
   X <- X - c
   Y <- (0:(N-1)) / (N-1)
-  if (massPoints) {
+  if (masspoints_flag) {
     Y <- rep(Y[indexUnique], times=freqUnique)
   }
   Xh <- X[(X>=-1*hl) & (X<=hr)]; Yh <- Y[(X>=-1*hl) & (X<=hr)]
@@ -313,7 +317,7 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
   ################################################################################
   # estimation
   ################################################################################
-  fV_q <- rddensity_fV(Y=Yh, X=Xh, Nl=Nl, Nr=Nr, Nlh=Nlh, Nrh=Nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints)
+  fV_q <- rddensity_fV(Y=Yh, X=Xh, Nl=Nl, Nr=Nr, Nlh=Nlh, Nrh=Nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=masspoints_flag)
   T_asy <- fV_q[3, 1] / sqrt(fV_q[3, 3]); T_jk <- fV_q[3, 1] / sqrt(fV_q[3, 2])
   p_asy <- pnorm(abs(T_asy), lower.tail=FALSE) * 2; p_jk <- pnorm(abs(T_jk), lower.tail=FALSE) * 2
 
@@ -445,7 +449,7 @@ rddensity <- function(X, c=0, p=2, q=0, fitselect="", kernel="", vce="", massPoi
   }
 
   if (all) {
-    fV_p <- rddensity_fV(Y=Yh, X=Xh, Nl=Nl, Nr=Nr, Nlh=Nlh, Nrh=Nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints)
+    fV_p <- rddensity_fV(Y=Yh, X=Xh, Nl=Nl, Nr=Nr, Nlh=Nlh, Nrh=Nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=masspoints_flag)
     T_asy_p <- fV_p[3, 1] / sqrt(fV_p[3, 3]); T_jk_p <- fV_p[3, 1] / sqrt(fV_p[3, 2])
     p_asy_p <- pnorm(abs(T_asy_p), lower.tail=FALSE) * 2; p_jk_p <- pnorm(abs(T_jk_p), lower.tail=FALSE) * 2
 
