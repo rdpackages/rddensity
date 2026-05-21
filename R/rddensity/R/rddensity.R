@@ -104,11 +104,11 @@
 #' \item{X_max}{\code{left}/\code{right}: the largest observation to the left/right of the cutoff.}
 #'
 #' @author
-#' Matias D. Cattaneo, Princeton University  \email{cattaneo@princeton.edu}.
+#' Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 #'
-#' Michael Jansson, University of California Berkeley.  \email{mjansson@econ.berkeley.edu}.
+#' Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
 #'
-#' Xinwei Ma (maintainer), University of California San Diego. \email{x1ma@ucsd.edu}.
+#' Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
 #'
 #' @references
 #' Cattaneo, M. D., B. Frandsen, and R. Titiunik. 2015. Randomization Inference in the Regression Discontinuity Design: An Application to the Study of Party Advantages in the U.S. Senate. \emph{Journal of Causal Inference} 3(1): 1-24. \doi{10.1515/jci-2013-0010}

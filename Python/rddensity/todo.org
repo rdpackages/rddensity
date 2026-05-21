@@ -1,3 +1,2 @@
 #+Title: rddensity python
-#+Author: Rajita Chandak
-
+#+Author: Matias D. Cattaneo

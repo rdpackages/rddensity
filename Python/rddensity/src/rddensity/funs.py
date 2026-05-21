@@ -288,7 +288,8 @@ def __rddensity_fv(Y, X, nl, nr, nlh, nrh, hl, hr, p, s, kernel, fitselect, vce,
             frequnique = Xunique['freq']
             indexunique = Xunique['indexFirst']
             for jj in range(Xp.shape[1]):
-                L[:, jj] = np.repeat(((np.cumsum(XpW[jj]._append(pd.Series(0), ignore_index=True)[::-1].reset_index(drop=True))/(n-1)))[indexunique], frequnique)[::-1]
+                xpw_col = pd.concat([XpW[jj], pd.Series([0])], ignore_index=True)
+                L[:, jj] = np.repeat(((np.cumsum(xpw_col[::-1].reset_index(drop=True))/(n-1)))[indexunique], frequnique)[::-1]
         else:
             L[0, :] = np.sum(XpW, axis=1)/(n-1)
             for i in range(1, nh):

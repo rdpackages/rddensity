@@ -48,9 +48,9 @@ Cattaneo, M. D., R. Titiunik and G. Vazquez-Bare. 2017. Comparing Inference Appr
 McCrary, J. 2008. Manipulation of the Running Variable in the Regression Discontinuity Design: A Density Test. \emph{Journal of Econometrics} 142(2): 698-714. \doi{10.1016/j.jeconom.2007.05.005}
 }
 \author{
-Matias D. Cattaneo, Princeton University  \email{cattaneo@princeton.edu}.
+Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 
-Michael Jansson, University of California Berkeley.  \email{mjansson@econ.berkeley.edu}.
+Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
 
-Xinwei Ma (maintainer), University of California San Diego. \email{x1ma@ucsd.edu}.
+Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
 }

@@ -3,8 +3,8 @@
 ** Do-file for RDDENSITY Plot Illustration
 ** Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma
 ********************************************************************************
-** net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensity/master/stata) replace
-** net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace
+** net install rddensity, from(https://raw.githubusercontent.com/rdpackages/rddensity/main/stata) replace
+** net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/main/stata) replace
 ********************************************************************************
 clear all 
 set more off 

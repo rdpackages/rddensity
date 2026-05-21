@@ -136,12 +136,11 @@ The default value is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 {title:Authors}
 
 {p 4 8}Matias D. Cattaneo, Princeton University, Princeton, NJ.
-{browse "mailto:cattaneo@princeton.edu":cattaneo@princeton.edu}.{p_end}
+{browse "mailto:matias.d.cattaneo@gmail.com":matias.d.cattaneo@gmail.com}.{p_end}
 
-{p 4 8}Michael Jansson, University of California Berkeley, Berkeley, CA.
-{browse "mailto:mjansson@econ.berkeley.edu":mjansson@econ.berkeley.edu}.{p_end}
+{p 4 8}Rocio Titiunik, Princeton University, Princeton, NJ.
+{browse "mailto:rocio.titiunik@gmail.com":rocio.titiunik@gmail.com}.{p_end}
 
-{p 4 8}Xinwei Ma, University of California San Diego, La Jolla, CA.
-{browse "mailto:x1ma@ucsd.edu":x1ma@ucsd.edu}.{p_end}
-
+{p 4 8}Gonzalo Vazquez-Bare, UC Santa Barbara, Santa Barbara, CA.
+{browse "mailto:gvazquezbare@gmail.com":gvazquezbare@gmail.com}.{p_end}
 

@@ -1,6 +1,11 @@
 [build-system]
 requires = [
-    "setuptools>=42",
+    "setuptools>=82.0.1",
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "-p no:cacheprovider"
+pythonpath = ["src"]
+norecursedirs = [".pytest_cache", "pytest-cache-files-*"]

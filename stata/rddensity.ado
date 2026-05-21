@@ -1,6 +1,6 @@
 ********************************************************************************
 * RDDENSITY STATA PACKAGE -- rddensity
-* Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
+* Authors: Matias D. Cattaneo, Rocio Titiunik, Gonzalo Vazquez-Bare
 ********************************************************************************
 *!version 2.5 2024-10-06
 
@@ -821,7 +821,7 @@ program define rddensity, eclass
 		capture which lpdensity
 		if (_rc == 111) {
 			di as error  `"{err}plotting feature requires command {cmd:lpdensity}, install with"'
-			di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
+			di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/main/stata) replace"'
 			exit 111
 		}
 	}
@@ -915,7 +915,7 @@ program define rddensity, eclass
 		`plot_ciuniform' 
 	if (_rc != 0) {
 		di as error  `"{err}{cmd:lpdensity} failed. Please try to install the latest version using"'
-		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
+		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/main/stata) replace"'
 		di as error  `"{err}If error persists, please contact the authors."'
 		di as error  `"{err}{cmd:lpdensity} error message:"'
 		lpdensity `x' if `touse' & `x' < `c', /// 
@@ -956,7 +956,7 @@ program define rddensity, eclass
 		`plot_ciuniform'
 	if (_rc != 0) {
 		di as error  `"{err}{cmd:lpdensity} failed. Please try to install the latest version using"'
-		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/master/stata) replace"'
+		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/main/stata) replace"'
 		di as error  `"{err}If error persists, please contact the authors."'
 		di as error  `"{err}{cmd:lpdensity} error message:"'
 		lpdensity `x' if `touse' & `x' >= `c', /// 

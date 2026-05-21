@@ -1,6 +1,6 @@
 ********************************************************************************
 * RDDENSITY STATA PACKAGE -- rdbwdensity
-* Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
+* Authors: Matias D. Cattaneo, Rocio Titiunik, Gonzalo Vazquez-Bare
 ********************************************************************************
 *!version 2.5 2024-10-06
 

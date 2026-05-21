@@ -254,8 +254,8 @@ def rddensity(X, c=0, p=2, q=0,
 
     #estimation
     fV_q = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
-    T_asy = fV_q['hat'][2]/np.sqrt(fV_q['plugin'][2])
-    T_jk = fV_q['hat'][2]/np.sqrt(fV_q['jackknife'][2])
+    T_asy = fV_q.loc['diff', 'hat']/np.sqrt(fV_q.loc['diff', 'plugin'])
+    T_jk = fV_q.loc['diff', 'hat']/np.sqrt(fV_q.loc['diff', 'jackknife'])
     p_asy = 2*(1-norm.cdf(abs(T_asy)))
     p_jk = 2*(1-norm.cdf(abs(T_jk)))
 
@@ -373,19 +373,19 @@ def rddensity(X, c=0, p=2, q=0,
 
     if useall == True:
         fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
-        T_asy_p = fV_p['hat'][2]/np.sqrt(fV_p['plugin'][2])
-        T_jk_p = fV_p['hat'][2]/np.sqrt(fV_p['jackknife'][2])
+        T_asy_p = fV_p.loc['diff', 'hat']/np.sqrt(fV_p.loc['diff', 'plugin'])
+        T_jk_p = fV_p.loc['diff', 'hat']/np.sqrt(fV_p.loc['diff', 'jackknife'])
         p_asy_p = 2*(1-norm.cdf(abs(T_asy_p)))
         p_jk_p = 2*(1-norm.cdf(abs(T_jk_p)))
 
         result = CJMrddensity(
-            hat = pd.Series(data={'left': fV_q['hat'][0], 'right': fV_q['hat'][1], 'diff':fV_q['hat'][2]}, index = ['left', 'right', 'diff']),
-            sd_asy = pd.Series(data={'left': np.sqrt(fV_q['plugin'][0]), 'right': np.sqrt(fV_q['plugin'][1]), 'diff':np.sqrt(fV_q['plugin'][2])}, index = ['left', 'right', 'diff']),
-            sd_jk = pd.Series(data={'left': np.sqrt(fV_q['jackknife'][0]), 'right': np.sqrt(fV_q['jackknife'][1]), 'diff':np.sqrt(fV_q['jackknife'][2])}, index = ['left', 'right', 'diff']),
+            hat = pd.Series(data={'left': fV_q.loc['l', 'hat'], 'right': fV_q.loc['r', 'hat'], 'diff':fV_q.loc['diff', 'hat']}, index = ['left', 'right', 'diff']),
+            sd_asy = pd.Series(data={'left': np.sqrt(fV_q.loc['l', 'plugin']), 'right': np.sqrt(fV_q.loc['r', 'plugin']), 'diff':np.sqrt(fV_q.loc['diff', 'plugin'])}, index = ['left', 'right', 'diff']),
+            sd_jk = pd.Series(data={'left': np.sqrt(fV_q.loc['l', 'jackknife']), 'right': np.sqrt(fV_q.loc['r', 'jackknife']), 'diff':np.sqrt(fV_q.loc['diff', 'jackknife'])}, index = ['left', 'right', 'diff']),
             test = pd.Series(data={'t_asy': T_asy, 't_jk':T_jk, 'p_asy':p_asy, 'p_jk':p_jk}, index=['t_asy', 't_jk', 'p_asy', 'p_jk']),
-            hat_p = pd.Series(data={'left': fV_p['hat'][0], 'right': fV_p['hat'][1], 'diff':fV_p['hat'][2]}, index = ['left', 'right', 'diff']),
-            sd_asy_p = pd.Series(data={'left': np.sqrt(fV_p['plugin'][0]), 'right': np.sqrt(fV_p['plugin'][1]), 'diff':np.sqrt(fV_p['plugin'][2])}, index = ['left', 'right', 'diff']),
-            sd_jk_p = pd.Series(data={'left': np.sqrt(fV_p['jackknife'][0]), 'right': np.sqrt(fV_p['jackknife'][1]), 'diff':np.sqrt(fV_p['jackknife'][2])}, index = ['left', 'right', 'diff']),
+            hat_p = pd.Series(data={'left': fV_p.loc['l', 'hat'], 'right': fV_p.loc['r', 'hat'], 'diff':fV_p.loc['diff', 'hat']}, index = ['left', 'right', 'diff']),
+            sd_asy_p = pd.Series(data={'left': np.sqrt(fV_p.loc['l', 'plugin']), 'right': np.sqrt(fV_p.loc['r', 'plugin']), 'diff':np.sqrt(fV_p.loc['diff', 'plugin'])}, index = ['left', 'right', 'diff']),
+            sd_jk_p = pd.Series(data={'left': np.sqrt(fV_p.loc['l', 'jackknife']), 'right': np.sqrt(fV_p.loc['r', 'jackknife']), 'diff':np.sqrt(fV_p.loc['diff', 'jackknife'])}, index = ['left', 'right', 'diff']),
             test_p = pd.Series(data={'t_asy': T_asy_p, 't_jk':T_jk_p, 'p_asy':p_asy_p, 'p_jk':p_jk_p}, index=['t_asy', 't_jk', 'p_asy', 'p_jk']),
             n = pd.Series(data={'full':n, 'left':nl, 'right':nr, 'eff_left':nlh, 'eff_right':nrh}, index=['full', 'left', 'right', 'eff_left', 'eff_right']),
             h = pd.Series(data={'left':hl, 'right':hr}, index=['left', 'right']),
@@ -401,9 +401,9 @@ def rddensity(X, c=0, p=2, q=0,
         )
     else:
         result = CJMrddensity(
-            hat = pd.Series(data={'left': fV_q['hat'][0], 'right': fV_q['hat'][1], 'diff':fV_q['hat'][2]}, index = ['left', 'right', 'diff']),
-            sd_asy = pd.Series(data={'left': np.sqrt(fV_q['plugin'][0]), 'right': np.sqrt(fV_q['plugin'][1]), 'diff':np.sqrt(fV_q['plugin'][2])}, index = ['left', 'right', 'diff']),
-            sd_jk = pd.Series(data={'left': np.sqrt(fV_q['jackknife'][0]), 'right': np.sqrt(fV_q['jackknife'][1]), 'diff':np.sqrt(fV_q['jackknife'][2])}, index = ['left', 'right', 'diff']),
+            hat = pd.Series(data={'left': fV_q.loc['l', 'hat'], 'right': fV_q.loc['r', 'hat'], 'diff':fV_q.loc['diff', 'hat']}, index = ['left', 'right', 'diff']),
+            sd_asy = pd.Series(data={'left': np.sqrt(fV_q.loc['l', 'plugin']), 'right': np.sqrt(fV_q.loc['r', 'plugin']), 'diff':np.sqrt(fV_q.loc['diff', 'plugin'])}, index = ['left', 'right', 'diff']),
+            sd_jk = pd.Series(data={'left': np.sqrt(fV_q.loc['l', 'jackknife']), 'right': np.sqrt(fV_q.loc['r', 'jackknife']), 'diff':np.sqrt(fV_q.loc['diff', 'jackknife'])}, index = ['left', 'right', 'diff']),
             test = pd.Series(data={'t_asy': T_asy, 't_jk':T_jk, 'p_asy':p_asy, 'p_jk':p_jk}, index=['t_asy', 't_jk', 'p_asy', 'p_jk']),
             hat_p = pd.Series(data={'left': np.nan, 'right': np.nan, 'diff':np.nan}, index = ['left', 'right', 'diff']),
             sd_asy_p = pd.Series(data={'left': np.nan, 'right': np.nan, 'diff':np.nan}, index = ['left', 'right', 'diff']),

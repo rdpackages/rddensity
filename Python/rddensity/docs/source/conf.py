@@ -18,8 +18,8 @@ autodoc_mock_imports = ["numpy", "scipy", "pandas", "sympy", "statistics", "plot
 # -- Project information -----------------------------------------------------
 
 project = 'rddensity'
-copyright = '2022, Matias Cattaneo, Rajita Chandak, Michael Jansson, Xinwei Ma'
-author = 'Matias Cattaneo, Rajita Chandak, Michael Jansson, Xinwei Ma'
+copyright = '2026, Matias D. Cattaneo, Ricardo Masini, Rocio Titiunik, Gonzalo Vazquez-Bare'
+author = 'Matias D. Cattaneo, Ricardo Masini, Rocio Titiunik, Gonzalo Vazquez-Bare'
 
 # The full version, including alpha/beta/rc tags
 release = '2.2.0'

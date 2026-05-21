@@ -24,11 +24,11 @@
 #'   designs are described in the website: \url{https://rdpackages.github.io/}.
 #'
 #' @author
-#' Matias D. Cattaneo, Princeton University  \email{cattaneo@princeton.edu}.
+#' Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 #'
-#' Michael Jansson, University of California Berkeley.  \email{mjansson@econ.berkeley.edu}.
+#' Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
 #'
-#' Xinwei Ma (maintainer), University of California San Diego. \email{x1ma@ucsd.edu}.
+#' Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
 #'
 #' @references
 #' Calonico, S., M. D. Cattaneo, and M. H. Farrell. 2018. On the Effect of Bias Estimation on Coverage Accuracy in Nonparametric Inference. \emph{Journal of the American Statistical Association} 113(522): 767-779. \doi{10.1080/01621459.2017.1285776}

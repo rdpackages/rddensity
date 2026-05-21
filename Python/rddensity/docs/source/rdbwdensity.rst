@@ -25,13 +25,13 @@ Cattaneo M. D., M. Jansson, and X. Ma. 2020.
 
 Authors
 -------
-Matias D. Cattaneo, Princeton University. (cattaneo@princeton.edu).
+Matias D. Cattaneo (maintainer), Princeton University. (matias.d.cattaneo@gmail.com).
 
-Rajita Chandak (maintainer), Princeton University. (rchandak@princeton.edu). 
+Ricardo Masini, Python contributor. (ricardo.masini@gmail.com).
 
-Michael Jansson, University of California Berkeley. (mjansson@econ.berkeley.edu).
+Rocio Titiunik, Princeton University. (rocio.titiunik@gmail.com).
 
-Xinwei Ma (maintainer), University of California San Diego. (x1ma@ucsd.edu).
+Gonzalo Vazquez-Bare, UC Santa Barbara. (gvazquezbare@gmail.com).
 
 
 

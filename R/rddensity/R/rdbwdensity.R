@@ -52,11 +52,11 @@
 #' \item{X_max}{Largest observations to the left and right of the cutoff.}
 #'
 #' @author
-#' Matias D. Cattaneo, Princeton University  \email{cattaneo@princeton.edu}.
+#' Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 #'
-#' Michael Jansson, University of California Berkeley.  \email{mjansson@econ.berkeley.edu}.
+#' Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
 #'
-#' Xinwei Ma (maintainer), University of California San Diego. \email{x1ma@ucsd.edu}.
+#' Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
 #'
 #' @references
 #' Cattaneo, M. D., M. Jansson, and X. Ma. 2018. Manipulation Testing based on Density Discontinuity. \emph{Stata Journal} 18(1): 234-261. \doi{10.1177/1536867X1801800115}
@@ -330,4 +330,3 @@ print.CJMrdbwdensity <- function(x, ...) {
   cat("Sample size:\ ", x$N$full, ". ", "Cutoff: ", x$opt$c, ".\n", sep="")
   cat("Model:\ ", x$opt$fitselect, ". ", "Kernel: ", x$opt$kernel, ". ", "VCE: ", x$opt$vce, sep="")
 }
-

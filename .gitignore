@@ -134,3 +134,15 @@ dmypy.json
 .Rhistory
 .Rbuildignore
 *.Rproj
+
+# Local-only agent notes
+AGENTS.md
+
+# Build/test artifacts generated during repository checks
+**/docs/build/
+**/*.egg-info/
+**/__pycache__/
+pytest-cache-files-*/
+**/pytest-cache-files-*/
+*.Rcheck/
+*.tar.gz

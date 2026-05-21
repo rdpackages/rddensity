@@ -1,9 +1,6 @@
-numpy
-pandas
-scipy
-numpy.linalg
-sympy
-statistics
-plotnine
-lpdensity
-rddensity
+numpy>=1.23
+pandas>=2.0.0
+scipy>=1.10
+sympy>=1.12
+plotnine>=0.13.0
+lpdensity>=2.2
