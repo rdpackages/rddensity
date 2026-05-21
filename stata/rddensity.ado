@@ -357,8 +357,6 @@ NUNIquemin (integer -1)				///
 	ereturn local vce = "`vce'"
 	ereturn local precision = "`precision'"
 
-	mata: mata clear
-	
 end
 	
 ********************************************************************************
@@ -841,7 +839,6 @@ program define rddensity, eclass
 		ereturn local vce  "`vce'"
 		ereturn local precision "`precision'"
 
-		mata: mata clear
 		exit
 	}
 
@@ -1519,8 +1516,6 @@ program define rddensity, eclass
 	ereturn local bwmethod  "`bwmethod'"
 	ereturn local vce  "`vce'"
 	ereturn local precision "`precision'"
-	
-	mata: mata clear
 	
 end
 	

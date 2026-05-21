@@ -142,6 +142,11 @@ syntax varlist(max=1) [if] [in] [, 	///
 		NlUnique    = `Nl'
 		NrUnique    = `Nr'
 	}
+
+	XLeftAbs       = abs(X[`Nl'..1])
+	XRight         = X[(`Nl'+1)..rows(X)]
+	XUniqueLeftAbs = abs(XUnique[NlUnique..1])
+	XUniqueRight   = XUnique[(NlUnique+1)..NUnique]
 	
 	masspoints_flag = has_repeated & `masspoints'
 	st_numscalar("masspoints_flag", masspoints_flag)
@@ -201,14 +206,14 @@ syntax varlist(max=1) [if] [in] [, 	///
 		// nlocalmin check
 		
 		if (`nlocalmin' > 0) {
-			b = max((b, sort(abs(X[selectindex(X :< 0)]), 1)[min((20+`p'+2+1, `Nl'))], (X[selectindex(X :>= 0)])[min((20+`p'+2+1, `Nr'))]))
-			c = max((c, sort(abs(X[selectindex(X :< 0)]), 1)[min((20+`p'+  1, `Nl'))], (X[selectindex(X :>= 0)])[min((20+`p'  +1, `Nr'))]))
+			b = max((b, XLeftAbs[min((20+`p'+2+1, `Nl'))], XRight[min((20+`p'+2+1, `Nr'))]))
+			c = max((c, XLeftAbs[min((20+`p'+  1, `Nl'))], XRight[min((20+`p'  +1, `Nr'))]))
 		}
 
 		// nuniquemin check
 		if (`nuniquemin' > 0) {
-			b = max((b, sort(abs(XUnique[selectindex(XUnique :< 0)]), 1)[min((20+`p'+2+1, NlUnique))], (XUnique[selectindex(XUnique :>= 0)])[min((20+`p'+2+1, NrUnique))]))
-			c = max((c, sort(abs(XUnique[selectindex(XUnique :< 0)]), 1)[min((20+`p'  +1, NlUnique))], (XUnique[selectindex(XUnique :>= 0)])[min((20+`p'  +1, NrUnique))]))
+			b = max((b, XUniqueLeftAbs[min((20+`p'+2+1, NlUnique))], XUniqueRight[min((20+`p'+2+1, NrUnique))]))
+			c = max((c, XUniqueLeftAbs[min((20+`p'  +1, NlUnique))], XUniqueRight[min((20+`p'  +1, NrUnique))]))
 		}
 	}
 	
@@ -279,8 +284,8 @@ syntax varlist(max=1) [if] [in] [, 	///
 
 		// nlocalmin check
 		if (`nlocalmin' > 0) {
-			hlMin = sort(abs(X[selectindex(X :< 0)]), 1)[min((`Nl', `nlocalmin'))]
-			hrMin = (X[selectindex(X :>= 0)])[min((`Nr', `nlocalmin'))]
+			hlMin = XLeftAbs[min((`Nl', `nlocalmin'))]
+			hrMin = XRight[min((`Nr', `nlocalmin'))]
 			h[1,1] = max((h[1,1], hlMin))
 			h[2,1] = max((h[2,1], hrMin))
 			h[3,1] = max((h[3,1], hlMin, hrMin))
@@ -289,8 +294,8 @@ syntax varlist(max=1) [if] [in] [, 	///
 
 		// nuniquemin check
 		if (`nuniquemin' > 0) {
-			hlMin = sort(abs(XUnique[selectindex(XUnique :< 0)]),1)[min((NlUnique, `nuniquemin'))]
-			hrMin = (XUnique[selectindex(XUnique :>= 0)])[min((NrUnique, `nuniquemin'))]
+			hlMin = XUniqueLeftAbs[min((NlUnique, `nuniquemin'))]
+			hrMin = XUniqueRight[min((NrUnique, `nuniquemin'))]
 			h[1,1] = max((h[1,1], hlMin))
 			h[2,1] = max((h[2,1], hrMin))
 			h[3,1] = max((h[3,1], hlMin, hrMin))
@@ -355,7 +360,5 @@ syntax varlist(max=1) [if] [in] [, 	///
 	ereturn local vce = "`vce'"
 	ereturn local precision = "`precision'"
 
-	mata: mata clear
-	
 end
 	

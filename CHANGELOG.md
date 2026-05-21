@@ -10,6 +10,7 @@ Notable project changes are listed from newest to oldest.
 - Expanded the runtime benchmark harness to cover the same broader option and mass-point surfaces across Python, R, and Stata.
 - Sped up R continuous-data paths by skipping duplicate bookkeeping when the sorted running variable has no repeated values and by vectorizing the ordinary jackknife accumulation.
 - Sped up Stata no-repeat and no-plot paths by skipping unnecessary mass-point jackknife work, running the ordinary jackknife without row-wise accumulation, and avoiding plot/histogram setup when plotting is not requested.
+- Sped up Stata bandwidth and estimation workflows by preserving loaded Mata functions across command calls and reusing sorted left/right support vectors inside `rdbwdensity`.
 - Added `scripts/benchmark-runtime.py` for repeatable Python, R, and optional Stata runtime benchmarks.
 - Hardened the Stata benchmark runner for multi-size runs and missing-output diagnostics.
 - Aligned Python package metadata and documentation version with the R/Stata `2.6` release line.
