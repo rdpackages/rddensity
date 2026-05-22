@@ -1,5 +1,5 @@
 {smcl}
-{* *!version 2.5 2024-10-06}{...}
+{* *!version 3.0 2026-05-21}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -21,6 +21,7 @@
 {cmd:kernel(}{it:KernelFn}{cmd:)}
 {cmd:fitselect(}{it:FitMethod}{cmd:)}
 {cmd:vce(}{it:VceMethod}{cmd:)}
+{cmd:precision(}{it:Precision}{cmd:)}
 {cmd:nomasspoints}{p_end}
 {p 16 20}
 {cmd:nlocalmin(}{it:#}{cmd:)}
@@ -73,6 +74,10 @@ This is the default option.{p_end}
 {p 8 12}{opt jackknife}{bind:} for jackknife standard errors.
 This is the default option.{p_end}
 
+{p 4 8}{opt precision:}{cmd:(}{it:Precision}{cmd:)} specifies the storage precision used internally for the running variable and generated variables.{p_end}
+{p 8 12}{opt double}{bind:} stores internal variables in double precision. This is the default option.{p_end}
+{p 8 12}{opt single}{bind:} stores internal variables in single precision, matching the legacy Stata-style float storage path.{p_end}
+
 {p 4 8}{opt nomass:points} will not adjust for mass points in the data.{p_end}
 
 {dlgtab:Local Sample Size Checking}
@@ -104,7 +109,7 @@ The default value is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 {marker saved_results}{...}
 {title:Saved results}
 
-{p 4 8}{cmd:rddensity} saves the following in {cmd:e()}:
+{p 4 8}{cmd:rdbwdensity} saves the following in {cmd:e()}:
 
 {synoptset 20 tabbed}{...}
 {p2col 5 20 24 2: Macros}{p_end}
@@ -117,6 +122,7 @@ The default value is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 {synopt:{cmd:e(kernel)}}kernel used{p_end}
 {synopt:{cmd:e(fitmethod)}}model used{p_end}
 {synopt:{cmd:e(vce)}}standard errors estimator used{p_end}
+{synopt:{cmd:e(precision)}}storage precision used{p_end}
 
 
 {title:References}
@@ -138,9 +144,8 @@ The default value is {cmd:20+p(}{it:#}{cmd:)+1}.{p_end}
 {p 4 8}Matias D. Cattaneo, Princeton University, Princeton, NJ.
 {browse "mailto:matias.d.cattaneo@gmail.com":matias.d.cattaneo@gmail.com}.{p_end}
 
-{p 4 8}Rocio Titiunik, Princeton University, Princeton, NJ.
-{browse "mailto:rocio.titiunik@gmail.com":rocio.titiunik@gmail.com}.{p_end}
+{p 4 8}Michael Jansson, University of California Berkeley, Berkeley, CA.
+{browse "mailto:michael.jansson.berkeley@gmail.com":michael.jansson.berkeley@gmail.com}.{p_end}
 
-{p 4 8}Gonzalo Vazquez-Bare, UC Santa Barbara, Santa Barbara, CA.
-{browse "mailto:gvazquezbare@gmail.com":gvazquezbare@gmail.com}.{p_end}
-
+{p 4 8}Xinwei Ma, University of California San Diego, La Jolla, CA.
+{browse "mailto:xinweima.pku@gmail.com":xinweima.pku@gmail.com}.{p_end}

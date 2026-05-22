@@ -16,11 +16,11 @@ Source code: [https://github.com/rdpackages/rddensity](https://github.com/rdpack
 
 Matias D. Cattaneo, maintainer (<matias.d.cattaneo@gmail.com>)
 
+Michael Jansson (<michael.jansson.berkeley@gmail.com>)
+
+Xinwei Ma (<xinweima.pku@gmail.com>)
+
 Ricardo Masini, Python contributor (<ricardo.masini@gmail.com>)
-
-Rocio Titiunik (<rocio.titiunik@gmail.com>)
-
-Gonzalo Vazquez-Bare (<gvazquezbare@gmail.com>)
 
 ## Installation
 
@@ -34,7 +34,7 @@ pip install rddensity
 from rddensity import rddensity, rdbwdensity, rdplotdensity
 ```
 
-- Replication: [rddensity illustration](https://github.com/rdpackages/rddensity/blob/main/Python/rddensity_illustration.py).
+- Replication: [rddensity illustration](https://github.com/rdpackages/rddensity/blob/main/Python/rddensity_illustration.py), [rdplotdensity illustration](https://github.com/rdpackages/rddensity/blob/main/Python/rddensity_plot_illustration.py), [senate data](https://github.com/rdpackages/rddensity/blob/main/Python/rddensity_senate.csv).
 
 ## Dependencies
 

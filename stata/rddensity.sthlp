@@ -1,5 +1,5 @@
 {smcl}
-{* *!version 2.5 2024-10-06}{...}
+{* *!version 3.0 2026-05-21}{...}
 {viewerjumpto "Syntax" "rdrobust##syntax"}{...}
 {viewerjumpto "Description" "rdrobust##description"}{...}
 {viewerjumpto "Options" "rdrobust##options"}{...}
@@ -23,6 +23,7 @@
 {cmd:fitselect(}{it:FitMethod}{cmd:)}
 {cmd:kernel(}{it:KernelFn}{cmd:)}
 {cmd:vce(}{it:VceMethod}{cmd:)}
+{cmd:precision(}{it:Precision}{cmd:)}
 {cmd:nomasspoints}
 {cmd:level(}{it:#}{cmd:)}
 {cmd:all}
@@ -147,6 +148,10 @@ This is the default option.{p_end}
 {p 8 12}{opt plugin}{bind:   } for asymptotic plug-in standard errors.{p_end}
 {p 8 12}{opt jackknife}{bind:} for jackknife standard errors.
 This is the default option.{p_end}
+
+{p 4 8}{opt precision:}{cmd:(}{it:Precision}{cmd:)} specifies the storage precision used internally for the running variable and generated variables.{p_end}
+{p 8 12}{opt double}{bind:} stores internal variables in double precision. This is the default option.{p_end}
+{p 8 12}{opt single}{bind:} stores internal variables in single precision, matching the legacy Stata-style float storage path.{p_end}
 
 {p 4 8}{opt nomass:points} will not adjust for mass points in the data.{p_end}
 
@@ -386,6 +391,7 @@ This is the default option.{p_end}
 {synopt:{cmd:e(fitmethod)}}model used{p_end}
 {synopt:{cmd:e(bwmethod)}}bandwidth selection method used{p_end}
 {synopt:{cmd:e(vce)}}standard errors estimator used{p_end}
+{synopt:{cmd:e(precision)}}storage precision used{p_end}
 
 {p2col 5 20 24 2: Only available if {cmd:all} is specified:}{p_end}
 {synopt:{cmd:e(f_pl)}}density estimate to the left of the cutoff without bias correction {p_end}
@@ -440,10 +446,8 @@ This is the default option.{p_end}
 {p 4 8}Matias D. Cattaneo, Princeton University, Princeton, NJ.
 {browse "mailto:matias.d.cattaneo@gmail.com":matias.d.cattaneo@gmail.com}.{p_end}
 
-{p 4 8}Rocio Titiunik, Princeton University, Princeton, NJ.
-{browse "mailto:rocio.titiunik@gmail.com":rocio.titiunik@gmail.com}.{p_end}
+{p 4 8}Michael Jansson, University of California Berkeley, Berkeley, CA.
+{browse "mailto:michael.jansson.berkeley@gmail.com":michael.jansson.berkeley@gmail.com}.{p_end}
 
-{p 4 8}Gonzalo Vazquez-Bare, UC Santa Barbara, Santa Barbara, CA.
-{browse "mailto:gvazquezbare@gmail.com":gvazquezbare@gmail.com}.{p_end}
-
-
+{p 4 8}Xinwei Ma, University of California San Diego, La Jolla, CA.
+{browse "mailto:xinweima.pku@gmail.com":xinweima.pku@gmail.com}.{p_end}

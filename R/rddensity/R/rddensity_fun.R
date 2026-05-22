@@ -38,6 +38,17 @@ rddensityUnique <- function(x) {
 #rddensityUnique(1:10)
 #rddensityUnique(c(1,1,2,3,3,3, 4,4,5,5,5,5,5,5))
 
+rddensityHasRepeated <- function(x) {
+  n <- length(x)
+  n > 1 && any(x[2:n] == x[1:(n-1)])
+}
+
+rddensityMomentCache <- new.env(parent=emptyenv())
+
+rddensityCacheKey <- function(name, ...) {
+  paste(name, ..., sep="\r")
+}
+
 ################################################################################
 #' Internal function, generate matrices.
 #'
@@ -55,6 +66,11 @@ rddensityUnique <- function(x) {
 #'
 #' @keywords internal
 Sgenerate <- function(p, low=-1, up=1, kernel="triangular") {
+  cacheKey <- rddensityCacheKey("S", p, low, up, kernel)
+  if (exists(cacheKey, envir=rddensityMomentCache, inherits=FALSE)) {
+    return(get(cacheKey, envir=rddensityMomentCache, inherits=FALSE))
+  }
+
   popwarning <- FALSE
   S <- matrix(rep(0, (p+1)^2), ncol=(p+1))
   for (i in 1:(p+1)) {
@@ -70,6 +86,7 @@ Sgenerate <- function(p, low=-1, up=1, kernel="triangular") {
     }
   }
   if (popwarning) {warning(text)}
+  assign(cacheKey, S, envir=rddensityMomentCache)
   return(S)
 }
 
@@ -138,6 +155,11 @@ Splusgenerate <- function(p, kernel="triangular") {
 #'
 #' @keywords internal
 Cgenerate <- function(k, p, low=-1, up=1, kernel="triangular") {
+  cacheKey <- rddensityCacheKey("C", k, p, low, up, kernel)
+  if (exists(cacheKey, envir=rddensityMomentCache, inherits=FALSE)) {
+    return(get(cacheKey, envir=rddensityMomentCache, inherits=FALSE))
+  }
+
   popwarning <- FALSE
   C <- matrix(rep(0, (p+1)), ncol=1)
   for (i in 1:(p+1)) {
@@ -152,6 +174,7 @@ Cgenerate <- function(k, p, low=-1, up=1, kernel="triangular") {
     C[i,1] <- (integrate(integrand, lower=low, upper=up)$value)
   }
   if (popwarning) {warning(text)}
+  assign(cacheKey, C, envir=rddensityMomentCache)
   return(C)
 }
 
@@ -218,6 +241,11 @@ Cplusgenerate <- function(k, p, kernel="triangular") {
 #'
 #' @keywords internal
 Ggenerate <- function(p, low=-1, up=1, kernel="triangular") {
+  cacheKey <- rddensityCacheKey("G", p, low, up, kernel)
+  if (exists(cacheKey, envir=rddensityMomentCache, inherits=FALSE)) {
+    return(get(cacheKey, envir=rddensityMomentCache, inherits=FALSE))
+  }
+
   popwarning <- FALSE
   G <- matrix(rep(0, (p+1)^2), ncol=(p+1))
   for (i in 1:(p+1)) {
@@ -263,6 +291,7 @@ Ggenerate <- function(p, low=-1, up=1, kernel="triangular") {
     }
   }
   if (popwarning) {warning(text)}
+  assign(cacheKey, G, envir=rddensityMomentCache)
   return(G)
 }
 
@@ -460,9 +489,8 @@ rddensity_fV <- function(Y, X, Nl, Nr, Nlh, Nrh, hl, hr, p, s,
         L[, jj] <- rep(((cumsum(c(0, XpW[Nh:1, jj])) / (N - 1))[Nh:1])[indexUnique], times=freqUnique)
       }
     } else {
-      L[1, ] <- colSums(XpW[2:Nh, ]) / (N - 1)
-      for (i in 2:Nh) {
-        L[i, ] <- L[i-1, ] - XpW[i, ] / (N - 1)
+      for (jj in 1:ncol(L)) {
+        L[, jj] <- (cumsum(c(0, XpW[Nh:1, jj])) / (N - 1))[Nh:1]
       }
     }
 

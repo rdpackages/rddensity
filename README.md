@@ -15,7 +15,7 @@ pip install rddensity
 
 - Help: [PyPI repository](https://pypi.org/project/rddensity/).
 
-- Replication: [rddensity illustration](Python/rddensity_illustration.py), [senate data](Python/rddensity/tests/rddensity_senate.csv).
+- Replication: [rddensity illustration](Python/rddensity_illustration.py), [rdplotdensity illustration](Python/rddensity_plot_illustration.py), [senate data](Python/rddensity_senate.csv).
 
 ## R Implementation
 

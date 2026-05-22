@@ -1,8 +1,8 @@
 ********************************************************************************
 * RDDENSITY STATA PACKAGE -- rddensity
-* Authors: Matias D. Cattaneo, Rocio Titiunik, Gonzalo Vazquez-Bare
+* Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.5 2024-10-06
+*!version 3.0 2026-05-21
 
 capture program drop rddensityEST
 
@@ -16,6 +16,7 @@ kernel(string) 						///
 h(string) 							///
 bwselect(string) 					///
 vce(string) 						///
+precision(string)					///
 all									///
 noMASSpoints						///
 noREGularize 			    		///
@@ -24,6 +25,7 @@ NUNIquemin (integer -1)				///
 ]
 
 	marksample touse
+	markout `touse' `varlist'
 
 	if (`q'==0) local q = `p' + 1
 	if ("`fitselect'"=="") local fitselect = "unrestricted"
@@ -34,6 +36,16 @@ NUNIquemin (integer -1)				///
 	local bwselect = lower("`bwselect'")
 	if ("`vce'"=="") local vce = "jackknife"
 	local vce = lower("`vce'")
+	if ("`precision'"=="") local precision = "double"
+	else {
+		local precision = lower("`precision'")
+		if ("`precision'"!="double" & "`precision'"!="single") {
+			di as err `"precision(): incorrectly specified: options(single, double)"'
+			exit 198
+		}
+	}
+	local storage_type = "double"
+	if ("`precision'"=="single") local storage_type = "float"
 	
 	tokenize `h'	
 	local w : word count `h'
@@ -54,27 +66,25 @@ NUNIquemin (integer -1)				///
 		exit 125
 	}
 
-	preserve
-	qui keep if `touse'
+	local x_name "`varlist'"
 
-	local x "`varlist'"
-
-	qui drop if `x'==.
+	tempvar x
+	qui gen `storage_type' `x' = `x_name' if `touse'
 	
-	qui su `x'
+	qui su `x' if `touse'
 	local x_min = r(min)
 	local x_max = r(max)
 	local N = r(N)
 
-	qui count if `x'<`c'
+	qui count if `touse' & `x'<`c'
 	local Nl = r(N)
-	qui count if `x'>=`c'
+	qui count if `touse' & `x'>=`c'
 	local Nr = r(N)
 
 	****************************************************************************
 	*** BEGIN ERROR HANDLING *************************************************** 
 	if (`c'<=`x_min' | `c'>=`x_max'){
-		di "{err}{cmd:c()} should be set within the range of `x'."  
+		di "{err}{cmd:c()} should be set within the range of `x_name'."
 		exit 125
 	}
 	
@@ -168,10 +178,10 @@ NUNIquemin (integer -1)				///
 	}
 		
 	if (`hl'==0 | `hr'==0) {
-	    local bwmethod = "`bwselect'"
+		local bwmethod = "`bwselect'"
 		disp in ye "Computing data-driven bandwidth selectors."
-		qui rdbwdensity `x', c(`c') p(`p') kernel(`kernel') fitselect(`fitselect') vce(`vce') ///
-			nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') `Tempregularize' `Tempmasspoints'
+		qui rdbwdensity `x' if `touse', c(`c') p(`p') kernel(`kernel') fitselect(`fitselect') vce(`vce') ///
+			nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') precision(`precision') `Tempregularize' `Tempmasspoints'
 		mat out = e(h)
 		if ("`fitselect'"=="unrestricted" & "`bwselect'"=="each" & `hl'==0) local hl = out[1,1]
 		if ("`fitselect'"=="unrestricted" & "`bwselect'"=="each" & `hr'==0) local hr = out[2,1]
@@ -191,66 +201,66 @@ NUNIquemin (integer -1)				///
 	}
 	*** END BANDWIDTH SELECTION ************************************************ 
 	****************************************************************************
-	qui replace `x' = `x'-`c'
-	
-	qui count if `x'<0 & `x'>= -`hl'
-	if (`r(N)'<5){
-	 display("{err}Not enough observations on the left to perform calculations.")
-	 exit(1)
-	}
-	local Nlh = r(N)
-
-	qui count if `x'>=0 & `x'<=`hr'
-	if (`r(N)'<5){
-	 display("{err}Not enough observations on the right to perform calculations.")
-	 exit(1)
-	}
-	local Nrh = r(N)
-	local Nh = `Nlh' + `Nrh'
-
-	qui sort `x'
+	qui replace `x' = `x'-`c' if `touse'
+	tempname Nlh_s Nrh_s
 
 	****************************************************************************
 	*** BEGIN MATA ESTIMATION ************************************************** 
 	mata{
-	X = st_data(.,("`x'"), 0)
+	X = sort(st_data(.,("`x'"), "`touse'"), 1)
 	
-	XUnique   	= rddensity_unique(X)
-	freqUnique  = XUnique[., 2]
-	indexUnique = XUnique[., 4]
-	XUnique     = XUnique[., 1]
-	NUnique     = length(XUnique)
-	NlUnique    = sum(XUnique :<  0)
-	NrUnique    = sum(XUnique :>= 0)
-	
+	has_repeated = (rows(X) > 1 ? any(X[2..rows(X)] :== X[1..(rows(X)-1)]) : 0)
+	masspoints_flag = has_repeated & `masspoints'
 	Y = (0..(`N'-1))' :/ (`N'-1)
-	if (`masspoints') {
+	if (masspoints_flag) {
+		XUnique   	= rddensity_unique(X)
+		freqUnique  = XUnique[., 2]
+		indexUnique = XUnique[., 4]
 		Y = rddensity_rep(Y[indexUnique], freqUnique)
 	}
-	masspoints_flag = sum(freqUnique :!= 1) > 0 & `masspoints'
 
-	Y = select(Y, X :>= -`hl' :& X :<= `hr')
-	X = select(X, X :>= -`hl' :& X :<= `hr')
-	fV_q = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `q', 1, "`kernel'", "`fitselect'", "`vce'", `masspoints')
-	T_q  = fV_q[3,1] / sqrt(fV_q[3,2])
-	st_numscalar("f_ql", fV_q[1,1]); st_numscalar("f_qr", fV_q[2,1])
-	st_numscalar("se_ql", sqrt(fV_q[1,2])); st_numscalar("se_qr", sqrt(fV_q[2,2]))
-	st_numscalar("se_q", sqrt(fV_q[3,2]))
-	st_numscalar("T_q", T_q); st_numscalar("pval_q", 2*normal(-abs(T_q)))
+	h_mask = (X :>= -`hl') :& (X :<= `hr')
+	left_mask = h_mask :& (X :< 0)
+	Nlh = sum(left_mask)
+	Nrh = sum(h_mask) - Nlh
+	st_numscalar("`Nlh_s'", Nlh)
+	st_numscalar("`Nrh_s'", Nrh)
 
-	if ("`all'"!=""){
-		fV_p = rddensity_fv(Y, X, `Nl', `Nr', `Nlh', `Nrh', `hl', `hr', `p', 1, "`kernel'", "`fitselect'", "`vce'", `masspoints')
-		T_p  = fV_p[3,1] / sqrt(fV_p[3,2])
-		st_numscalar("f_pl", fV_p[1,1]); st_numscalar("f_pr", fV_p[2,1])
-		st_numscalar("se_pl", sqrt(fV_p[1,2])); st_numscalar("se_pr", sqrt(fV_p[2,2]))
-		st_numscalar("se_p", sqrt(fV_p[3,2]))
-		st_numscalar("T_p", T_p); st_numscalar("pval_p", 2*normal(-abs(T_p)))
+	if (Nlh >= 5 & Nrh >= 5) {
+		Y = select(Y, h_mask)
+		X = select(X, h_mask)
+		fV_q = rddensity_fv(Y, X, `Nl', `Nr', Nlh, Nrh, `hl', `hr', `q', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
+		T_q  = fV_q[3,1] / sqrt(fV_q[3,2])
+		st_numscalar("f_ql", fV_q[1,1]); st_numscalar("f_qr", fV_q[2,1])
+		st_numscalar("se_ql", sqrt(fV_q[1,2])); st_numscalar("se_qr", sqrt(fV_q[2,2]))
+		st_numscalar("se_q", sqrt(fV_q[3,2]))
+		st_numscalar("T_q", T_q); st_numscalar("pval_q", 2*normal(-abs(T_q)))
+
+		if ("`all'"!=""){
+			fV_p = rddensity_fv(Y, X, `Nl', `Nr', Nlh, Nrh, `hl', `hr', `p', 1, "`kernel'", "`fitselect'", "`vce'", masspoints_flag)
+			T_p  = fV_p[3,1] / sqrt(fV_p[3,2])
+			st_numscalar("f_pl", fV_p[1,1]); st_numscalar("f_pr", fV_p[2,1])
+			st_numscalar("se_pl", sqrt(fV_p[1,2])); st_numscalar("se_pr", sqrt(fV_p[2,2]))
+			st_numscalar("se_p", sqrt(fV_p[3,2]))
+			st_numscalar("T_p", T_p); st_numscalar("pval_p", 2*normal(-abs(T_p)))
+		}
 	}
 	st_numscalar("masspoints_flag", masspoints_flag)
 	*display("Estimation completed.") 
 	}
 	*** END MATA ESTIMATION **************************************************** 
 	****************************************************************************
+	local Nlh = `Nlh_s'
+	local Nrh = `Nrh_s'
+	if (`Nlh'<5){
+	 display("{err}Not enough observations on the left to perform calculations.")
+	 exit(1)
+	}
+	if (`Nrh'<5){
+	 display("{err}Not enough observations on the right to perform calculations.")
+	 exit(1)
+	}
+	local Nh = `Nlh' + `Nrh'
 
 	****************************************************************************
 	*** BEGIN OUTPUT TABLE ***************************************************** 
@@ -283,7 +293,7 @@ NUNIquemin (integer -1)				///
 	disp in smcl in gr "{ralign 18:BW est. (h)}"				_col(19) " {c |} " 	_col(21) as result %9.3f `hl'      			_col(34) %9.3f  `hr'
 
 	disp ""
-	disp "Running variable: `x'."
+	disp "Running variable: `x_name'."
 	disp in smcl in gr "{hline 19}{c TT}{hline 22}"
 	disp in smcl in gr "{ralign 18:Method}"                		_col(19) " {c |} " _col(23) "    T"          _col(38) "P>|T|" 
 	disp in smcl in gr "{hline 19}{c +}{hline 22}"
@@ -303,8 +313,6 @@ NUNIquemin (integer -1)				///
 
 	*** END OUTPUT TABLE ******************************************************* 
 	****************************************************************************
-
-	restore
 
 	ereturn clear
 	ereturn scalar c = `c'
@@ -334,13 +342,12 @@ NUNIquemin (integer -1)				///
 		ereturn scalar T_p = T_p
 	}
 	
-	ereturn local runningvar "`x'"
+	ereturn local runningvar "`x_name'"
 	ereturn local kernel = "`kernel'"
 	ereturn local bwmethod = "`bwmethod'"
 	ereturn local vce = "`vce'"
+	ereturn local precision = "`precision'"
 
-	mata: mata clear
-	
 end
 	
 ********************************************************************************
@@ -359,6 +366,7 @@ program define rddensity, eclass
 			FITselect(string) 				///
 			KERnel(string) 					///
 			VCE(string) 					///
+			PRECision(string)				///
 			noMASSpoints					///
 			/* Bandwidth selection */		///
 			H(string) 						///
@@ -412,8 +420,19 @@ program define rddensity, eclass
 			]
 
 	marksample touse
+	markout `touse' `varlist'
 	
 	local x "`varlist'"
+	if ("`precision'"=="") local precision = "double"
+	else {
+		local precision = lower("`precision'")
+		if ("`precision'"!="double" & "`precision'"!="single") {
+			di as err `"precision(): incorrectly specified: options(single, double)"'
+			exit 198
+		}
+	}
+	local storage_type = "double"
+	if ("`precision'"=="single") local storage_type = "float"
 	
 	****************************************************************************
 	*** CALL: RDDENSITYEST ********************************************************
@@ -441,7 +460,7 @@ program define rddensity, eclass
 	
 	rddensityEST `x' if `touse', ///
 			c(`c') p(`p') q(`q') fitselect(`fitselect') kernel(`kernel') h(`h') bwselect(`bwselect') vce(`vce') ///
-			`regularize' `masspoints' `all' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin')
+			precision(`precision') `regularize' `masspoints' `all' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin')
 	
 	/// save ereturn results
 	local c 			= e(c)
@@ -475,6 +494,43 @@ program define rddensity, eclass
 	local bwmethod 		= e(bwmethod)
     local kernel 		= e(kernel)
     local runningvar 	= e(runningvar)
+	local precision 	= e(precision)
+
+	local plot_work 0
+	if ("`plot'" != "") local plot_work 1
+	if ("`plot_range'" != "") local plot_work 1
+	if ("`plot_n'" != "") local plot_work 1
+	if ("`plot_grid'" != "") local plot_work 1
+	if ("`plot_bwselect'" != "") local plot_work 1
+	if ("`plot_ciuniform'" != "") local plot_work 1
+	if ("`plotl_estype'" != "") local plot_work 1
+	if ("`plotr_estype'" != "") local plot_work 1
+	if ("`plotl_citype'" != "") local plot_work 1
+	if ("`plotr_citype'" != "") local plot_work 1
+	if ("`histogram'" != "") local plot_work 1
+	if ("`hist_range'" != "") local plot_work 1
+	if ("`hist_n'" != "") local plot_work 1
+	if ("`hist_width'" != "") local plot_work 1
+	if ("`genvars'" != "") local plot_work 1
+	if (`"`esll_opt'"' != "") local plot_work 1
+	if (`"`espl_opt'"' != "") local plot_work 1
+	if (`"`eslr_opt'"' != "") local plot_work 1
+	if (`"`espr_opt'"' != "") local plot_work 1
+	if (`"`cirl_opt'"' != "") local plot_work 1
+	if (`"`cill_opt'"' != "") local plot_work 1
+	if (`"`cibl_opt'"' != "") local plot_work 1
+	if (`"`cirr_opt'"' != "") local plot_work 1
+	if (`"`cilr_opt'"' != "") local plot_work 1
+	if (`"`cibr_opt'"' != "") local plot_work 1
+	if (`"`histl_opt'"' != "") local plot_work 1
+	if (`"`histr_opt'"' != "") local plot_work 1
+	if (`"`graph_opt'"' != "") local plot_work 1
+
+	if ("`binomial'" == "" | `plot_work') {
+		tempvar x_precision
+		qui gen `storage_type' `x_precision' = `x'
+		local x "`x_precision'"
+	}
 	
 	****************************************************************************
 	*** BINOMIAL TEST **********************************************************
@@ -597,7 +653,7 @@ program define rddensity, eclass
 	mata {
 	if ("`binomial'" == "") {
 
-	X = st_data(.,("`x'"), 0)
+	X = st_data(.,("`x'"), "`touse'")
 	XL = sort(abs(select(X, X :< `c') :- `c'), 1)
 	XR = sort(select(X, X :>= `c') :- `c', 1)
 	Y = sort(abs(X :- `c'), 1)
@@ -739,6 +795,44 @@ program define rddensity, eclass
 	****************************************************************************
 	*** LPDENSITY **************************************************************
 	
+	if (!`plot_work') {
+		ereturn clear
+		ereturn scalar c = `c'
+		ereturn scalar p = `p'
+		ereturn scalar q = `q'
+		ereturn scalar N_l = `N_l'
+		ereturn scalar N_r = `N_r'
+		ereturn scalar N_h_l = `N_h_l'
+		ereturn scalar N_h_r = `N_h_r'
+		ereturn scalar h_l = `h_l'
+		ereturn scalar h_r = `h_r'
+		ereturn scalar f_ql = `f_ql'
+		ereturn scalar f_qr = `f_qr'
+		ereturn scalar se_ql = `se_ql'
+		ereturn scalar se_qr = `se_qr'
+		ereturn scalar se_q = `se_q'
+		ereturn scalar pv_q = `pv_q'
+		ereturn scalar T_q = `T_q'
+
+		if ("`all'"!=""){
+		ereturn scalar f_pl = `f_pl'
+		ereturn scalar f_pr = `f_pr'
+		ereturn scalar se_pl = `se_pl'
+		ereturn scalar se_pr = `se_pr'
+		ereturn scalar se_p = `se_p'
+		ereturn scalar pv_p = `pv_p'
+		ereturn scalar T_p = `T_p'
+		}
+
+		ereturn local runningvar  "`runningvar'"
+		ereturn local kernel  "`kernel'"
+		ereturn local bwmethod  "`bwmethod'"
+		ereturn local vce  "`vce'"
+		ereturn local precision "`precision'"
+
+		exit
+	}
+
 	// plot_range
 	tokenize `plot_range'	
 	local w : word count `plot_range'
@@ -836,17 +930,17 @@ program define rddensity, eclass
 			set obs `newN'
 		}
 		tempvar temp_grid
-		qui gen `temp_grid' = .
+		qui gen `storage_type' `temp_grid' = .
 		tempvar temp_bw
-		qui gen `temp_bw' = .
+		qui gen `storage_type' `temp_bw' = .
 		tempvar temp_f
-		qui gen `temp_f' = .
+		qui gen `storage_type' `temp_f' = .
 		tempvar temp_cil
-		qui gen `temp_cil' = .
+		qui gen `storage_type' `temp_cil' = .
 		tempvar temp_cir
-		qui gen `temp_cir' = .
+		qui gen `storage_type' `temp_cir' = .
 		tempvar temp_group
-		qui gen `temp_group' = .
+		qui gen `storage_type' `temp_group' = .
 		
 	}
 
@@ -889,9 +983,9 @@ program define rddensity, eclass
 	
 	// left estimation
 	tempvar temp_grid_l
-		qui gen `temp_grid_l' = `temp_grid' if `temp_group' == 0
+		qui gen `storage_type' `temp_grid_l' = `temp_grid' if `temp_group' == 0
 	tempvar temp_bw_l
-		qui gen `temp_bw_l' = `temp_bw' if `temp_group' == 0
+		qui gen `storage_type' `temp_bw_l' = `temp_bw' if `temp_group' == 0
 	
 	// bandwidth selection
 	if ("`plot_bwselect'" == "") {
@@ -912,7 +1006,7 @@ program define rddensity, eclass
 	capture lpdensity `x' if `touse' & `x' < `c', /// 
 		grid(`temp_grid_l') `plot_bwselect_l' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_l') level(`level') ///
 		`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
-		`plot_ciuniform' 
+		precision(`precision') `plot_ciuniform'
 	if (_rc != 0) {
 		di as error  `"{err}{cmd:lpdensity} failed. Please try to install the latest version using"'
 		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/main/stata) replace"'
@@ -921,7 +1015,7 @@ program define rddensity, eclass
 		lpdensity `x' if `touse' & `x' < `c', /// 
 			grid(`temp_grid_l') `plot_bwselect_l' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_l') level(`level') ///
 			`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
-			`plot_ciuniform' 
+			precision(`precision') `plot_ciuniform'
 		exit 111
 	}
 	}
@@ -939,9 +1033,9 @@ program define rddensity, eclass
 	if (`plot' == 1) {
 	// right estimation
 	tempvar temp_grid_r
-		qui gen `temp_grid_r' = `temp_grid' if `temp_group' == 1
+		qui gen `storage_type' `temp_grid_r' = `temp_grid' if `temp_group' == 1
 	tempvar temp_bw_r
-		qui gen `temp_bw_r' = `temp_bw' if `temp_group' == 1
+		qui gen `storage_type' `temp_bw_r' = `temp_bw' if `temp_group' == 1
 		
 	if ("`plot_bwselect'" == "") {
 		local plot_bwselect_r = `"bw(`temp_bw_r')"'
@@ -953,7 +1047,7 @@ program define rddensity, eclass
 	capture lpdensity `x' if `touse' & `x' >= `c', /// 
 		grid(`temp_grid_r') `plot_bwselect_r' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_r') level(`level') ///
 		`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
-		`plot_ciuniform'
+		precision(`precision') `plot_ciuniform'
 	if (_rc != 0) {
 		di as error  `"{err}{cmd:lpdensity} failed. Please try to install the latest version using"'
 		di as error  `"{err}net install lpdensity, from(https://raw.githubusercontent.com/nppackages/lpdensity/main/stata) replace"'
@@ -962,7 +1056,7 @@ program define rddensity, eclass
 		lpdensity `x' if `touse' & `x' >= `c', /// 
 			grid(`temp_grid_r') `plot_bwselect_r' p(`p') q(`q') v(1) kernel(`kernel') scale(`scale_r') level(`level') ///
 			`regularize' `masspoints' nlocalmin(`nlocalmin') nuniquemin(`nuniquemin') ///
-			`plot_ciuniform'
+			precision(`precision') `plot_ciuniform'
 		exit 111
 	}
 	}
@@ -978,12 +1072,12 @@ program define rddensity, eclass
 	}
 		
 	if ("`genvars'" != "" & `plot' == 1) {
-		qui gen `genvars'_grid 	= `temp_grid'
-		qui gen `genvars'_bw 	= `temp_bw'
-		qui gen `genvars'_f 	= `temp_f'
-		qui gen `genvars'_cil 	= `temp_cil'
-		qui gen `genvars'_cir 	= `temp_cir'
-		qui gen `genvars'_group = `temp_group'
+		qui gen `storage_type' `genvars'_grid 	= `temp_grid'
+		qui gen `storage_type' `genvars'_bw 	= `temp_bw'
+		qui gen `storage_type' `genvars'_f 	= `temp_f'
+		qui gen `storage_type' `genvars'_cil 	= `temp_cil'
+		qui gen `storage_type' `genvars'_cir 	= `temp_cir'
+		qui gen `storage_type' `genvars'_group = `temp_group'
 		label variable `genvars'_grid	"rddensity plot: grid"
 		label variable `genvars'_bw		"rddensity plot: bandwidth"
 		label variable `genvars'_f		"rddensity plot: point estimate"
@@ -1128,17 +1222,17 @@ program define rddensity, eclass
 		}
 		
 		tempvar temp_hist_center
-		qui gen `temp_hist_center' = .
+		qui gen `storage_type' `temp_hist_center' = .
 		tempvar temp_hist_end_l
-		qui gen `temp_hist_end_l' = .
+		qui gen `storage_type' `temp_hist_end_l' = .
 		tempvar temp_hist_end_r
-		qui gen `temp_hist_end_r' = .
+		qui gen `storage_type' `temp_hist_end_r' = .
 		tempvar temp_hist_width
-		qui gen `temp_hist_width' = .
+		qui gen `storage_type' `temp_hist_width' = .
 		tempvar temp_hist_height
-		qui gen `temp_hist_height' = .	
+		qui gen `storage_type' `temp_hist_height' = .
 		tempvar temp_hist_group
-		qui gen `temp_hist_group' = .
+		qui gen `storage_type' `temp_hist_group' = .
 	}
 	
 	// MATA
@@ -1169,12 +1263,12 @@ program define rddensity, eclass
 	}
 	
 	if ("`genvars'" != "" & `plot' == 1 & `histogram' == 1) {
-		qui gen `genvars'_hist_width 	= `temp_hist_width'
-		qui gen `genvars'_hist_center 	= `temp_hist_center'
-		qui gen `genvars'_hist_height 	= `temp_hist_height'
-		qui gen `genvars'_hist_group 	= `temp_hist_group'
-		qui gen `genvars'_hist_endl 	= `temp_hist_end_l'
-		qui gen `genvars'_hist_endr 	= `temp_hist_end_r'
+		qui gen `storage_type' `genvars'_hist_width 	= `temp_hist_width'
+		qui gen `storage_type' `genvars'_hist_center 	= `temp_hist_center'
+		qui gen `storage_type' `genvars'_hist_height 	= `temp_hist_height'
+		qui gen `storage_type' `genvars'_hist_group 	= `temp_hist_group'
+		qui gen `storage_type' `genvars'_hist_endl 	= `temp_hist_end_l'
+		qui gen `storage_type' `genvars'_hist_endr 	= `temp_hist_end_r'
 		label variable `genvars'_hist_width		"histogram plot: histogram bar width"
 		label variable `genvars'_hist_center	"histogram plot: histogram bar center"
 		label variable `genvars'_hist_endl		"histogram plot: histogram bar left end"
@@ -1361,7 +1455,7 @@ program define rddensity, eclass
 		
 		// graph option check
 		if (`"`graph_opt'"' == "" ) {
-			local graph_opt = `"xline(`c', lcolor(black) lwidth(medthin) lpattern(solid)) legend(off) title("Manipulation Testing Plot", color(gs0)) xtitle("`x'") ytitle("")"'
+			local graph_opt = `"xline(`c', lcolor(black) lwidth(medthin) lpattern(solid)) legend(off) title("Manipulation Testing Plot", color(gs0)) xtitle("`runningvar'") ytitle("")"'
 		}
 		
 		twoway 	`plot_histogram_l' 	/// 
@@ -1379,7 +1473,7 @@ program define rddensity, eclass
 				,					///
 				`graph_opt'
 	}
-	
+
 	ereturn clear 
 	ereturn scalar c = `c' 
 	ereturn scalar p = `p' 
@@ -1412,8 +1506,7 @@ program define rddensity, eclass
 	ereturn local kernel  "`kernel'"
 	ereturn local bwmethod  "`bwmethod'"
 	ereturn local vce  "`vce'"
-	
-	mata: mata clear
+	ereturn local precision "`precision'"
 	
 end
 	

@@ -219,7 +219,7 @@ Cattaneo, M. D., M. Jansson, and X. Ma. 2023. Local Regression Distribution Esti
 \author{
 Matias D. Cattaneo (maintainer), Princeton University. \email{matias.d.cattaneo@gmail.com}.
 
-Rocio Titiunik, Princeton University. \email{rocio.titiunik@gmail.com}.
+Michael Jansson, University of California Berkeley. \email{michael.jansson.berkeley@gmail.com}.
 
-Gonzalo Vazquez-Bare, UC Santa Barbara. \email{gvazquezbare@gmail.com}.
+Xinwei Ma, University of California San Diego. \email{xinweima.pku@gmail.com}.
 }

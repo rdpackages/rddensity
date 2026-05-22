@@ -1,9 +1,7 @@
 ###########################################################################
 ## RDDENSITY R Package
 ## Do-file for RDDENSITY Illustration
-## Authors: Matias D. Cattaneo, Michael Jansson and Xinwei Ma
 ###########################################################################
-### Clear R environment
 rm(list=ls(all=TRUE))
 setwd("..")
 

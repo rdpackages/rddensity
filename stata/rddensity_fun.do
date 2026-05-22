@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rddensity -- Mata functions
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 2.5 2024-10-06
+*!version 3.0 2026-05-21
 
 ** NOTE: DATA IS ASSUMED TO BE IN ASCENDING ORDER
 
@@ -112,21 +112,37 @@ real matrix rddensity_fv(real colvector Y, real colvector X,
 						 string scalar kernel, string fitselect, string scalar vce, 
 						 real scalar masspoints){
 	N = Nl + Nr; Nh = Nlh + Nrh;
+	Xl = X[1..Nlh]
+	Xr = X[(Nlh+1)..Nh]
 	W = J(Nh, 1, 1);
-	if (kernel=="triangular") {W = W:-(X[1..Nlh]/(-hl)\X[(Nlh+1)..Nh]/hr);}
-	else if (kernel=="epanechnikov") {W = W:-(X[1..Nlh]/hl\X[(Nlh+1)..Nh]/hr):^2;}
+	if (kernel=="triangular") {
+		W[1..Nlh] = W[1..Nlh] + Xl/hl
+		W[(Nlh+1)..Nh] = W[(Nlh+1)..Nh] - Xr/hr
+	}
+	else if (kernel=="epanechnikov") {
+		W[1..Nlh] = W[1..Nlh] - (Xl/hl):^2
+		W[(Nlh+1)..Nh] = W[(Nlh+1)..Nh] - (Xr/hr):^2
+	}
 
 	if (fitselect=="restricted"){
-		Xp = J(Nh,1+p+1,0); Xp[1..Nlh,1] = X[1..Nlh]; Xp[(Nlh+1)..Nh,2] = X[(Nlh+1)..Nh];
+		Xp = J(Nh,1+p+1,0); Xp[1..Nlh,1] = Xl; Xp[(Nlh+1)..Nh,2] = Xr;
 		Xp[.,3] = J(Nh, 1, 1);
-		for (j=2; j<=p; j++){Xp[.,j+2] = X:^j;}
+		Xpow = X
+		for (j=2; j<=p; j++){
+			Xpow = Xpow:*X
+			Xp[.,j+2] = Xpow
+		}
 	}
 	else if (fitselect=="unrestricted"){
-		Xp = J(Nh,2*(p+1),0); Xp[1..Nlh,1] = X[1..Nlh]; Xp[(Nlh+1)..Nh,2] = X[(Nlh+1)..Nh];
+		Xp = J(Nh,2*(p+1),0); Xp[1..Nlh,1] = Xl; Xp[(Nlh+1)..Nh,2] = Xr;
 		Xp[1..Nlh,3] = J(Nlh, 1, 1); Xp[(Nlh+1)..Nh,4] = J(Nrh, 1, 1);
+		Xlpow = Xl
+		Xrpow = Xr
 		for (j=2; j<=p; j++){
-			Xp[1..Nlh     ,2*j+1] = X[1..Nlh]:^j;
-			Xp[(Nlh+1)..Nh,2*j+2] = X[(Nlh+1)..Nh]:^j;
+			Xlpow = Xlpow:*Xl
+			Xrpow = Xrpow:*Xr
+			Xp[1..Nlh     ,2*j+1] = Xlpow;
+			Xp[(Nlh+1)..Nh,2*j+2] = Xrpow;
 		}
 	}
 
@@ -140,27 +156,37 @@ real matrix rddensity_fv(real colvector Y, real colvector X,
 	else if (fitselect=="unrestricted"){out[.,3] = (b[2*s+1,1]\b[2*s+2,1]\b[2*s+2,1]-b[2*s+1,1]\b[2*s+2,1]+b[2*s+1,1]);}
 
 	if (vce=="jackknife"){
-		XpW = Xp:*W; L = J(Nh,cols(Xp),0)
+		XpW = Xp:*W
 		
 		if (masspoints) {
 			XUnique     = rddensity_unique(X)
 			freqUnique  = XUnique[., 2]
 			indexUnique = XUnique[., 3]
+			indexLast   = XUnique[., 4]
+			XpWUnique   = J(rows(XUnique), cols(XpW), 0)
+			XpWFirst    = J(rows(XUnique), cols(XpW), 0)
 			
-			for (jj=1; jj<=cols(L); jj++) {
-				L[., jj] = rddensity_rep(((runningsum((0\ XpW[Nh..1, jj])) :/ (N - 1))[Nh..1])[indexUnique], freqUnique)
+			for (jj=1; jj<=rows(XUnique); jj++) {
+				XpWFirst[jj,.] = XpW[indexUnique[jj],.]
+				if (indexUnique[jj] == indexLast[jj]) {
+					XpWUnique[jj,.] = XpW[indexUnique[jj],.]
+				}
+				else {
+					XpWUnique[jj,.] = colsum(XpW[indexUnique[jj]..indexLast[jj],.])
+				}
 			}
+			L = rowshape(runningsum(vec((J(1, cols(XpWUnique), 0) \ XpWUnique[rows(XpWUnique)..1,.]))), cols(XpWUnique))'
+			L = (L :- J(rows(L), 1, L[1,.]))[(rows(L)-1)..1,.]
+			L = (L + (freqUnique :- 1):*XpWFirst) :/ (N - 1)
+			LL = cross(L, freqUnique, L)
 		}
 		else {
-			for (i=1; i<=Nh; i++) { 
-				L[1,.] = L[1,.]   + XpW[i,.]   / (N-1) 
-			}
-			for (i=2; i<=Nh; i++) { 
-				L[i,.] = L[i-1,.] - XpW[i-1,.] / (N-1) 
-			}
+			L = rowshape(runningsum(vec((J(1, cols(XpW), 0) \ XpW[Nh..1,.]))), cols(XpW))'
+			L = (L :- J(rows(L), 1, L[1,.]))[(rows(L)-1)..1,.] :/ (N - 1)
+			LL = cross(L,L)
 		}
 
-		V = Sinv[1..2,.]*cross(L,L)*Sinv[.,1..2];
+		V = Sinv[1..2,.]*LL*Sinv[.,1..2];
 	}
 	else if (vce=="plugin" & fitselect=="unrestricted"){
 		if (kernel=="uniform") {Varv0=(1.2000000000000046185,5.4857142857155736237,14.28571428575378377,29.090909094894868758,51.398601335826242575,82.707663360750302672,124.51643660507397726,178.21357816224917769);}

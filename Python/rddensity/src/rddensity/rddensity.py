@@ -102,14 +102,15 @@ def rddensity(X, c=0, p=2, q=0,
     if q==0:
         q = p+1
     #bandwidth
+    h = np.asarray(h, dtype=float).reshape(-1)
     if len(h) == 0:
         hl = 0
         hr = 0
     elif len(h) == 1:
-        if h<=0:
+        if h[0]<=0:
             raise Exception("Bandwidth has to be positive.")
         else:
-            hl = hr = h
+            hl = hr = h[0]
     elif len(h) == 2:
         if min(h) <=0:
             raise Exception("Bandwidth has to be positive.")
@@ -120,31 +121,30 @@ def rddensity(X, c=0, p=2, q=0,
         raise Exception("No more than two bandwidths are accepted.")
 
     # missing value handling
-    X = pd.DataFrame(X)
-    if X.isnull().values.any():
-        warnings.warn(f'{X.isnull().sum()} missing observation(s) are ignored.\n')
+    X = funs._as_numeric_vector(X)
+    missing = np.isnan(X)
+    if np.any(missing):
+        warnings.warn(f'{int(np.sum(missing))} missing observation(s) are ignored.\n')
+        X = X[~missing]
 
-    X = X.dropna(axis=0)
+    if len(X) == 0:
+        raise Exception("X cannot be empty after removing missing values.")
 
     #sample sizes
-    X = X.sort_values(by=X.columns[0], ignore_index=True)
+    X = np.sort(X)
     n = len(X)
-    nl = sum(X[X.columns[0]]<c)
-    nr = sum(X[X.columns[0]]>=c)
-    Xmin = X.min()[0]
-    Xmax = X.max()[0]
+    nl = int(np.searchsorted(X, c, side="left"))
+    nr = n - nl
+    Xmin = X[0]
+    Xmax = X[-1]
     XUnique = funs.__rddensityUnique(X)
-    freqUnique = XUnique["freq"]
-    indexUnique = XUnique["indexLast"]
-    XUnique = XUnique["unique"]
+    freqUnique = np.asarray(XUnique["freq"], dtype=int)
+    indexUnique = np.asarray(XUnique["indexLast"], dtype=int)
+    XUnique = np.asarray(XUnique["unique"], dtype=float)
     nUnique = len(XUnique)
-    nlUnique = sum(XUnique < c)[0]
-    nrUnique = sum(XUnique >= c)[0]
+    nlUnique = int(np.searchsorted(XUnique, c, side="left"))
+    nrUnique = nUnique - nlUnique
 
-    if (nUnique!=n & massPoints)==True:
-        massPoints_flag = True
-    else:
-        massPoints_flag = False
     #Error Handling
     if c<Xmin or c>Xmax:
         raise Exception("The cutoff should be set within the range of the data.")
@@ -190,6 +190,7 @@ def rddensity(X, c=0, p=2, q=0,
         massPoints = True
     elif type(massPoints) != bool:
         raise Exception("Option massPoints incorrectly specified.")
+    massPoints_flag = nUnique != n and massPoints
 
     # bandwidth selection
     if (int(hl)>0 & int(hr>0)):
@@ -202,58 +203,59 @@ def rddensity(X, c=0, p=2, q=0,
         if (fitselect=='unrestricted'):
             if bwselect=='each':
                 if hl==0:
-                    hl = out['bw'][0]
+                    hl = out['bw'].iloc[0]
                 if hr==0:
-                    hr = out['bw'][1]
+                    hr = out['bw'].iloc[1]
             elif bwselect=='diff':
                 if hl==0:
-                    hl = out['bw'][2]
+                    hl = out['bw'].iloc[2]
                 if hr==0:
-                    hr = out['bw'][2]
+                    hr = out['bw'].iloc[2]
             elif bwselect=='sum':
                 if hl==0:
-                    hl = out['bw'][3]
+                    hl = out['bw'].iloc[3]
                 if hr==0:
-                    hr = out['bw'][3]
+                    hr = out['bw'].iloc[3]
             elif bwselect=='comb':
                 if hl==0:
-                    hl = stat.median([out['bw'][0], out['bw'][2], out['bw'][3]])
+                    hl = stat.median([out['bw'].iloc[0], out['bw'].iloc[2], out['bw'].iloc[3]])
                 if hr==0:
-                    hr = stat.median([out['bw'][1], out['bw'][2], out['bw'][3]])
+                    hr = stat.median([out['bw'].iloc[1], out['bw'].iloc[2], out['bw'].iloc[3]])
         elif fitselect=='restricted':
             if bwselect=='diff':
                 if hl==0:
-                    hl = out['bw'][2]
+                    hl = out['bw'].iloc[2]
                 if hr==0:
-                    hr = out['bw'][2]
+                    hr = out['bw'].iloc[2]
             elif bwselect=='sum':
                 if hl==0:
-                    hl = out['bw'][3]
+                    hl = out['bw'].iloc[3]
                 if hr==0:
-                    hr = out['bw'][3]
+                    hr = out['bw'].iloc[3]
             elif bwselect=='comb':
                 if hl==0:
-                    hl = min([out['bw'][2], out['bw'][3]])
+                    hl = min([out['bw'].iloc[2], out['bw'].iloc[3]])
                 if hr==0:
-                    hr = min([out['bw'][2], out['bw'][3]])
+                    hr = min([out['bw'].iloc[2], out['bw'].iloc[3]])
 
 
     #data trimming
     X = X - c
     Y = np.array(range(n))/(n-1)
-    if massPoints==True:
+    if massPoints_flag:
         Y = np.repeat(Y[indexUnique], freqUnique)
 
-    Xh = X[(X>=-1*hl) & (X<=hr)].dropna()
-    Yh = pd.DataFrame(Y[Xh.index])
+    h_mask = (X>=-1*hl) & (X<=hr)
+    Xh = X[h_mask]
+    Yh = Y[h_mask]
 
-    nlh = sum(Xh[Xh.columns[0]]<0)
-    nrh = sum(Xh[Xh.columns[0]]>=0)
+    nlh = int(np.sum(Xh<0))
+    nrh = len(Xh) - nlh
     nh = nrh + nlh
 
 
     #estimation
-    fV_q = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
+    fV_q = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=q, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints_flag)
     T_asy = fV_q.loc['diff', 'hat']/np.sqrt(fV_q.loc['diff', 'plugin'])
     T_jk = fV_q.loc['diff', 'hat']/np.sqrt(fV_q.loc['diff', 'jackknife'])
     p_asy = 2*(1-norm.cdf(abs(T_asy)))
@@ -261,20 +263,21 @@ def rddensity(X, c=0, p=2, q=0,
 
     #binomial testing
     if bino_flag==True:
-        XSort = abs(X).sort_values(X.columns[0]).reset_index(drop=True)
-        XL = abs(X[X[X.columns[0]]<0]).reset_index(drop=True)
-        XR = X[X[X.columns[0]]>=0].reset_index(drop=True)
+        XSort = np.sort(np.abs(X))
+        XL = np.abs(X[X<0])
+        XR = X[X>=0]
 
 
         if isinstance(binoNW, (int, float)):
             if binoNW<=0:
                 raise Exception("Option binoNW incorrectly specified.")
+            binoNW = math.ceil(binoNW)
         else:
             binoNW = math.ceil(binoNW)
 
 
-        binomTempLW = np.repeat(None, binoNW)
-        binomTempRW = np.repeat(None, binoNW)
+        binomTempLW = np.full(binoNW, np.nan)
+        binomTempRW = np.full(binoNW, np.nan)
 
         #binoP check
         if len(binoP)>1:
@@ -288,14 +291,14 @@ def rddensity(X, c=0, p=2, q=0,
         if binoW is None:
             if binoN is None:
                 binoN = 20
-                binomTempLW[0] = max(XL[XL.columns[0]][min(binoN, nl)-1], XR[XR.columns[0]][min(binoN, nr)-1])
-                binomTempRW[0] = max(XL[XL.columns[0]][min(binoN, nl)-1], XR[XR.columns[0]][min(binoN, nr)-1])
+                binomTempLW[0] = max(XL[min(binoN, nl)-1], XR[min(binoN, nr)-1])
+                binomTempRW[0] = max(XL[min(binoN, nl)-1], XR[min(binoN, nr)-1])
             elif isinstance(binoN, (int, float)):
                 if binoN <= 0 :
                     raise Exception("Option binoN incorrectly specified.")
                 binoN = math.ceil(binoN)
-                binomTempLW[0] = XSort[XSort.columns[0]][min(binoN, n)-1]
-                binomTempRW[0] = XSort[XSort.columns[0]][min(binoN, n)-1]
+                binomTempLW[0] = XSort[min(binoN, n)-1]
+                binomTempRW[0] = XSort[min(binoN, n)-1]
             else:
                 raise Exception("Option binoN incorrectly specified.")
         elif isinstance(binoW, (int, float)):
@@ -303,13 +306,13 @@ def rddensity(X, c=0, p=2, q=0,
                 raise Exception("Option binoW incorrectly specified.")
             binomTempLW[0] = binoW
             binomTempRW[0] = binoW
-            binoN = min(sum(XL[XL.columns[0]] <= binomTempLW[0]), sum(XR[XR.columns[0]] <= binomTempRW[0]))
+            binoN = min(np.sum(XL <= binomTempLW[0]), np.sum(XR <= binomTempRW[0]))
         elif len(binoW) == 2:
             if min(binoW) <= 0:
                 raise Exception("Option binoW incorrectly specified.")
             binomTempLW[0] = binoW[0]
             binomTempRW[0] = binoW[1]
-            binoN = min(sum(XL[XL.columns[0]] <= binomTempLW[0]), sum(XR[XR.columns[0]] <= binomTempRW[0]))
+            binoN = min(np.sum(XL <= binomTempLW[0]), np.sum(XR <= binomTempRW[0]))
         else:
             raise Exception("Option binoW incorrectly specified.")
 
@@ -333,46 +336,50 @@ def rddensity(X, c=0, p=2, q=0,
                         else:
                             binomTempRW[1:(binoNW)] = binomTempRW[0] + np.array(range(1, binoNW))*binomTempRW[0]
 
-                elif len(binoNStep) == 1:
-                    if binoNStep[0] <= 0:
+                elif len(np.asarray(binoNStep).reshape(-1)) == 1:
+                    binoNStep = math.ceil(float(np.asarray(binoNStep).reshape(-1)[0]))
+                    if binoNStep <= 0:
                         raise Exception("Option binoNStep incorrectly specified.")
-                    binoNStep = math.ceil(binoNStep)
                     for jj in range(1, binoNW):
-                        binomTempLW[jj] = binomTempLW[jj-1] + max(XL[XL.columns[0]][min(sum(XL<=binomTempLW[jj-1]) + binoNStep, nl)-1] - binomTempLW[jj-1],
-                                                                  XR[XR.columns[0]][min(sum(XL<=binomTempRW[jj-1]) + binoNStep, nr)-1] - binomTempRW[jj-1])
-                        binomTempRW[jj] = binomTempRW[jj-1] + max(XL[XL.columns[0]][min(sum(XL<=binomTempLW[jj-1]) + binoNStep, nl)-1] - binomTempLW[jj-1],
-                                                                  XR[XR.columns[0]][min(sum(XL<=binomTempRW[jj-1]) + binoNStep, nr)-1] - binomTempRW[jj-1])
+                        binomTempLW[jj] = binomTempLW[jj-1] + max(XL[min(np.sum(XL<=binomTempLW[jj-1]) + binoNStep, nl)-1] - binomTempLW[jj-1],
+                                                                  XR[min(np.sum(XL<=binomTempRW[jj-1]) + binoNStep, nr)-1] - binomTempRW[jj-1])
+                        binomTempRW[jj] = binomTempRW[jj-1] + max(XL[min(np.sum(XL<=binomTempLW[jj-1]) + binoNStep, nl)-1] - binomTempLW[jj-1],
+                                                                  XR[min(np.sum(XL<=binomTempRW[jj-1]) + binoNStep, nr)-1] - binomTempRW[jj-1])
                 else:
                     raise Exception("Option binoNStep incorrectly specified.")
-            elif len(binoWStep) == 1:
-                if binWStep[0] <= 0:
+            elif len(np.asarray(binoWStep).reshape(-1)) == 1:
+                binoWStep = float(np.asarray(binoWStep).reshape(-1)[0])
+                if binoWStep <= 0:
                     raise Exception("Option binoWStep incorrectly specified.")
-                binomTempLW[1:(binoNW-1)] = binomTempLW[0] + np.array(range(binoNW))*binoWStep
-                binomTempRW[1:(binoNW-1)] = binomTempRW[0] + np.array(range(binoNW))*binoWStep
-            elif len(binoWStep) == 2:
+                binomTempLW[1:binoNW] = binomTempLW[0] + np.arange(1, binoNW)*binoWStep
+                binomTempRW[1:binoNW] = binomTempRW[0] + np.arange(1, binoNW)*binoWStep
+            elif len(np.asarray(binoWStep).reshape(-1)) == 2:
+                binoWStep = np.asarray(binoWStep, dtype=float).reshape(-1)
                 if min(binoWStep) <= 0:
                     raise Exception("Option binoWStep incorrectly specified.")
-                binomTempLW[1:(binoNW-1)] = binomTempLW[0] + np.array(range(binoNW))*binoWStep[0]
-                binomTempRW[1:(binoNW-1)] = binomTempRW[0] + np.array(range(binoNW))*binoWStep[1]
+                binomTempLW[1:binoNW] = binomTempLW[0] + np.arange(1, binoNW)*binoWStep[0]
+                binomTempRW[1:binoNW] = binomTempRW[0] + np.arange(1, binoNW)*binoWStep[1]
             else:
                 raise Exception("Option binoWStep incorrectly specified.")
 
-            binomTempLN = np.repeat(None, binoNW)
-            binomTempRN = np.repeat(None, binoNW)
-            binomTempPVal = np.repeat(None, binoNW)
+            binomTempLN = np.full(binoNW, np.nan)
+            binomTempRN = np.full(binoNW, np.nan)
+            binomTempPVal = np.full(binoNW, np.nan)
             for jj in range(binoNW):
-                binomTempLN[jj] = len(XL[XL[XL.columns[0]] <= binomTempLW[jj]])
-                binomTempRN[jj] = len(XR[XR[XR.columns[0]] <= binomTempRW[jj]])
-                binomTempPVal[jj] = binomtest(k=binomTempLN[jj], n =(binomTempLN[jj]+binomTempRN[jj]), p = binoP[0]).pvalue
+                binomTempLN[jj] = np.sum(XL <= binomTempLW[jj])
+                binomTempRN[jj] = np.sum(XR <= binomTempRW[jj])
+                binomTempPVal[jj] = binomtest(k=int(binomTempLN[jj]), n =int(binomTempLN[jj]+binomTempRN[jj]), p = binoP[0]).pvalue
 
         else:
             binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
     else:
         binomTempLN = binomTempRN = binomTempLW = binomTempRW = binomTempPVal = np.nan
 
+    X_left = X[X < 0] + c
+    X_right = X[X >= 0] + c
 
     if useall == True:
-        fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints)
+        fV_p = funs.__rddensity_fv(Y=Yh, X=Xh, nl=nl, nr=nr, nlh=nlh, nrh=nrh, hl=hl, hr=hr, p=p, s=1, kernel=kernel, fitselect=fitselect, vce=vce, massPoints=massPoints_flag)
         T_asy_p = fV_p.loc['diff', 'hat']/np.sqrt(fV_p.loc['diff', 'plugin'])
         T_jk_p = fV_p.loc['diff', 'hat']/np.sqrt(fV_p.loc['diff', 'jackknife'])
         p_asy_p = 2*(1-norm.cdf(abs(T_asy_p)))
@@ -393,10 +400,10 @@ def rddensity(X, c=0, p=2, q=0,
             regularize=regularize, nLocalMin=nLocalMin, nUniqueMin=nUniqueMin,
             massPoints=massPoints, massPoints_flag=massPoints_flag, bwselectl=bwselectl, bwselect=bwselect,
             binoN=binoN, binoW=binoW, binoNStep=binoNStep, binoWStep=binoWStep, binoNW= binoNW, binoP=binoP,
-            X_min=pd.Series(data={'left': min(np.array(X[X<0].dropna()+c))[0],
-                                  'right': min(np.array(X[X>=0].dropna()+c))[0]}, index=['left', 'right']),
-            X_max=pd.Series(data={'left': max(np.array(X[X<0].dropna()+c))[0],
-                                  'right': max(np.array(X[X>=0].dropna()+c))[0]}, index=['left', 'right']),
+            X_min=pd.Series(data={'left': np.min(X_left),
+                                  'right': np.min(X_right)}, index=['left', 'right']),
+            X_max=pd.Series(data={'left': np.max(X_left),
+                                  'right': np.max(X_right)}, index=['left', 'right']),
             bino = pd.Series(data={'leftN':binomTempLN, 'rightN':binomTempRN, 'leftWindow':binomTempLW, 'rightWindow':binomTempRW, 'pval':binomTempPVal}, index=['leftN', 'rightN', 'leftWindow', 'rightWindow', 'pval'])
         )
     else:
@@ -415,10 +422,10 @@ def rddensity(X, c=0, p=2, q=0,
             regularize=regularize, nLocalMin=nLocalMin, nUniqueMin=nUniqueMin,
             massPoints=massPoints, massPoints_flag=massPoints_flag, bwselectl=bwselectl, bwselect=bwselect,
             binoN=binoN, binoW=binoW, binoNStep=binoNStep, binoWStep=binoWStep, binoNW= binoNW, binoP=binoP,
-            X_min=pd.Series(data={'left': min(np.array(X[X<0].dropna()+c))[0],
-                                  'right': min(np.array(X[X>=0].dropna()+c))[0]}, index=['left', 'right']),
-            X_max=pd.Series(data={'left': max(np.array(X[X<0].dropna()+c))[0],
-                                  'right': max(np.array(X[X>=0].dropna()+c))[0]}, index=['left', 'right']),
+            X_min=pd.Series(data={'left': np.min(X_left),
+                                  'right': np.min(X_right)}, index=['left', 'right']),
+            X_max=pd.Series(data={'left': np.max(X_left),
+                                  'right': np.max(X_right)}, index=['left', 'right']),
             bino = pd.Series(data={'leftN':binomTempLN, 'rightN':binomTempRN, 'leftWindow':binomTempLW, 'rightWindow':binomTempRW, 'pval':binomTempPVal}, index=['leftN', 'rightN', 'leftWindow', 'rightWindow', 'pval'])
         )
     return(result)
