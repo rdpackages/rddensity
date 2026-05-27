@@ -17,6 +17,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_STATA16 = r"C:\Program Files\Stata16\StataMP-64.exe"
 
 NUMERIC_FIELDNAMES = ["version", "language", "case", "metric", "value", "error"]
 TIMING_FIELDNAMES = ["version", "language", "case", "n", "repeat", "seconds", "error"]
@@ -1492,7 +1493,7 @@ def main() -> int:
     parser.add_argument("--mode", choices=["numeric", "speed", "all"], default="all")
     parser.add_argument("--python-public-version", default="2.4.6")
     parser.add_argument("--rscript", default=shutil.which("Rscript"))
-    parser.add_argument("--stata", default=r"C:\Program Files\StataNow19\StataMP-64.exe")
+    parser.add_argument("--stata", default=DEFAULT_STATA16)
     parser.add_argument("--stata-public-from", default="https://raw.githubusercontent.com/rdpackages/rddensity/main/stata")
     parser.add_argument("--languages", nargs="+", choices=["python", "r", "stata"], default=["python", "r", "stata"])
     parser.add_argument("--sizes", nargs="+", type=int, default=[200, 2000, 10000])
@@ -1505,9 +1506,9 @@ def main() -> int:
     parser.add_argument("--work-dir", type=Path, help="Optional directory to keep temporary scripts/logs.")
     args = parser.parse_args()
 
-    if args.rscript is None:
+    if "r" in args.languages and args.rscript is None:
         raise SystemExit("Rscript was not found.")
-    if args.stata and not Path(args.stata).exists():
+    if "stata" in args.languages and (not args.stata or not Path(args.stata).exists()):
         raise SystemExit(f"Stata executable was not found: {args.stata}")
 
     tmp_context = nullcontext(args.work_dir) if args.work_dir else tempfile.TemporaryDirectory(prefix="rddensity-public-local-")

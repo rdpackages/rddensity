@@ -13,6 +13,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_STATA16 = r"C:\Program Files\Stata16\StataMP-64.exe"
 
 
 FIELDNAMES = ["language", "case", "n", "repeat", "seconds"]
@@ -356,7 +357,7 @@ def main() -> int:
     parser.add_argument("--warmups", type=int, default=1)
     parser.add_argument("--calls-per-repeat", type=int, default=1, help="Run each case this many times per timing repeat and report seconds per call.")
     parser.add_argument("--rscript", default=shutil.which("Rscript"))
-    parser.add_argument("--stata", default=None, help="Path to Stata executable, for example StataMP-64.exe.")
+    parser.add_argument("--stata", default=DEFAULT_STATA16, help="Path to Stata 16 executable.")
     parser.add_argument("--output", type=Path, help="Optional CSV path for raw timing rows.")
     args = parser.parse_args()
 
@@ -368,8 +369,8 @@ def main() -> int:
             raise SystemExit("Rscript was requested but was not found. Pass --rscript or remove r from --languages.")
         rows.extend(benchmark_r(args.rscript, args.sizes, args.repeats, args.warmups, args.calls_per_repeat))
     if "stata" in args.languages:
-        if not args.stata:
-            raise SystemExit("Stata was requested but --stata was not provided.")
+        if not args.stata or not Path(args.stata).exists():
+            raise SystemExit("Stata was requested but the Stata 16 executable was not found. Pass --stata.")
         rows.extend(benchmark_stata(args.stata, args.sizes, args.repeats, args.warmups, args.calls_per_repeat))
 
     print_summary(rows)

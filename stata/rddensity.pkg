@@ -5,16 +5,12 @@ d Authors: Matias D. Cattaneo, Princeton University, matias.d.cattaneo@gmail.com
 d          Michael Jansson, UC-Berkeley, michael.jansson.berkeley@gmail.com
 d          Xinwei Ma, UCSD, xinweima.pku@gmail.com
 d
-d Distribution-Date: 20260521
+d Distribution-Date: 20260527
 d 
 f rdbwdensity.ado
 f rdbwdensity.sthlp
 f rddensity.ado
 f rddensity.sthlp
 f rddensity_fun.do
-f rddensity_fv.mo
-f rddensity_h.mo
-f rddensity_quantile.mo
-f rddensity_rep.mo
+f lrddensity.mlib
 f rddensity_senate.dta
-f rddensity_unique.mo

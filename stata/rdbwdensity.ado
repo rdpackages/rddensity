@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rdbwdensity
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 3.0 2026-05-21
+*!version 3.0 2026-05-27
 
 capture program drop rdbwdensity
 
@@ -19,6 +19,17 @@ syntax varlist(max=1) [if] [in] [, 	///
   NUNIquemin (integer -1)			///
   noMASSpoints						///
   ]
+
+	if "$RDDENSITY_MATA_LOADED" != "1" {
+		tempname rddensity_mlib_ok
+		capture quietly mata: mata mlib index
+		capture quietly mata: st_numscalar("`rddensity_mlib_ok'", rddensity_mlib_loaded())
+		if _rc {
+			quietly findfile rddensity_fun.do
+			quietly do "`r(fn)'"
+		}
+		global RDDENSITY_MATA_LOADED 1
+	}
 	
 	marksample touse
 	markout `touse' `varlist'

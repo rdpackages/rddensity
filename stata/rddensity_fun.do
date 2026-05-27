@@ -2,11 +2,25 @@
 * RDDENSITY STATA PACKAGE -- rddensity -- Mata functions
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 3.0 2026-05-21
+*!version 3.0 2026-05-27
 
 ** NOTE: DATA IS ASSUMED TO BE IN ASCENDING ORDER
 
 ** do rddensity_fun.ado 
+
+********************************************************************************
+* Library load check
+********************************************************************************
+
+capture mata mata drop rddensity_mlib_loaded()
+
+mata
+real scalar rddensity_mlib_loaded()
+{
+	return(1)
+}
+mata mosave rddensity_mlib_loaded(), replace
+end
 
 ********************************************************************************
 * Extracting unique elements

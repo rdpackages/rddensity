@@ -2,6 +2,12 @@
 
 Notable project changes are listed from newest to oldest.
 
+## 2026-05-27 - Stata Mata Library
+
+- Packaged the Stata Mata helpers into `stata/lrddensity.mlib` for distribution instead of shipping separate `.mo` files, with a runtime library-index guard for fresh installs.
+- Added Stata 16 mlib build/install-check helpers and made local Stata scripts prefer `C:\Program Files\Stata16\StataMP-64.exe`.
+- Marked Python, R, and Stata test directories as local-only and removed generated numerical fixtures/tests from the tracked package surfaces.
+
 ## 2026-05-21 - Python and R Modernization
 
 - Bumped Python, R, and Stata package version markers to `3.0`.

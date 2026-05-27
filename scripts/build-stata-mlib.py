@@ -8,20 +8,10 @@ import subprocess
 from pathlib import Path
 
 
+DEFAULT_STATA16 = r"C:\Program Files\Stata16\StataMP-64.exe"
 WINDOWS_CANDIDATES = [
-    r"C:\Program Files\Stata16\StataMP-64.exe",
-    r"C:\Program Files\StataNow19\StataMP-64.exe",
-    r"C:\Program Files\StataNow19\StataSE-64.exe",
-    r"C:\Program Files\StataNow19\StataBE-64.exe",
-    r"C:\Program Files\Stata19\StataMP-64.exe",
-    r"C:\Program Files\Stata19\StataSE-64.exe",
-    r"C:\Program Files\Stata19\StataBE-64.exe",
+    DEFAULT_STATA16,
 ]
-
-HELP_FILES = (
-    "rddensity",
-    "rdbwdensity",
-)
 
 
 def find_repo_root(start: Path) -> Path:
@@ -65,36 +55,31 @@ def find_stata(user_value: str | None) -> Path:
         if path.exists():
             return path
 
-    raise SystemExit("Could not find Stata. Pass --stata or set STATA_EXE.")
+    raise SystemExit("Could not find Stata 16. Pass --stata or set STATA_EXE.")
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate Stata help PDFs from .sthlp files.")
-    parser.add_argument("--stata", help="Path to the Stata executable.")
+    parser = argparse.ArgumentParser(description="Build the Stata Mata library for rddensity.")
+    parser.add_argument("--stata", help="Path to the Stata 16 executable.")
     args = parser.parse_args()
 
     repo_root = find_repo_root(Path.cwd())
     stata = find_stata(args.stata)
-    do_file = repo_root / "scripts" / "build-stata-help-pdfs.do"
-    stata_dir = repo_root / "stata"
+    do_file = repo_root / "scripts" / "build-stata-mlib.do"
+    library = repo_root / "stata" / "lrddensity.mlib"
 
     command = [str(stata), "/e", "do", str(do_file), str(repo_root)]
     print(f"Repository: {repo_root}")
     print(f"Stata:      {stata}")
     subprocess.run(command, cwd=repo_root, check=True)
 
-    missing_or_empty = []
-    for stem in HELP_FILES:
-        pdf = stata_dir / f"{stem}.pdf"
-        if not pdf.exists() or pdf.stat().st_size == 0:
-            missing_or_empty.append(pdf.name)
-        else:
-            print(f"Wrote {pdf.relative_to(repo_root)} ({pdf.stat().st_size:,} bytes)")
+    if not library.exists() or library.stat().st_size == 0:
+        raise SystemExit("Missing or empty Stata Mata library: " + str(library))
 
-    if missing_or_empty:
-        raise SystemExit("Missing or empty PDF(s): " + ", ".join(missing_or_empty))
+    for object_file in (repo_root / "stata").glob("*.mo"):
+        object_file.unlink()
 
-    print("Stata help PDF generation passed.")
+    print(f"Wrote {library.relative_to(repo_root)} ({library.stat().st_size:,} bytes)")
     return 0
 
 

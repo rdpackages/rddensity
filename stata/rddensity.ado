@@ -2,7 +2,7 @@
 * RDDENSITY STATA PACKAGE -- rddensity
 * Authors: Matias D. Cattaneo, Michael Jansson, Xinwei Ma
 ********************************************************************************
-*!version 3.0 2026-05-21
+*!version 3.0 2026-05-27
 
 capture program drop rddensityEST
 
@@ -23,6 +23,17 @@ noREGularize 			    		///
 NLOCalmin (integer -1)				///
 NUNIquemin (integer -1)				///
 ]
+
+	if "$RDDENSITY_MATA_LOADED" != "1" {
+		tempname rddensity_mlib_ok
+		capture quietly mata: mata mlib index
+		capture quietly mata: st_numscalar("`rddensity_mlib_ok'", rddensity_mlib_loaded())
+		if _rc {
+			quietly findfile rddensity_fun.do
+			quietly do "`r(fn)'"
+		}
+		global RDDENSITY_MATA_LOADED 1
+	}
 
 	marksample touse
 	markout `touse' `varlist'
@@ -418,6 +429,17 @@ program define rddensity, eclass
 			LEVel(real 95) 					///
 			ALL 							///
 			]
+
+	if "$RDDENSITY_MATA_LOADED" != "1" {
+		tempname rddensity_mlib_ok
+		capture quietly mata: mata mlib index
+		capture quietly mata: st_numscalar("`rddensity_mlib_ok'", rddensity_mlib_loaded())
+		if _rc {
+			quietly findfile rddensity_fun.do
+			quietly do "`r(fn)'"
+		}
+		global RDDENSITY_MATA_LOADED 1
+	}
 
 	marksample touse
 	markout `touse' `varlist'
