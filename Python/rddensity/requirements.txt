@@ -1,6 +1,6 @@
 numpy>=2.5.0
 pandas>=3.0.3
-scipy>=1.17.1
+scipy>=1.18.0
 sympy>=1.14.0
 plotnine>=0.15.7
 lpdensity>=3.0.0
