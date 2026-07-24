@@ -1,5 +1,5 @@
 numpy>=2.5.1
-pandas>=3.0.3
+pandas>=3.0.5
 scipy>=1.18.0
 sympy>=1.14.0
 plotnine>=0.15.7
